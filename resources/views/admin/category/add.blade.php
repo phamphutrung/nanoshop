@@ -60,7 +60,9 @@
                 </div>
             </div>    
           
-            <button class="btn btn-primary" type="submit">Tạo mới</button>
+            <button class="btn btn-success" type="submit">Tạo mới</button>
+            <a href="{{ route('admin-category') }}" class="btn btn-secondary">Hủy</a>
+
         </form>
     </div>
 
