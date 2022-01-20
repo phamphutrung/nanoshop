@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -23,5 +24,11 @@ Auth::routes(["verify"=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware(['auth', 'isAdmin'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index']);
+    Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+
+    Route::get('/category', [AdminCategoryController::class, 'index'])->name('admin-category');
+    Route::get('/category-add', [AdminCategoryController::class, 'add'])->name('admin-category-add');
+    Route::post('/category-insert', [AdminCategoryController::class, 'insert'])->name('admin-category-insert');
+    Route::get('/category-edit-{id}', [AdminCategoryController::class, 'edit'])->name('admin-category-edit');
+    Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
 });

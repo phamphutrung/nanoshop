@@ -10,8 +10,8 @@
     <title>{{ config('app.name', 'Laravel') }}</title>
     
     <!-- Fonts -->
-    <!-- <link rel="dns-prefetch" href="//fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet"> -->
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 
 
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
@@ -20,17 +20,25 @@
     <!-- CSS -->
     <link rel="stylesheet" href="{{ asset('admin/css/material-dashboard.css') }}">
     <!-- CSS Bootstrap -->
-    <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous"> 
 </head>
 <body>
     @include('layouts.inc.admin_sidebar')
 
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
         @include('layouts.inc.admin_navbar')
-      <div class="container-fluid py-4">
-          @yield('content')
-          @include('layouts.inc.admin_footer')
-      </div>
+        <div class="container-fluid py-4" style="min-height: 829px">
+        @if (session('status'))
+        <div class="alert alert-success alert-dismissible text-white" role="alert">
+            <span class="text-sm">{{ session('status') }}</span>
+            <button type="button" class="btn-close text-lg py-3 opacity-10" data-bs-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true" class="text-white">×</span>
+            </button>
+        </div>
+        @endif
+         @yield('content')  
+        </div>
+        @include('layouts.inc.admin_footer')
     </main>
 
     <!--   Core JS Files   -->
