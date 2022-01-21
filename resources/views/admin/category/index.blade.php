@@ -1,5 +1,13 @@
 @extends('layouts.admin')
 @section('title', 'Danh Sách Danh Mục')
+@section('scripts')
+  <script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+  </script>
+@endsection
 @section('content')
     <div class="card">
       <div class="card-header">
@@ -7,6 +15,12 @@
       </div>
       <div class="card-body">
         <div class="col-12">
+          @if (session('status'))
+          <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <strong>Thông báo!</strong> {{ session('status') }}.
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          @endif
           <div class="card">
             <div class="card-header">
               <h3 class="card-title">Responsive Hover Table</h3>
@@ -40,7 +54,11 @@
                     </td>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->description }}</td>
-                    <td><span class="tag tag-success">Approved</span></td>
+                    <td>
+                        <a href="{{ route('admin-category-edit', ["$category->id"]) }}" class="btn btn-info" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Sửa"><i class="fas fa-edit"></i></a>
+                       
+                        <a href="" class="btn btn-danger" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Xóa"><i class="fas fa-trash"></i></a>
+                    </td>
                   </tr>
                   @endforeach
                 </tbody>

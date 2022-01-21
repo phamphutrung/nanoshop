@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="col-md-12 mb-4">
-                        <label for="formFile" class="form-label">Image</label>
+                        <label for="formFile" class="form-label">Ảnh</label>
                         <input class="form-control" type="file" id="formFile" name="image">
                     </div>
 

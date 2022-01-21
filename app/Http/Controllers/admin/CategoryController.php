@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 class CategoryController extends Controller
 {
@@ -34,11 +35,37 @@ class CategoryController extends Controller
             $category->image = $path;
         }
         $category->save();
-        return redirect()->route('admin-category-add')->with('status', 'Thêm danh mục thành công');
+        return redirect()->route('admin-category')->with('status', 'Thêm danh mục thành công');
     }
     
-    public function edit() {
-        return view('admin.category.edit');
+    public function edit($id) {
+        $category = Category::find($id);
+        return view('admin.category.edit', compact('category'));
+    }
+
+    public function update(request $request, $id) {
+        $category = Category::find($id);
+        Category::where('id', $id )->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'popular' => $request->input('popular'),
+            'status' => $request->input('status'),
+            'meta_title' => $request->input('meta_title'),
+            'meta_descrip' => $request->input('meta_descrip'),
+            'meta_keywords' => $request->input('meta_keywords'),
+        ]);
+        if($request->hasFile('image')) {
+            if(File::exists($category->image)) {
+                File::delete($category->image);
+            }
+            $image = $request->file('image');
+            $imageName = $image->getClientOriginalName().time().'.'.$image->getClientOriginalExtension();
+            $path = $image->move('upload/category', $imageName);
+            category::where('id', $id)->update([
+                'image' => $path,
+            ]);
+        }
+        return redirect()->route('admin-category')->with('status', 'Cập nhật danh mục thành công');
     }
 
     public function delete($id) {

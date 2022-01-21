@@ -63,9 +63,10 @@
         @include('layouts.inc.admin_footer')
       </div>
       <script src="{{ asset('admin/plugin/jquery/jquery.min.js') }}"></script>
-      {{--  <!-- JavaScript Bootstrap -->
-      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>  --}}
-      {{--  <script src="{{ asset('plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>  --}}
       <script src="{{ asset('admin/js/adminlte.min.js') }}"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+      @yield('scripts')
+      <script src="{{ asset('plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
 </body>
 </html>
