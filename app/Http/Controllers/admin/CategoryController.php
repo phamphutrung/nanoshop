@@ -69,7 +69,14 @@ class CategoryController extends Controller
     }
 
     public function delete($id) {
+        $category = Category::find($id);
+
+        if($category->image) {
+            if(File::exists($category->image)) {
+                File::delete($category->image);
+            }
+        }
         category::destroy($id);
-        return "đã xóa tạm thời $id";
+        return redirect()->route('admin-category')->with('status', 'Xóa danh mục thành công');
     }
 }
