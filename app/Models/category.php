@@ -12,4 +12,8 @@ class category extends Model
     use HasFactory;
     use SoftDeletes;
     protected $fillable = ['name', 'slug', 'description', 'status', 'popular', 'meta_keywords', 'meta_title', 'meta_descrip', 'image'];
+
+    public function products(){
+        return $this->hasMany('App\Models\product');
+    }
 }

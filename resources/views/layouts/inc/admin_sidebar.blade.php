@@ -8,12 +8,13 @@
   <!-- Sidebar -->
   <div class="sidebar">
     <!-- Sidebar user panel (optional) -->
-    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-      {{--  <div class="image">
-        <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
-      </div>  --}}
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex text-white">
+      <div class="image mt-1">
+        {{--  <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">  --}}
+        <i class="fa-solid fa-user "></i>
+      </div>
       <div class="info">
-        <a href="#" class="d-block">User Name</a>
+        <strong href="#" class="d-block">{{ Auth::user()->name }}</strong>
       </div>
     </div>
 
@@ -21,10 +22,26 @@
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
-          <a href="{{ route('admin-category') }}" class="nav-link active">
+          <a href="{{ route('dashboard') }}" class="nav-link {{ session('module_active')=='dashboard'?'active':'' }}">
+            <i class="nav-icon fas fa-chart-line"></i>
+            <p>
+                Dashboard
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('admin-category') }}" class="nav-link {{ session('module_active')=='category'?'active':'' }}">
             <i class="nav-icon fas  fa-list-alt"></i>
             <p>
                 Danh Mục
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="{{ route('admin-product') }}" class="nav-link {{ session('module_active')=='product'?'active':'' }}">
+            <i class="nav-icon fas fa-solid fa-align-center"></i>
+            <p>
+                Sản Phẩm
             </p>
           </a>
         </li>

@@ -6,17 +6,41 @@ use App\Http\Controllers\Controller;
 use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use App\components\recursive;
 
 class CategoryController extends Controller
 {
+    private $htmlCategory;
+    function __construct() {
+        $this->middleware(function($request, $next){
+            session(['module_active'=>'category']);
+            return $next($request);
+        });
+        $this->htmlCategory = '';
+    }
     public function index() {
         $categories = category::all();
         return view('admin.category.index', compact('categories'));
     }
 
     public function add() {
-        return view('admin.category.add');
+        // dd($this->categoryRecursive($id='0', $str=''));
+        $data = category::all();
+        $Recursive = new Recursive($data);
+        $htmlSelectOptionCategory = $Recursive->categoryRecursive($id='0', $tr='');
+        // $optionCategory = $this->categoryRecursive($data, $id=0, $str='');
+        // $optionCategory = $this->categoryRecursive($id='0', $str='');
+        return view('admin.category.add', compact('htmlSelectOptionCategory'));
     }
+    // function categoryRecursive($data, $id, $str) {
+    //     foreach ($data as $key => $value) {
+    //         if ($value->parent_id == $id) {
+    //             $this->htmlCategory .= "<option>".$str.$value->name."</option>";
+    //             $this->categoryRecursive($data, $value->id, $str.='--');
+    //         }
+    //     }
+    //     return $this->htmlCategory;
+    // }
 
     public function insert(request $request) {
         $category = new category();
