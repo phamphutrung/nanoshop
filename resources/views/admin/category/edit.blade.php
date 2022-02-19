@@ -30,9 +30,20 @@
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">Chọn ảnh đại diện mới</label>
-      <input type="file" class="form-control" name="avt">
+      <input type="file" accept="image/*" class="form-control" name="avt" onchange="loadFile(event)">
+      <img class="m-3" style="width: 15rem" id="output"> 
     </div>
     <button type="submit" class="btn btn-primary">Cập nhật danh mục</button>
     <a href="{{ route('admin-category') }}" class="btn btn-secondary ml-1">Hủy</a>
  </form>
+  <script>
+   function loadFile (event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+      var output = document.getElementById('output');
+      output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+  };
+</script>
 @endsection

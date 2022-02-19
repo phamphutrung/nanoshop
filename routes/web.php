@@ -33,6 +33,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/category-edit-{id}', [AdminCategoryController::class, 'edit'])->name('admin-category-edit');
     Route::post('/category-update-{id}', [AdminCategoryController::class, 'update'])->name('admin-category-update');
     Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
+    Route::get('/category-restore-{id}', [AdminCategoryController::class, 'restore'])->name('admin-category-restore');
+    Route::get('/force-{id}', [AdminCategoryController::class, 'force'])->name('force');
 
     Route::get('/product', [AdminProductController::class, 'index'])->name('admin-product');
     Route::get('/product-add', [AdminProductController::class, 'add'])->name('admin-product-add');

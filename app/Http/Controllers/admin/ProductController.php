@@ -23,7 +23,7 @@ class ProductController extends Controller
     //   $name_category = product::first()->category->name;
     //   dd($name_category);
        
-        return view('admin.product.index', compact('products'));
+        // return view('admin.product.index', compact('products'));
     }
 
     public function add() {
@@ -31,38 +31,38 @@ class ProductController extends Controller
         return view('admin.product.add', compact('categories'));
     }
 
-    public function insert(request $request) {
-        // $this->validate($request, [
-		// 	'name' => 'required'
-        //     ]
-		// );
-        if ($request->hasFile('images')) {
-            $allowedFileExtensions = ['png', 'jpg'];
-            $exp_flag = true;
-            $files = $request->file('images');
-            foreach ($files as $file) {
-                $extension = $file->getClientOriginalExtension();
-                $check = in_array($extension, $allowedFileExtensions);
-                if(!$check) {
-                    $exp_flag = false;
-                    break;
-                }
-            }
+    // public function insert(request $request) {
+    //     // $this->validate($request, [
+	// 	// 	'name' => 'required'
+    //     //     ]
+	// 	// );
+    //     if ($request->hasFile('images')) {
+    //         $allowedFileExtensions = ['png', 'jpg'];
+    //         $exp_flag = true;
+    //         $files = $request->file('images');
+    //         foreach ($files as $file) {
+    //             $extension = $file->getClientOriginalExtension();
+    //             $check = in_array($extension, $allowedFileExtensions);
+    //             if(!$check) {
+    //                 $exp_flag = false;
+    //                 break;
+    //             }
+    //         }
 
-        }
-        if ($exp_flag) {
-            $product = product::create($request->all());
-            foreach ($request->images as $image) {
-                $imageName = $image->getClientOriginalName().time().'.'.$image->getClientOriginalExtension();
-                $pathImage = $image->move('upload/product/', $imageName);
-                product_image::create([
-                    'product_id' => $product->id,
-                    'file_path' => $pathImage   
-                ]);
-            }
-            return redirect()->route('admin-product')->with('status', 'Thêm sản phẩm thành công');
-        } else {
-            dd('chưa chuẩn');
-        }
-    }
+    //     }
+    //     if ($exp_flag) {
+    //         $product = product::create($request->all());
+    //         foreach ($request->images as $image) {
+    //             $imageName = $image->getClientOriginalName().time().'.'.$image->getClientOriginalExtension();
+    //             $pathImage = $image->move('upload/product/', $imageName);
+    //             product_image::create([
+    //                 'product_id' => $product->id,
+    //                 'file_path' => $pathImage   
+    //             ]);
+    //         }
+    //         return redirect()->route('admin-product')->with('status', 'Thêm sản phẩm thành công');
+    //     } else {
+    //         dd('chưa chuẩn');
+    //     }
+    // }
 }

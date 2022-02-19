@@ -20,9 +20,15 @@ class CategoryController extends Controller
             return $next($request);
         });
     }
-    public function index() {
-        $categories = category::all();
-        return view('admin.category.index', compact('categories'));
+    public function index(request $request) {
+        if($request->status == 'trash') {
+            $categories = category::onlyTrashed()->get();
+        } else {
+            $categories = category::all();
+        }
+        $countActive = category::all()->count();
+        $countTrash = category::onlyTrashed()->count();
+        return view('admin.category.index', compact('categories', 'countActive', 'countTrash'));
     }
 
     public function add() {
@@ -96,12 +102,25 @@ class CategoryController extends Controller
     public function delete($id) {
         $category = Category::find($id);
 
-        if($category->image) {
-            if(File::exists($category->image)) {
-                File::delete($category->image);
-            }
-        }
+    
         category::destroy($id);
         return redirect()->route('admin-category')->with('status', 'Xóa danh mục thành công');
     }
+
+    public function restore($id) {
+        category::onlyTrashed()->where('id', $id)->restore();
+        return redirect()->back()->with('status', 'Khôi phục danh mục thành công');
+  
+    }
+    public function force($id) {
+        $category = Category::withTrashed()->find($id);
+        if($category->avt) {
+            if(File::exists($category->avt)) {
+                File::delete($category->avt);
+            }
+        }
+        category::onlyTrashed()->where('id', $id)->forceDelete();
+        return redirect()->back()->with('status', 'Đẫ xóa vĩnh viễn danh mục');
+
+    } 
 }
