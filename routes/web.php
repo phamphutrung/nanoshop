@@ -31,7 +31,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/category-add', [AdminCategoryController::class, 'add'])->name('admin-category-add');
     Route::post('/category-insert', [AdminCategoryController::class, 'insert'])->name('admin-category-insert');
     Route::get('/category-edit-{id}', [AdminCategoryController::class, 'edit'])->name('admin-category-edit');
-    Route::put('/category-update-{id}', [AdminCategoryController::class, 'update'])->name('admin-category-update');
+    Route::post('/category-update-{id}', [AdminCategoryController::class, 'update'])->name('admin-category-update');
     Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
 
     Route::get('/product', [AdminProductController::class, 'index'])->name('admin-product');

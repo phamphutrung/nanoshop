@@ -16,30 +16,46 @@
         <table class="table table-hover">
           <thead>
             <tr>
-              <th scope="col">#</th>
-              <th scope="col">trung</th>
-              <th scope="col">Last</th>
-              <th scope="col">Handle</th>
+              <th scope="col">STT</th>
+              <th scope="col">Ảnh</th>
+              <th scope="col">Tên</th>
+              <th scope="col">Danh mục cha</th>
+              <th scope="col">Hành động</th>
             </tr>
           </thead>
           <tbody>
+            @php
+              $stt = 1;
+            @endphp
+            @foreach ($categories as $category)
             <tr>
-              <th scope="row">1</th>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
+                <th scope="row">{{ $stt  }}</th>
+                <td>
+                    <img style="width: 3rem" src="{{ asset("$category->avt") }}" alt="">
+                </td>
+                <td>{{ $category->name }}</td>
+                <td>
+                  @php
+                    foreach ($categories as $item){
+                      if($category->parent_id == $item->id) {
+                        echo $item->name;
+                      }
+                    }
+                  @endphp
+                </td>
+                <td>
+                  <a class="btn btn-sm btn-primary" href="{{ route('admin-category-edit', [$category->id]) }}">
+                      <i class="fa-solid fa-pen-to-square"></i>
+                  </a>
+                  <a class="btn btn-sm btn-danger" href="{{ route('admin-category-delete', [$category->id]) }}">
+                     <i class="fa-solid fa-trash"></i>
+                  </a>
+                </td>
+              @php
+              $stt ++;
+              @endphp
             </tr>
-            <tr>
-              <th scope="row">2</th>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-            </tr>
-            <tr>
-              <th scope="row">3</th>
-              <td colspan="2">Larry the Bird</td>
-              <td>@twitter</td>
-            </tr>
+            @endforeach
           </tbody>
         </table>
     </div>
