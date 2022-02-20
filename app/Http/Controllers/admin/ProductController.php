@@ -7,6 +7,7 @@ use App\Models\category;
 use App\Models\product;
 use App\Models\product_image;
 use Illuminate\Http\Request;
+use App\Components\Recursive;
 
 class ProductController extends Controller
 {
@@ -23,12 +24,14 @@ class ProductController extends Controller
     //   $name_category = product::first()->category->name;
     //   dd($name_category);
        
-        // return view('admin.product.index', compact('products'));
+        return view('admin.product.index');
     }
 
     public function add() {
-        $categories = Category::all();
-        return view('admin.product.add', compact('categories'));
+        $data = category::all();
+        $Recursive = new Recursive($data);
+        $htmlSelectOptionCategory = $Recursive->categoryRecursive($id='0', $tr='', '');
+        return view('admin.product.add', compact('htmlSelectOptionCategory'));
     }
 
     // public function insert(request $request) {

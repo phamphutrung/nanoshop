@@ -1,6 +1,39 @@
 @extends('layouts.admin')
+@section('scripts')
+<script>
+  function loadFile (event) {
+   var reader = new FileReader();
+   reader.onload = function(){
+     var output = document.getElementById('output');
+     output.src = reader.result;
+   };
+   reader.readAsDataURL(event.target.files[0]);
+ };
+
+ function insertSlug(event) {
+   var title = document.getElementById('name').value;
+   var slug = title.toLowerCase(); 
+       slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+            
+               slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+               slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+               slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+               slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+               slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+               slug = slug.replace(/đ/gi, 'd');
+               slug = slug.replace(/ /gi, "-")
+               slug = slug.replace(/\-\-\-\-\-/gi, '-');
+               slug = slug.replace(/\-\-\-\-/gi, '-');
+               slug = slug.replace(/\-\-\-/gi, '-');
+               slug = slug.replace(/\-\-/gi, '-');
+               slug = '@' + slug + '@';
+               slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+   document.getElementById('slug').value = slug
+ }
+</script>
+@endsection
 @section('title', 'Thêm Danh Mục')
-{{-- @section('scripts')
+@section('scripts')
 
   var loadFile = function(event) {
     var reader = new FileReader();
@@ -11,7 +44,7 @@
     reader.readAsDataURL(event.target.files[0]);
   };
 
-@endsection --}}
+@endsection
 @section('content')
 <form action="{{ route('admin-category-insert') }}"  method="post" enctype="multipart/form-data">
     @csrf
@@ -43,35 +76,5 @@
     <button type="submit" class="btn btn-primary">Thêm danh mục</button>
     <a href="{{ route('admin-category') }}" class="btn btn-secondary ml-1">Hủy</a>
  </form>
- <script>
-   function loadFile (event) {
-    var reader = new FileReader();
-    reader.onload = function(){
-      var output = document.getElementById('output');
-      output.src = reader.result;
-    };
-    reader.readAsDataURL(event.target.files[0]);
-  };
 
-  function insertSlug(event) {
-    var title = document.getElementById('name').value;
-    var slug = title.toLowerCase(); 
-        slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
-             
-                slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
-                slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
-                slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
-                slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
-                slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
-                slug = slug.replace(/đ/gi, 'd');
-                slug = slug.replace(/ /gi, "-")
-                slug = slug.replace(/\-\-\-\-\-/gi, '-');
-                slug = slug.replace(/\-\-\-\-/gi, '-');
-                slug = slug.replace(/\-\-\-/gi, '-');
-                slug = slug.replace(/\-\-/gi, '-');
-                slug = '@' + slug + '@';
-                slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-    document.getElementById('slug').value = slug
-  }
-</script>
 @endsection
