@@ -23,6 +23,7 @@ class CreateProductsTable extends Migration
             $table->mediumText('description')->nullable();
             $table->longText('content')->nullable();
             $table->string('trending')->default('0');
+            $table->string('status')->default('0');
             $table->bigInteger('category_id');
             $table->bigInteger('user_id');
             $table->SoftDeletes();

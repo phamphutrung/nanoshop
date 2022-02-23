@@ -1,5 +1,8 @@
 @extends('layouts.admin')
 @section('title', 'Danh Sách Sản Phẩm')
+@section('css')
+  <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+@endsection
 @section('scripts')
   <script>
     var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
@@ -42,5 +45,6 @@
       </tr>
     </tbody>
   </table>
+
 </div>
 @endsection

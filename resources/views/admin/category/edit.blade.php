@@ -1,11 +1,36 @@
 @extends('layouts.admin')
 @section('title', 'Chỉnh sửa danh mục')
+@section('scripts')
+  <script>
+    function insertSlug(event) {
+      var title = document.getElementById('name').value;
+      var slug = title.toLowerCase(); 
+          slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+               
+                  slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                  slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                  slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                  slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                  slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                  slug = slug.replace(/đ/gi, 'd');
+                  slug = slug.replace(/ /gi, "-")
+                  slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-\-/gi, '-');
+                  slug = slug.replace(/\-\-/gi, '-');
+                  slug = '@' + slug + '@';
+                  slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+     var el = document.getElementById('slug');
+         el.value = slug;
+    }
+  </script>
+@endsection
 @section('content')
 <form action="{{ route('admin-category-update', [$category->id]) }}"  method="post" enctype="multipart/form-data">
     @csrf
     <div class="form-group">
       <label for="name">Tên danh mục</label>
-      <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên danh mục" value="{{ $category->name }}">
+      <input type="text" class="form-control" id="name" name="name" placeholder="Nhập tên danh mục" value="{{ $category->name }}" onchange="insertSlug()">
       @error('name')
         <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
       @enderror

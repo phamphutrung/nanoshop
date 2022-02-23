@@ -2,11 +2,13 @@
 
 @section('css')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    
     <style>
         #preview{
             display: flex;
             margin-top: 10px;
             flex-wrap: wrap;
+            min-height: 85px
         }
         #preview img{
             margin-right: 8px;
@@ -16,25 +18,72 @@
             border-radius: 10px;
             box-shadow: 0 0 8px rgba(0,0,0,0.2);
         }
+        .select2-selection__choice {
+            background-color: #4b4645 !important;
+        }
     </style>
+
 @endsection
 
 @section('scripts')
-    // select2 cdn 
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script>
-        $ ( ".tags_select2_choose" ). select2 ({ 
-            tags : true , 
-            tokenSeparators : [ ',' , '' ] 
-        })  
-            
-        $ ( ".category_select2_choose" ). select2 ({ 
-  
-        })  
-    </script>
+ 
+<script src="https://cdn.tiny.cloud/1/gvcgn9fcz3rvjlxqcknuy9kstzoabcuya4olq1idbnh25pg6/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
 
-    // preview avt product.
-    <script>
+<script>
+    var editor_config = {
+      path_absolute : "/",
+      selector: 'textarea.editor',
+      relative_urls: false,
+      plugins: [
+        "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+        "searchreplace wordcount visualblocks visualchars code fullscreen",
+        "insertdatetime media nonbreaking save table directionality",
+        "emoticons template paste textpattern"
+      ],
+    
+      toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
+      file_picker_callback : function(callback, value, meta) {
+        var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName('body')[0].clientWidth;
+        var y = window.innerHeight|| document.documentElement.clientHeight|| document.getElementsByTagName('body')[0].clientHeight;
+  
+        var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
+        if (meta.filetype == 'image') {
+          cmsURL = cmsURL + "&type=Images";
+        } else {
+          cmsURL = cmsURL + "&type=Files";
+        }
+  
+        tinyMCE.activeEditor.windowManager.openUrl({
+          url : cmsURL,
+          title : 'Filemanager',
+          width : x * 0.8,
+          height : y * 0.8,
+          resizable : "yes",
+          close_previous : "no",
+          onMessage: (api, message) => {
+            callback(message.content);
+          }
+        });
+      }
+    };
+  
+    tinymce.init(editor_config);
+  </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $ ( ".tags_select2_choose" ). select2 ({ 
+        tags : true , 
+        tokenSeparators : [ ',' , '' ] 
+    })  
+        
+    $ ( ".category_select2_choose" ). select2 ({ 
+
+    })  
+</script>
+  
+<script>
         function loadFile (event) {
             var reader = new FileReader();
             reader.onload = function(){
@@ -43,10 +92,10 @@
             };
             reader.readAsDataURL(event.target.files[0]);
           };
-    </script>
+</script>
 
-    //preview images detail product.
-    <script>
+  
+<script>
         $(document).ready(function() {
             function previewImages() {
 
@@ -73,7 +122,30 @@
               
               $('#image_path').on("change", previewImages);
         })
-    </script>
+</script>
+<script>
+    function insertSlug(event) {
+        var title = document.getElementById('name').value;
+        var slug = title.toLowerCase(); 
+            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+                 
+                    slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+                    slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+                    slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+                    slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+                    slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+                    slug = slug.replace(/đ/gi, 'd');
+                    slug = slug.replace(/ /gi, "-")
+                    slug = slug.replace(/\-\-\-\-\-/gi, '-');
+                    slug = slug.replace(/\-\-\-\-/gi, '-');
+                    slug = slug.replace(/\-\-\-/gi, '-');
+                    slug = slug.replace(/\-\-/gi, '-');
+                    slug = '@' + slug + '@';
+                    slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+       var el = document.getElementById('slug');
+           el.value = slug;
+      }
+</script>
 @endsection
 
 @section('title', 'Thêm Sảm Phẩm ')
@@ -86,13 +158,16 @@
             <div class="col-md-12 mb-4">
                 <label for="category">Danh mục</label>
                 <select class="form-select category_select2_choose" name="category_id">
-                    <option selected>Chọn danh mục</option>
+                    {{-- <option value="" selected>Chọn danh mục</option> --}}
                    {!! $htmlSelectOptionCategory !!}
                   </select>
             </div>
             <div class="col-md-12 mb-4">
                 <label for="name">Tên sản phẩm</label>
-                <input id="name" class="form-control" type="text" name="name" placeholder="Nhập tên sản phẩm">
+                <input id="name" class="form-control" type="text" name="name" placeholder="Nhập tên sản phẩm" onchange="insertSlug()">
+                @error('name')
+                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                @enderror
             </div>
 
             <div class="col-md-12 mb-4">
@@ -111,35 +186,18 @@
             <div class="col-md-12 mb-4">
                 <label for="formFile" class="form-label">Ảnh đại diện</label>
                 <input class="form-control" type="file" accept="image/*" id="feature_image_path" name="feature_image_path" onchange="loadFile(event)">
-                <div class="text-center mt-3">
-                    <img style="width: 85px; border-radius: 10px;" id="output">
+                <div class="mt-3" style="min-height: 85px">
+                    <img style="width: 85px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output">
                 </div>
             </div>
             <div class="col-md-12 mb-4">
                 <label for="formFile" class="form-label">Ảnh chi tiết</label>
-                <input class="form-control" type="file" id="image_path" name="image_path[]" multiple>
+                <input class="form-control" type="file" accept="image/*" id="image_path" name="image_path[]" multiple>
                 <div id="preview"></div>
             </div>
-            <div class="col-md-12 mb-4">
-                <label>Tags</label>
-                <select class="form-control tags_select2_choose" multiple>
-                    
-                </select>
-            </div>
-        </div> 
 
-        <div class="col-md-7">
-            <div class="col-md-12 mb-4">
-                <label for="description">Mô tả ngắn</label>
-                <textarea class="form-control" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
-            </div>
-
-            <div class="col-md-12 mb-4">
-                <label for="description">Nội dung</label>
-                <textarea class="form-control" name="content" id="description" rows="15" placeholder="Nhập nội dung sản phẩm"></textarea>
-            </div>
-            <div class="col-md-12 d-flex align-items-center">
-                <div class="col-md-6 mb-4">
+               <div class="col-md-12 d-flex align-items-center">
+                <div class="col-md-6 mb-4 ml-3">
                     <input class="form-check-input" type="checkbox" value="1" id="status" name="status">
                     <label class="form-check-label" for="status">
                         Kích hoạt
@@ -152,12 +210,31 @@
                     </label>
                 </div>
             </div>
+            <div class="col-md-12 mb-4">
+                <label>Tags</label>
+                <select name="tags[]" class="form-control tags_select2_choose" multiple>
+                    {!! $htmlSelectOptionTag !!}
+                </select>
+            </div>
+        </div> 
+
+        <div class="col-md-7">
+            <div class="col-md-12 mb-4">
+                <label for="description">Mô tả ngắn</label>
+                <textarea class="form-control editor" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
+            </div>
+
+            <div class="col-md-12 mb-4">
+                <label for="description">Nội dung</label>
+                <textarea class="form-control editor" name="content" id="description" rows="28" placeholder="Nhập nội dung sản phẩm"></textarea>
+            </div>
+         
 
         </div>
     </div>    
 
-    <button class="btn btn-success" type="submit">Tạo mới</button>
-    <a href="{{ route('admin-product') }}" class="btn btn-secondary">Hủy</a>
+    <button class="btn btn-success mb-3" type="submit">Tạo mới</button>
+    <a href="{{ route('admin-product') }}" class="btn btn-secondary  mb-3">Hủy</a>
 </form>
 
 @endsection

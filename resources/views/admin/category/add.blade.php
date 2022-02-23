@@ -28,7 +28,8 @@
                slug = slug.replace(/\-\-/gi, '-');
                slug = '@' + slug + '@';
                slug = slug.replace(/\@\-|\-\@|\@/gi, '');
-   document.getElementById('slug').value = slug
+  var el = document.getElementById('slug');
+      el.value = slug;
  }
 </script>
 @endsection
