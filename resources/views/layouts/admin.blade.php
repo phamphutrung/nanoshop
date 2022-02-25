@@ -26,6 +26,7 @@
     <!-- Font Awesome Icons -->
     {{--  <link rel="stylesheet" href="asset('admin/plugins/fontawesome-free/css/all.min.css') }}">  --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <meta name="csrf_token" content="{{ csrf_token() }}">
    @yield('css')
 </head>
 <body>
@@ -63,9 +64,14 @@
       {{-- js sweetalerr --}}
       {{--  <script src="{{ asset('admins/plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>  --}}
       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
       @if (session('status'))
         <script>
-          swal("{{ Session('status') }}");
+          Swal.fire(
+            'Good job!',
+            "{{ Session('status') }}",
+            'success'
+          )
         </script>
       @endif
       @yield('scripts')

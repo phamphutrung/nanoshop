@@ -50,13 +50,12 @@
     <div class="form-group">
       <label for="exampleInputPassword1">Ảnh đại diện</label>
       <div>
-        <img class="ml-3" style="width: 7rem" src="{{ $category->avt }}" alt="">
+        <img class="ml-3" style="width: 12rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output" src="{{ asset('storage/'.$category->avt) }}">
       </div>
     </div>
     <div class="form-group">
       <label for="exampleInputPassword1">Chọn ảnh đại diện mới</label>
       <input type="file" accept="image/*" class="form-control" name="avt" onchange="loadFile(event)">
-      <img class="m-3" style="width: 15rem" id="output"> 
     </div>
     <button type="submit" class="btn btn-primary">Cập nhật danh mục</button>
     <a href="{{ route('admin-category') }}" class="btn btn-secondary ml-1">Hủy</a>

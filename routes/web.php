@@ -34,10 +34,17 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/category-update-{id}', [AdminCategoryController::class, 'update'])->name('admin-category-update');
     Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
     Route::get('/category-restore-{id}', [AdminCategoryController::class, 'restore'])->name('admin-category-restore');
-    Route::get('/force-{id}', [AdminCategoryController::class, 'force'])->name('force');
+    Route::get('/category-force-{id}', [AdminCategoryController::class, 'force'])->name('admin-category-force');
 
     Route::get('/product', [AdminProductController::class, 'index'])->name('admin-product');
     Route::get('/product-add', [AdminProductController::class, 'add'])->name('admin-product-add');
     Route::post('/product-insert', [AdminProductController::class, 'insert'])->name('admin-product-insert');
+    Route::get('/product-edit-{id}', [AdminproductController::class, 'edit'])->name('admin-product-edit');
+    Route::post('/product-update-{id}', [AdminproductController::class, 'update'])->name('admin-product-update');
+    Route::get('/product-delete-{id}', [AdminproductController::class, 'delete'])->name('admin-product-delete');
+    Route::get('/product-restore-{id}', [AdminproductController::class, 'restore'])->name('admin-product-restore');
+    Route::get('/product-force-{id}', [AdminproductController::class, 'force'])->name('admin-product-force');
+    Route::get('/product-updatetrending-{id}', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
+    Route::get('/product-updatestatus-{id}', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
 
 });

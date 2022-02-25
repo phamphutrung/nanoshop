@@ -71,10 +71,10 @@
     <div class="form-group">
       <label for="exampleInputPassword1">Ảnh đại diện</label>
       <input type="file" accept="image/*" class="form-control" name="avt" value="" onchange="loadFile(event)">
-      <img class="m-3" style="width: 15rem" id="output">
+      <img class="m-3" style="width: 12rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output">
     </div>
   
-    <button type="submit" class="btn btn-primary">Thêm danh mục</button>
+    <button type="submit" class="btn btn-success">Thêm danh mục</button>
     <a href="{{ route('admin-category') }}" class="btn btn-secondary ml-1">Hủy</a>
  </form>
 

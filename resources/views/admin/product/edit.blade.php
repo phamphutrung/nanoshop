@@ -148,10 +148,10 @@
 </script>
 @endsection
 
-@section('title', 'Thêm Sảm Phẩm ')
+@section('title', 'Chỉnh Sửa Sảm Phẩm ')
 
 @section('content')
-<form action="{{ route('admin-product-insert') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('admin-product-update', [$product->id]) }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="row">
         <div class="col-md-5">
@@ -164,7 +164,7 @@
             </div>
             <div class="col-md-12 mb-4">
                 <label for="name">Tên sản phẩm</label>
-                <input id="name" class="form-control" type="text" name="name" placeholder="Nhập tên sản phẩm" onchange="insertSlug()">
+                <input id="name" class="form-control" type="text" name="name" placeholder="Nhập tên sản phẩm" value="{{ $product->name }}" onchange="insertSlug()">
                 @error('name')
                 <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
                 @enderror
@@ -172,39 +172,44 @@
 
             <div class="col-md-12 mb-4">
                 <label for="slug">Slug</label>
-                <input id="slug" class="form-control" type="text" name="slug">
+                <input id="slug" class="form-control" type="text" name="slug" value="{{ $product->slug }}">
             </div> 
             <div class="col-md-12 mb-4">
                 <label for="original_price">Giá gốc</label>
-                <input id="original_price" class="form-control" type="text" name="original_price" placeholder="Nhập giá gốc">
+                <input id="original_price" class="form-control" type="text" name="original_price" placeholder="Nhập giá gốc" value="{{ $product->original_price }}">
             </div>
             <div class="col-md-12 mb-4">
                 <label for="selling_price">Giá bán</label>
-                <input id="selling_price" class="form-control" type="text" name="selling_price" placeholder="Nhập giá bán hiện tại">
+                <input id="selling_price" class="form-control" type="text" name="selling_price" placeholder="Nhập giá bán hiện tại"
+                value="{{ $product->selling_price }}">
             </div>
       
             <div class="col-md-12 mb-4">
                 <label for="formFile" class="form-label">Ảnh đại diện</label>
                 <input class="form-control" type="file" accept="image/*" id="feature_image_path" name="feature_image_path" onchange="loadFile(event)">
                 <div class="mt-3" style="min-height: 85px">
-                    <img style="width: 85px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output">
+                    <img style="width: 85px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output" src="{{ asset('storage/'.$product->feature_image_path) }}">
                 </div>
             </div>
             <div class="col-md-12 mb-4">
                 <label for="formFile" class="form-label">Ảnh chi tiết</label>
                 <input class="form-control" type="file" accept="image/*" id="image_path" name="image_path[]" multiple>
-                <div id="preview"></div>
+                <div id="preview">
+                    @foreach ($product->product_images as $item)
+                        <img src="{{ asset('storage/'.$item->image_path) }}" alt="">
+                    @endforeach
+                </div>
             </div>
 
                <div class="col-md-12 d-flex align-items-center">
                 <div class="col-md-6 mb-4 ml-3">
-                    <input class="form-check-input" type="checkbox" value="1" id="status" name="status">
+                    <input class="form-check-input" type="checkbox" value="1" id="status" name="status" {{ $product->status?'checked':'' }}>
                     <label class="form-check-label" for="status">
                         Kích hoạt
                     </label>
                 </div>
                 <div class="col-md-6 mb-4 f-right">
-                    <input class="form-check-input" type="checkbox" value="1" id="popular" name="trending">
+                    <input class="form-check-input" type="checkbox" value="1" id="popular" name="trending" {{ $product->trending?'checked':'' }}>
                     <label class="form-check-label" for="popular">
                         Xu hướng
                     </label>
@@ -221,19 +226,23 @@
         <div class="col-md-7">
             <div class="col-md-12 mb-4">
                 <label for="description">Mô tả ngắn</label>
-                <textarea class="form-control editor" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
+                <textarea class="form-control editor" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn">
+                    {{ $product->description }}
+                </textarea>
             </div>
 
             <div class="col-md-12 mb-4">
                 <label for="description">Nội dung</label>
-                <textarea class="form-control editor" name="content" id="description" rows="28" placeholder="Nhập nội dung sản phẩm"></textarea>
+                <textarea class="form-control editor" name="content" id="description" rows="28" placeholder="Nhập nội dung sản phẩm"> 
+                    {{ $product->content }}
+                </textarea>
             </div>
          
 
         </div>
     </div>    
 
-    <button class="btn btn-success mb-3" type="submit"><i class="fa-regular fa-floppy-disk mr-1"></i>Tạo mới</button>
+    <button class="btn btn-success mb-3" type="submit"><i class="fa-solid fa-square-pen mr-1"></i></i>Cập nhật</button>
     <a href="{{ route('admin-product') }}" class="btn btn-secondary  mb-3"><i class="fa-solid fa-ban mr-1"></i>Hủy</a>
 </form>
 

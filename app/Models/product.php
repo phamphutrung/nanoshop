@@ -18,6 +18,10 @@ class product extends Model
     }
 
     function tags() {
-        return $this->belongsToMany('App\Models\tag');
+        return $this->belongsToMany('App\Models\tag', 'product_tags', 'product_id', 'tag_id');
+    }
+
+    function category() {
+        return $this->belongsTo('App\models\category');
     }
 }

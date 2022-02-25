@@ -21,9 +21,6 @@
         </style>
     </head>
     <body class="antialiased">
-        <h1 class="text-rose-900 font-bold text-6xl text-center">
-            Hello world!
-          </h1>
-          <button class="text-rose-900">trung</button>
+        hi
     </body>
 </html>

@@ -7,6 +7,7 @@ use App\Models\category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use App\components\recursive;
+use Illuminate\Support\Facades\Storage;
 // use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Validator;
 
@@ -20,15 +21,20 @@ class CategoryController extends Controller
             return $next($request);
         });
     }
+    
     public function index(request $request) {
         if($request->status == 'trash') {
-            $categories = category::onlyTrashed()->get();
+            $categories = category::onlyTrashed()->paginate(5);
         } else {
-            $categories = category::all();
+            $categories = category::latest()->paginate(5);
         }
         $countActive = category::all()->count();
         $countTrash = category::onlyTrashed()->count();
-        return view('admin.category.index', compact('categories', 'countActive', 'countTrash'));
+        
+        $categoriesArray = category::all();
+      
+
+        return view('admin.category.index', compact('categories', 'countActive', 'countTrash', 'categoriesArray'));
     }
 
     public function add() {
@@ -59,7 +65,7 @@ class CategoryController extends Controller
                     $flag = false;
                 }
                 if($flag) {
-                    $avt_path = $avt->move('upload/category', $avt->getClientOriginalName().time().'.'.$avt->getClientOriginalExtension());
+                    $avt_path = $avt->storeAs('category', time().$avt->getClientOriginalName());
                 }
             }
         if($avt_path) {
@@ -69,7 +75,8 @@ class CategoryController extends Controller
         return redirect()->route('admin-category')->with('status', 'Thêm danh mục thành công');
     }
     
-    public function edit($id) {
+    public function edit(request $request, $id) {
+  
         $category = Category::find($id);
         $parent_id = $category->parent_id;
         $data = category::all();
@@ -86,12 +93,12 @@ class CategoryController extends Controller
             'parent_id' => $request->input('parent_id'),
         ]);
         if($request->hasFile('avt')) {
-            if(File::exists($category->avt)) {
-                File::delete($category->avt);
+            if(Storage::exists($category->avt)) {
+                Storage::delete($category->avt);
             }
             $avt = $request->file('avt');
-            $avt_name = $avt->getClientOriginalName().time().'.'.$avt->getClientOriginalExtension();
-            $avt_path = $avt->move('upload/category', $avt_name);
+            $avt_name = time().$avt->getClientOriginalName();
+            $avt_path = $avt->storeAs('category', $avt_name);
             category::where('id', $id)->update([
                 'avt' => $avt_path,
             ]);
@@ -100,27 +107,26 @@ class CategoryController extends Controller
     }
 
     public function delete($id) {
-        $category = Category::find($id);
-
-    
         category::destroy($id);
         return redirect()->route('admin-category')->with('status', 'Xóa danh mục thành công');
     }
 
     public function restore($id) {
         category::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->back()->with('status', 'Khôi phục danh mục thành công');
+        return redirect()->route('admin-category')->with('status', 'Khôi phục danh mục thành công');
   
     }
     public function force($id) {
         $category = Category::withTrashed()->find($id);
         if($category->avt) {
-            if(File::exists($category->avt)) {
-                File::delete($category->avt);
+            if(Storage::exists($category->avt)) {
+                Storage::delete($category->avt);
             }
         }
         category::onlyTrashed()->where('id', $id)->forceDelete();
-        return redirect()->back()->with('status', 'Đẫ xóa vĩnh viễn danh mục');
+        return redirect()->route('admin-category')->with('status', 'Đẫ xóa vĩnh viễn danh mục');
 
     } 
+
+  
 }
