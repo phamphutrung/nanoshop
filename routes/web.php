@@ -46,5 +46,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/product-force-{id}', [AdminproductController::class, 'force'])->name('admin-product-force');
     Route::get('/product-updatetrending-{id}', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
     Route::get('/product-updatestatus-{id}', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
+    Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('view-product-detail');
+    
 
 });

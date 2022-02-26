@@ -169,9 +169,7 @@
                 @error('name')
                 <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
                 @enderror
-                <div class="invalid-feedback">
-                    Please provide a valid city.
-                  </div>
+               
             </div>
 
             <div class="col-md-12 mb-4">
@@ -181,10 +179,16 @@
             <div class="col-md-12 mb-4">
                 <label for="original_price">Giá gốc</label>
                 <input value="{{ old('original_price') }}" id="original_price" class="form-control" type="text" name="original_price" placeholder="Nhập giá gốc">
+                @error('original_price')
+                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                @enderror
             </div>
             <div class="col-md-12 mb-4">
                 <label for="selling_price">Giá bán</label>
                 <input value="{{ old('selling_price') }}" id="selling_price" class="form-control" type="text" name="selling_price" placeholder="Nhập giá bán hiện tại">
+                @error('selling_price')
+                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                @enderror
             </div>
       
             <div class="col-md-12 mb-4">

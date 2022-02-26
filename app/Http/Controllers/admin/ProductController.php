@@ -35,6 +35,23 @@ class ProductController extends Controller
         return view('admin.product.index', compact('products', 'countActive', 'countTrash'));
     }
 
+    public function viewProductDetail(request $request) {
+        $product = product::find($request->id);
+        $category = $product->category ? $product->category->name : '';
+        $image_detail_path = $product->product_images;
+        
+        return response()->json([
+            'name' => $product->name,
+            'category' => $category,
+            'original_price' => $product->original_price,
+            'selling_price' => $product->selling_price,
+            'avt_path' => $product->feature_image_path,
+            'image_detail_path' => $image_detail_path,
+            'description' => $product->description,
+            'content' => $product->content,
+        ]);
+    }
+
     public function add() {
         $data = category::all();
         $Recursive = new Recursive($data);
@@ -48,8 +65,8 @@ class ProductController extends Controller
     }
 
     public function insert(request $request) {
-        $validator = $this->validate($request, [
-			'name' => 'required'
+         $this->validate($request, [
+			'name' => 'required',
         ],[
             'required' => 'Không được để trống'
         ]

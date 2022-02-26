@@ -41,7 +41,10 @@
                 <tr>
                     <th scope="row">{{ $categories->firstItem()+$key }}</th>
                     <td>
-                        <img style="width: 3rem" src="{{ asset('storage/'.$category->avt) }}" alt="">
+                        <img style="width: 3.5rem;
+                        height: 3.5rem;
+                        border-radius: 10px;
+                        box-shadow: 0 0 8px rgba(0,0,0,0.2);" src="{{ asset('storage/'.$category->avt) }}" alt="">
                     </td>
                     <td>{{ $category->name }}</td>
                     <td>
