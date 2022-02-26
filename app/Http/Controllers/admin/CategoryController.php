@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\category;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\File;
 use App\components\recursive;
 use Illuminate\Support\Facades\Storage;
-// use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\Validator;
 
 
 
@@ -36,6 +33,25 @@ class CategoryController extends Controller
 
         return view('admin.category.index', compact('categories', 'countActive', 'countTrash', 'categoriesArray'));
     }
+
+    // public function getpaginate(request $request) {
+    //     if($request->ajax()) {
+    //         if($request->status == 'trash') {
+    //             $categories = category::onlyTrashed()->paginate(5);
+    //         } else {
+    //             $categories = category::latest()->paginate(5);
+    //         }
+    //         $countActive = category::all()->count();
+    //         $countTrash = category::onlyTrashed()->count();
+            
+    //         $categoriesArray = category::all();
+          
+    
+    //         $view = view('admin.category.pages.paginate', compact('categories', 'countActive', 'countTrash', 'categoriesArray'))->render();
+    //         return response()->json($view);
+    //     }
+       
+    // }
 
     public function add() {
         $data = category::all();
