@@ -21,9 +21,9 @@ class CategoryController extends Controller
     
     public function index(request $request) {
         if($request->status == 'trash') {
-            $categories = category::onlyTrashed()->paginate(5);
+            $categories = category::onlyTrashed()->paginate(20);
         } else {
-            $categories = category::latest()->paginate(5);
+            $categories = category::latest()->paginate(20);
         }
         $countActive = category::all()->count();
         $countTrash = category::onlyTrashed()->count();

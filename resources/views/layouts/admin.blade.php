@@ -36,25 +36,26 @@
       
         @include('layouts.inc.admin_sidebar')
       
-       <div class="content-wrapper">
-          <div class="content-header">
+       <div class="content-wrapper" style="margin-bottom: 45px; margin-top: 70px">
+          {{--  <div class="content-header" >
             <div class="container-fluid">
               <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="margin-top: 45px">
                   <h1 class="m-0">@yield('title')</h1>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="content">
+          </div>  --}}
+          <div class="content" >
             <div class="container-fluid">
-              <div class="row">
+              <div class="row"> 
+                 <div class="col-md-12">
                   @yield('content')
+                 </div>
               </div>
             </div>
           </div>
-  </div>
+      </div>
     
         @include('layouts.inc.admin_footer')
       </div>

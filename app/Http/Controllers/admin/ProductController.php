@@ -24,9 +24,9 @@ class ProductController extends Controller
     }
     public function index(request $request) {   
         if($request->status == 'trash') {
-            $products = product::latest()->onlyTrashed()->paginate(4);
+            $products = product::latest()->onlyTrashed()->paginate(15);
         } else {
-            $products = product::latest()->paginate(4);
+            $products = product::latest()->paginate(15);
         }
         $countActive = product::all()->count();
         $countTrash = product::onlyTrashed()->count();
