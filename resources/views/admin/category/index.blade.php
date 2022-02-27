@@ -12,19 +12,17 @@
   </script>
 @endsection
 @section('content')
-<div class="col-md-12 main-footer" style="height: 4rem; position: fixed; right: 0px; left: 0px; top: 55px; z-index:5;">
-    
-  <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
+<div class="row bg-white" style="position: sticky; top:58px; z-index: 1">
+  <div class="col-md-12">
+      <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
+        
+      <a  class="btn float-right d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
 
+    <a class="btn float-right d-inline-block @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt <span id="count-active">({{ $countActive }})</span></a>
 
-  
-  
-  <a class="btn d-inline-block @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt <span id="count-active">({{ $countActive }})</span></a>
-  
-  <a  class="btn d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
-
+  </div>
 </div>
-    <div class="col-md-12"  style="margin-top: 58px">
+    <div class="col-md-12 m-0 p-0" style="margin-top: 6px">
             
         @if ($categories->count() < 1)
             <div class="alert alert-danger" role="alert">
@@ -32,7 +30,7 @@
             </div>
         @else
             <table class="table table-hover">
-              <thead class="bg-dark">
+              <thead class="bg-dark" style="position: sticky; top: 115px; z-index: 2">
                 <tr>
                   <th scope="col">STT</th>
                   <th scope="col">Ảnh</th>

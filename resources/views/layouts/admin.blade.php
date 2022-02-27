@@ -36,7 +36,7 @@
       
         @include('layouts.inc.admin_sidebar')
       
-       <div class="content-wrapper" style="margin-bottom: 45px; margin-top: 70px">
+       <div class="content-wrapper bg-white" style="margin-bottom: 45px; margin-top: 65px">
           {{--  <div class="content-header" >
             <div class="container-fluid">
               <div class="row mb-2">
