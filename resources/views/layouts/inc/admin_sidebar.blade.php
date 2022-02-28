@@ -46,6 +46,14 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ route('admin-slider') }}" class="nav-link {{ session('module_active')=='slider'?'active':'' }}">
+            <i class="nav-icon fa-solid fa-sliders"></i>
+            <p>
+                 Slider
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('admin-category') }}" class="nav-link ">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p onclick="event.preventDefault();

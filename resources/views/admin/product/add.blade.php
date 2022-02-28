@@ -84,6 +84,7 @@
 </script>
   
 <script>
+    // preview ảnh đại diện
         function loadFile (event) {
             var reader = new FileReader();
             reader.onload = function(){

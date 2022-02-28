@@ -12,7 +12,7 @@
   </script>
 @endsection
 @section('content')
-<div class="row bg-white" style="position: sticky; top:58px; z-index: 1">
+<div class="row bg-white" style="position: sticky; top:58px; z-index: 1;   padding-top: 15px">
   <div class="col-md-12">
       <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
         
@@ -25,7 +25,7 @@
     <div class="col-md-12 m-0 p-0" style="margin-top: 6px">
             
         @if ($categories->count() < 1)
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger p-0 m-0" role="alert">
                 Không có danh mục nào ở đây
             </div>
         @else

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
+use App\Http\Controllers\admin\SliderController as AdminSliderController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -26,7 +27,7 @@ Auth::routes(["verify"=>true]);
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
-
+    // category admin
     Route::get('/category', [AdminCategoryController::class, 'index'])->name('admin-category');
     Route::get('/category-add', [AdminCategoryController::class, 'add'])->name('admin-category-add');
     Route::post('/category-insert', [AdminCategoryController::class, 'insert'])->name('admin-category-insert');
@@ -35,7 +36,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
     Route::get('/category-restore-{id}', [AdminCategoryController::class, 'restore'])->name('admin-category-restore');
     Route::get('/category-force-{id}', [AdminCategoryController::class, 'force'])->name('admin-category-force');
-
+    //product admin
     Route::get('/product', [AdminProductController::class, 'index'])->name('admin-product');
     Route::get('/product-add', [AdminProductController::class, 'add'])->name('admin-product-add');
     Route::post('/product-insert', [AdminProductController::class, 'insert'])->name('admin-product-insert');
@@ -47,6 +48,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/product-updatetrending-{id}', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
     Route::get('/product-updatestatus-{id}', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
     Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('view-product-detail');
-    
+    // slider admin
+    Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
+    Route::post('/slider-add', [AdminSliderController::class, 'add'])->name('admin-slider-add');
 
 });

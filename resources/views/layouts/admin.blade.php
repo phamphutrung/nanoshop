@@ -36,7 +36,7 @@
       
         @include('layouts.inc.admin_sidebar')
       
-       <div class="content-wrapper bg-white" style="margin-bottom: 45px; margin-top: 65px">
+       <div class="content-wrapper bg-white">
           {{--  <div class="content-header" >
             <div class="container-fluid">
               <div class="row mb-2">
@@ -66,6 +66,7 @@
       <script src="{{ asset('admins/plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      
       @if (session('status'))
         <script>
           Swal.fire(
