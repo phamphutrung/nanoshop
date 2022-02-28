@@ -24,15 +24,32 @@ class ProductController extends Controller
     }
     public function index(request $request) {   
         if($request->status == 'trash') {
-            $products = product::latest()->onlyTrashed()->paginate(4);
+            $products = product::latest()->onlyTrashed()->paginate(15);
         } else {
-            $products = product::latest()->paginate(4);
+            $products = product::latest()->paginate(15);
         }
         $countActive = product::all()->count();
         $countTrash = product::onlyTrashed()->count();
 
        
         return view('admin.product.index', compact('products', 'countActive', 'countTrash'));
+    }
+
+    public function viewProductDetail(request $request) {
+        $product = product::find($request->id);
+        $category = $product->category ? $product->category->name : '';
+        $image_detail_path = $product->product_images;
+        
+        return response()->json([
+            'name' => $product->name,
+            'category' => $category,
+            'original_price' => $product->original_price,
+            'selling_price' => $product->selling_price,
+            'avt_path' => $product->feature_image_path,
+            'image_detail_path' => $image_detail_path,
+            'description' => $product->description,
+            'content' => $product->content,
+        ]);
     }
 
     public function add() {
@@ -48,8 +65,8 @@ class ProductController extends Controller
     }
 
     public function insert(request $request) {
-        $this->validate($request, [
-			'name' => 'required'
+         $this->validate($request, [
+			'name' => 'required',
         ],[
             'required' => 'Không được để trống'
         ]
@@ -94,7 +111,10 @@ class ProductController extends Controller
                 }
                 $product->tags()->attach($tagId);
         }
+   
         return redirect()->route('admin-product')->with('status', 'Thêm sản phẩm thành công');
+        
+      
     }
 
     public function edit($id) {
@@ -174,12 +194,22 @@ class ProductController extends Controller
 
     public function delete($id) {
         product::destroy($id);
-        return response()->json(['message' => "xoa thanh cong"], 200);
+        $countActive = product::all()->count();
+        $countTrash = product::onlyTrashed()->count();
+        return response()->json([
+            'countActive' => $countActive,
+            'countTrash' => $countTrash
+        ], 200);
     }
 
     public function restore ($id) {
         product::onlyTrashed()->where('id', $id)->restore();
-        return redirect()->route('admin-product')->with('status', 'Khôi phục danh mục thành công');
+        $countActive = product::all()->count();
+        $countTrash = product::onlyTrashed()->count();
+        return response()->json([
+            'countActive' => $countActive,
+            'countTrash' => $countTrash
+        ], 200);
     }
 
     public function force($id) {
@@ -196,7 +226,12 @@ class ProductController extends Controller
             }
         }
         product::onlyTrashed()->where('id', $id)->forceDelete();
-        return redirect()->route('admin-product')->with('status', 'Đẫ xóa vĩnh viễn danh mục');
+        $countActive = product::all()->count();
+        $countTrash = product::onlyTrashed()->count();
+        return response()->json([
+            'countActive' => $countActive,
+            'countTrash' => $countTrash
+        ], 200);
     }
 
     public function updatetrending(request $request, $id) {

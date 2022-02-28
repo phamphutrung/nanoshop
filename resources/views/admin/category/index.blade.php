@@ -12,21 +12,25 @@
   </script>
 @endsection
 @section('content')
-    <div class="col-md-12">
-      <a class="btn btn-success mb-3" href="{{ route('admin-category-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
-      <a style="{{ $countTrash<1?'pointer-events: none':"" }}" class="btn @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 float-right" href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác ({{ $countTrash }})</a>
-      
-      <a class="btn @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2 float-right" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt ({{ $countActive }})</a>
-    </div>
-    <div class="col-md-12">
+<div class="row bg-white" style="position: sticky; top:58px; z-index: 1;   padding-top: 15px">
+  <div class="col-md-12">
+      <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-category-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
+        
+      <a  class="btn float-right d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
+
+    <a class="btn float-right d-inline-block @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt <span id="count-active">({{ $countActive }})</span></a>
+
+  </div>
+</div>
+    <div class="col-md-12 m-0 p-0" style="margin-top: 6px">
             
         @if ($categories->count() < 1)
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger p-0 m-0" role="alert">
                 Không có danh mục nào ở đây
             </div>
         @else
             <table class="table table-hover">
-              <thead>
+              <thead class="bg-dark" style="position: sticky; top: 115px; z-index: 2">
                 <tr>
                   <th scope="col">STT</th>
                   <th scope="col">Ảnh</th>
@@ -41,7 +45,10 @@
                 <tr>
                     <th scope="row">{{ $categories->firstItem()+$key }}</th>
                     <td>
-                        <img style="width: 3rem" src="{{ asset('storage/'.$category->avt) }}" alt="">
+                        <img style="width: 3.5rem;
+                        height: 3.5rem;
+                        border-radius: 10px;
+                        box-shadow: 0 0 8px rgba(0,0,0,0.2);" src="{{ asset('storage/'.$category->avt) }}" alt="">
                     </td>
                     <td>{{ $category->name }}</td>
                     <td>

@@ -36,25 +36,26 @@
       
         @include('layouts.inc.admin_sidebar')
       
-       <div class="content-wrapper">
-          <div class="content-header">
+       <div class="content-wrapper bg-white">
+          {{--  <div class="content-header" >
             <div class="container-fluid">
               <div class="row mb-2">
-                <div class="col-sm-6">
+                <div class="col-sm-6" style="margin-top: 45px">
                   <h1 class="m-0">@yield('title')</h1>
                 </div>
               </div>
             </div>
-          </div>
-
-          <div class="content">
+          </div>  --}}
+          <div class="content" >
             <div class="container-fluid">
-              <div class="row">
+              <div class="row"> 
+                 <div class="col-md-12">
                   @yield('content')
+                 </div>
               </div>
             </div>
           </div>
-  </div>
+      </div>
     
         @include('layouts.inc.admin_footer')
       </div>
@@ -62,9 +63,10 @@
       <script src="{{ asset('admins/js/adminlte.min.js') }}"></script>
       <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
       {{-- js sweetalerr --}}
-      {{--  <script src="{{ asset('admins/plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>  --}}
+      <script src="{{ asset('admins/plugin/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
       <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
       <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+      
       @if (session('status'))
         <script>
           Swal.fire(

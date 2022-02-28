@@ -84,6 +84,7 @@
 </script>
   
 <script>
+    // preview ảnh đại diện
         function loadFile (event) {
             var reader = new FileReader();
             reader.onload = function(){
@@ -124,6 +125,7 @@
         })
 </script>
 <script>
+    
     function insertSlug(event) {
         var title = document.getElementById('name').value;
         var slug = title.toLowerCase(); 
@@ -164,10 +166,11 @@
             </div>
             <div class="col-md-12 mb-4">
                 <label for="name">Tên sản phẩm</label>
-                <input id="name" class="form-control" type="text" name="name" placeholder="Nhập tên sản phẩm" onchange="insertSlug()">
+                <input  id="name" class="form-control" type="text" name="name" is-invalid placeholder="Nhập tên sản phẩm" onchange="insertSlug()">
                 @error('name')
                 <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
                 @enderror
+               
             </div>
 
             <div class="col-md-12 mb-4">
@@ -176,11 +179,17 @@
             </div> 
             <div class="col-md-12 mb-4">
                 <label for="original_price">Giá gốc</label>
-                <input id="original_price" class="form-control" type="text" name="original_price" placeholder="Nhập giá gốc">
+                <input value="{{ old('original_price') }}" id="original_price" class="form-control" type="text" name="original_price" placeholder="Nhập giá gốc">
+                @error('original_price')
+                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                @enderror
             </div>
             <div class="col-md-12 mb-4">
                 <label for="selling_price">Giá bán</label>
-                <input id="selling_price" class="form-control" type="text" name="selling_price" placeholder="Nhập giá bán hiện tại">
+                <input value="{{ old('selling_price') }}" id="selling_price" class="form-control" type="text" name="selling_price" placeholder="Nhập giá bán hiện tại">
+                @error('selling_price')
+                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                @enderror
             </div>
       
             <div class="col-md-12 mb-4">
@@ -198,13 +207,13 @@
 
                <div class="col-md-12 d-flex align-items-center">
                 <div class="col-md-6 mb-4 ml-3">
-                    <input class="form-check-input" type="checkbox" value="1" id="status" name="status">
+                    <input class="form-check-input" type="checkbox" value="1" {{ old('status')?'checked':'' }} id="status" name="status">
                     <label class="form-check-label" for="status">
                         Kích hoạt
                     </label>
                 </div>
                 <div class="col-md-6 mb-4 f-right">
-                    <input class="form-check-input" type="checkbox" value="1" id="popular" name="trending">
+                    <input class="form-check-input" type="checkbox" value="1" {{ old('trending')?'checked':'' }} id="popular" name="trending">
                     <label class="form-check-label" for="popular">
                         Xu hướng
                     </label>
@@ -221,12 +230,12 @@
         <div class="col-md-7">
             <div class="col-md-12 mb-4">
                 <label for="description">Mô tả ngắn</label>
-                <textarea class="form-control editor" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn"></textarea>
+                <textarea class="form-control editor" name="description" id="description" rows="5" placeholder="Nhập mô tả ngắn">{{ old('description') }}</textarea>
             </div>
 
             <div class="col-md-12 mb-4">
                 <label for="description">Nội dung</label>
-                <textarea class="form-control editor" name="content" id="description" rows="28" placeholder="Nhập nội dung sản phẩm"></textarea>
+                <textarea class="form-control editor" name="content" id="description" rows="28" placeholder="Nhập nội dung sản phẩm">{{ old('content') }}</textarea>
             </div>
          
 

@@ -158,7 +158,7 @@
             <div class="col-md-12 mb-4">
                 <label for="category">Danh mục</label>
                 <select class="form-select category_select2_choose" name="category_id">
-                    <option value="0" selected>Chọn danh mục</option>
+                    <option value="0">Chọn danh mục</option>
                    {!! $htmlSelectOptionCategory !!}
                   </select>
             </div>
