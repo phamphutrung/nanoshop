@@ -17,7 +17,9 @@ class SliderController extends Controller
     }
 
     public function index() {
-        return view('admin.slider.index');
+        $sliders = slider::latest()->get();
+
+        return view('admin.slider.index', compact('sliders'));
     }
 
     public function add(request $request) {
@@ -48,14 +50,19 @@ class SliderController extends Controller
            $image_name = rand(10, 100000).$image->getClientOriginalName();
            $image_path = $image->storeAs('slider', $image_name);
           if ($image_path) {
-            slider::create([
+            $slider = slider::create([
                 'title' => $request->title,
                 'description' => $request->description,
                 'image_path' => $image_path
             ]);
           }
-           return response()->json(['code' => 1, 'message' => "Đã thêm slider"]);
+           return response()->json(['code' => 1, 'message' => "Đã thêm slider", 'slider' => $slider]);
 
        }
+    }
+
+    public function delete(request $request) {
+        slider::destroy($request->id);
+        return response()->json(['code' => 1, 'message' => "Đã xóa slider"]);
     }
 }

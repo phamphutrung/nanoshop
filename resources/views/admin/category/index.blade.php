@@ -14,7 +14,7 @@
 @section('content')
 <div class="row bg-white" style="position: sticky; top:58px; z-index: 1;   padding-top: 15px">
   <div class="col-md-12">
-      <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
+      <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-category-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
         
       <a  class="btn float-right d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
 
