@@ -71,9 +71,25 @@ class SliderController extends Controller
             $ids = $request->ids;
             slider::destroy($ids);
             return response()->json(['code' => 1, 'message' => 'Đã xóa tất cả lựa chọn']);
-        } else { 
-            $output = 'trung';
-            return response()->json($output);
+        } else 
+        if($request->action == 'update active') { 
+            $id = $request->id;
+            $slider = slider::find($id);
+            if($request->status == 'on') { 
+                $a = $slider->update(['active' => 'on']);
+                $msg = 'Đã bật kích hoạt';
+                if($a) {
+                    $code = 1;
+                }
+            } else { 
+                $a = $slider->update(['active' => 'off']);
+                $msg = 'Đã tắt kích hoạt';
+                $code = 1;
+                if($a) {
+                    $code = 1;
+                }
+            }
+            return response()->json(['code' => $code, 'message' => $msg]);
         }
        
     }

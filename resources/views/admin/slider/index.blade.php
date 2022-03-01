@@ -70,12 +70,41 @@
                         html +="<td>" + "<img id='image_show' src='"+ "storage/" + response.slider.image_path + "'>" +"</td>";
                         html +="<td>" + response.slider.title + "</td>";
                         html +="<td>" + response.slider.description + "</td>";
-                        html +="<td>";
+                        html +='<td class="text-center">';
+                        html +='<div class="form-check form-switch">';
+                        html +='<input class="form-check-input active_check" data-id="' + response.slider.id + '" type="checkbox" id="flexSwitchCheckChecked">';
+                        html +='</div>';
+                        html +='</td>';
+                        html +="<td class='text-center'>";
                         html +="<button data-id='" + response.slider.id +"' class='btn-primary btn btn-edit'><i class='fas fa-edit'></i></button> ";
                         html += "<button data-id='" + response.slider.id + "' class='btn-danger btn btn-delete'><i class='fas fa-ban'></i></button>";
                         html +="</td>";
                         html += "</tr>";
                         $('#data_main').prepend(html)
+                    }
+                }
+            })
+        })
+
+        $(document).on('click', '.active_check', function() {
+            var id = $(this).data('id');
+            if(this.checked) {
+                var status = 'on';
+            } else { 
+                var status = 'off'; 
+            }
+            $.ajax({
+                url: "{{ route('admin-slider-action') }}",
+                type: 'POST',
+                data: {
+                    status: status,
+                    id: id,
+                    action: 'update active',
+                },
+                dataType: 'json',
+                success: function (response) {
+                    if(response.code == 1) {
+                        alertify.success(response.message)
                     }
                 }
             })
@@ -131,7 +160,7 @@
             toggleDelAllBtn()
         })
 
-        function toggleDelAllBtn() {
+        function toggleDelAllBtn() { //show button delete all selected
             var lengthCheck = $('input[name="item_check"]:checked').length;
             if(lengthCheck > 1) {
                 $('#deleteAllBtn').removeClass('d-none').text('Xóa ('+ lengthCheck +')')
@@ -179,6 +208,8 @@
             
             
         })
+
+
   
     </script>
 
@@ -198,10 +229,11 @@
                 <thead >
                     <tr  class='bg-white' style="position: sticky; z-index: 200; top: 125px">
                         <th  class="text-center"><input name="main_checkbox" type="checkbox"></th>
-                        <th>Ảnh</th>
-                        <th>Tiêu đề</th>
-                        <th>Mô tả</th>
-                        <th>hành động <button id="deleteAllBtn" class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
+                        <th class="text-center">Ảnh</th>
+                        <th class="text-center">Tiêu đề</th>
+                        <th class="text-center">Mô tả</th>
+                        <th class="text-center">Kích hoạt</th>
+                        <th class="text-center">hành động <button id="deleteAllBtn" class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
                     </tr>
                 </thead>
                 <tbody id="data_main">
@@ -215,7 +247,12 @@
                         </td>
                         <td>{{$slider->title }}</td>
                         <td style="max-width: 500px;">{{$slider->description }}</td>
-                        <td>
+                        <td class="text-center">
+                            <div class="form-check form-switch">
+                                <input {{ $slider->active == 'on' ? 'checked' : '' }} class="form-check-input active_check" data-id="{{ $slider->id }}" type="checkbox" id="flexSwitchCheckChecked">
+                              </div>
+                        </td>
+                        <td class="text-center">
                             <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit"><i class="fas fa-edit"></i></button>
                             <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i class="fas fa-ban"></i></button>
                         </td>
