@@ -18,7 +18,7 @@ class product extends Model
     }
 
     function tags() {
-        return $this->belongsToMany('App\Models\tag', 'product_tags', 'product_id', 'tag_id');
+        return $this->belongsToMany('App\Models\tag', 'product_tags', 'product_id', 'tag_id')->withPivot('qty')->withTimestamps();
     }
 
     function category() {

@@ -37,6 +37,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/category-restore-{id}', [AdminCategoryController::class, 'restore'])->name('admin-category-restore');
     Route::get('/category-force-{id}', [AdminCategoryController::class, 'force'])->name('admin-category-force');
     //product admin
+    Route::get('/product-test', [AdminProductController::class, 'test'])->name('admin-product');
     Route::get('/product', [AdminProductController::class, 'index'])->name('admin-product');
     Route::get('/product-add', [AdminProductController::class, 'add'])->name('admin-product-add');
     Route::post('/product-insert', [AdminProductController::class, 'insert'])->name('admin-product-insert');
@@ -52,6 +53,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
     Route::post('/slider-add', [AdminSliderController::class, 'add'])->name('admin-slider-add');
     Route::get('/slider-delete', [AdminSliderController::class, 'delete'])->name('admin-slider-delete');
+    Route::post('/slider-update', [AdminSliderController::class, 'update'])->name('admin-slider-update');
     Route::post('/slider-action', [AdminSliderController::class, 'action'])->name('admin-slider-action');
 
 });

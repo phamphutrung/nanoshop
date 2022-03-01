@@ -27,6 +27,14 @@
             };
             reader.readAsDataURL(event.target.files[0]);
           };
+        function loadFileEdit(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+              var output = document.getElementById('output_edit');
+              output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+          };
     </script>
     
     <script>
@@ -35,7 +43,7 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
-        $('#form').on('submit', function(e){ //add slider
+        $(document).on('submit', '#form', function(e){ //add slider
             e.preventDefault();
             var form = this
             $.ajax({
@@ -67,7 +75,7 @@
                         var html = "";
                         html += "<tr id='slider-"+ response.slider.id+"'>";
                         html +="<td class='text-center'>" + '<input data-id="'+ response.slider.id +'" type="checkbox" name="item_check">'+ "</td>";
-                        html +="<td>" + "<img id='image_show' src='"+ "storage/" + response.slider.image_path + "'>" +"</td>";
+                        html +="<td class='text-center'>" + "<img id='image_show' src='"+ "storage/" + response.slider.image_path + "'>" +"</td>";
                         html +="<td>" + response.slider.title + "</td>";
                         html +="<td>" + response.slider.description + "</td>";
                         html +='<td class="text-center">';
@@ -76,7 +84,7 @@
                         html +='</div>';
                         html +='</td>';
                         html +="<td class='text-center'>";
-                        html +="<button data-id='" + response.slider.id +"' class='btn-primary btn btn-edit'><i class='fas fa-edit'></i></button> ";
+                        html +="<button data-id='" + response.slider.id +"' class='btn-primary btn btn-edit' data-bs-toggle='modal' data-bs-target='#modal_edit'><i class='fas fa-edit'></i></button> ";
                         html += "<button data-id='" + response.slider.id + "' class='btn-danger btn btn-delete'><i class='fas fa-ban'></i></button>";
                         html +="</td>";
                         html += "</tr>";
@@ -86,7 +94,60 @@
             })
         })
 
-        $(document).on('click', '.active_check', function() {
+        $(document).on('submit', '.form_edit', function(e){ //edit slider
+            e.preventDefault();
+            var id = $('.form_edit').find('input[name="id"]').val()
+
+            var form = this
+            $.ajax({
+                url: "{{ route('admin-slider-update') }}",
+                type: "post",
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('span.error-text').text('');
+                    $(form).find('.submit_edit-btn').prop('disabled', true)
+                    $(form).find('.submit_edit-btn i').removeClass('d-none')
+                },
+                success: function(response) {
+                    $(form).find('.submit_edit-btn').prop('disabled', false);
+                    $(form).find('.submit_edit-btn i').addClass('d-none')
+                    if(response.code == 0) {
+                        $.each(response.error, function (index, val) {
+                            $(form).find('span.slider_'+index+'_error').text(val);
+                        })
+                    } else {
+                        $("#modal_edit").slideUp(300, function(){
+                            $("#modal_edit").modal('hide');
+                        });
+                        $(form)[0].reset();
+                        alertify.success(response.message);
+                        var html = "";
+                        html +="<td class='text-center'>" + '<input data-id="'+ response.slider.id +'" type="checkbox" name="item_check">'+ "</td>";
+                        html +="<td class='text-center'>" + "<img id='image_show' src='"+ "storage/" + response.slider.image_path + "'>" +"</td>";
+                        html +="<td>" + response.slider.title + "</td>";
+                        html +="<td>" + response.slider.description + "</td>";
+                        html +='<td class="text-center">';
+                        html +='<div class="form-check form-switch">';
+                        html +='<input class="form-check-input active_check" data-id="' + response.slider.id + '" type="checkbox" id="flexSwitchCheckChecked">';
+                        html +='</div>';
+                        html +='</td>';
+                        html +="<td class='text-center'>";
+                        html +="<button data-id='" + response.slider.id +"' class='btn-primary btn btn-edit' data-bs-toggle='modal' data-bs-target='#modal_edit'><i class='fas fa-edit'></i></button> ";
+                        html += "<button data-id='" + response.slider.id + "' class='btn-danger btn btn-delete'><i class='fas fa-ban'></i></button>";
+                        html +="</td>";
+                        $('#slider-'+id).html(html);    
+
+
+                        
+                    }
+                }
+            })
+        })
+
+        $(document).on('click', '.active_check', function() { // ON/OFF active button
             var id = $(this).data('id');
             if(this.checked) {
                 var status = 'on';
@@ -133,6 +194,7 @@
                             $(this).remove();
                         })
                         alertify.success(response.message);
+                       
                     }
                 })
             }
@@ -169,7 +231,7 @@
             }
         }
 
-        $(document).on('click', '#deleteAllBtn', function() {
+        $(document).on('click', '#deleteAllBtn', function() { // destroy all selected record
             var listCheck = [];
             $('input[name="item_check"]:checked').each(function(){
                 listCheck.push($(this).data('id'));
@@ -209,7 +271,21 @@
             
         })
 
-
+        $(document).on('click', '.btn-edit', function(e) { //show form edit record
+            var id = $(this).data('id');
+            $('.form_edit').find('input[name="id"]').val(id)
+            $.ajax({
+                url: "{{ route('admin-slider-action') }}",
+                type: "POST",
+                dataType: 'json',
+                data: {id, action: 'show form edit'},
+                success: function(response) {
+                    $('.title_edit').val(response.slider.title)
+                    $('.description_edit').val(response.slider.description)
+                    $('.image_edit').attr('src', "{{ asset('storage') }}/"+ response.slider.image_path)
+                }
+            })
+        })
   
     </script>
 
@@ -219,49 +295,56 @@
 
 
 @section('content')
-   
-    <div class="row">
-        <div class="col-md-12 bg-white" style="position: sticky; top: 57px; z-index: 1; padding-top: 15px">
-            <button id="add-btn" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-regular fa-square-plus mr-2" ></i>Thêm slider</button>
+  
+  <div class="card">
+      <div class="card-header">
+          <h1>Danh Sách Slider</h1>
+      </div>
+      <div class="card-body">
+        <div class="row">
+            <div class="col-md-12 bg-white" style="position: sticky; top: 57px; z-index: 1; padding-top: 15px">
+                <button id="add-btn" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-regular fa-square-plus mr-2" ></i>Thêm slider</button>
+            </div>
+            <div class="col-md-12">
+                <table id="slider-table" class="table table-hover table-bordered">
+                    <thead class="bg-dark" style="position: sticky; z-index: 200; top: 125px">
+                        <tr>
+                            <th class="text-center"><input name="main_checkbox" type="checkbox"></th>
+                            <th class="text-center" style="min-width: 350px">Ảnh</th>
+                            <th class="text-center">Tiêu đề</th>
+                            <th class="text-center" style="min-width: 400px">Mô tả</th>
+                            <th class="text-center" style="min-width: 100px">Kích hoạt</th>
+                            <th class="text-center" style="min-width: 200px">hành động <button id="deleteAllBtn" class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
+                        </tr>
+                    </thead>
+                    <tbody id="data_main">
+                        @foreach ($sliders as $slider)
+                        <tr id="slider-{{$slider->id }}">
+                            <td class="text-center"> 
+                                <input data-id="{{$slider->id}}" name="item_check" type="checkbox">
+                            </td>
+                            <td class="text-center">
+                                <img id="image_show" src="{{ asset('storage/').'/'.$slider->image_path }}">
+                            </td>
+                            <td>{{$slider->title }}</td>
+                            <td>{{$slider->description }}</td>
+                            <td class="text-center">
+                                <div class="form-check form-switch">
+                                    <input {{ $slider->active == 'on' ? 'checked' : '' }} class="form-check-input active_check" data-id="{{ $slider->id }}" type="checkbox" id="flexSwitchCheckChecked">
+                                  </div>
+                            </td>
+                            <td class="text-center">
+                                <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit" data-bs-toggle="modal" data-bs-target="#modal_edit"><i class="fas fa-edit"></i></button>
+                                <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i class="fas fa-ban"></i></button>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="col-md-12">
-            <table id="slider-table" class="table table-striped table-bordered table-hover">
-                <thead >
-                    <tr  class='bg-white' style="position: sticky; z-index: 200; top: 125px">
-                        <th  class="text-center"><input name="main_checkbox" type="checkbox"></th>
-                        <th class="text-center">Ảnh</th>
-                        <th class="text-center">Tiêu đề</th>
-                        <th class="text-center">Mô tả</th>
-                        <th class="text-center">Kích hoạt</th>
-                        <th class="text-center">hành động <button id="deleteAllBtn" class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
-                    </tr>
-                </thead>
-                <tbody id="data_main">
-                    @foreach ($sliders as $slider)
-                    <tr id="slider-{{$slider->id }}">
-                        <td class="text-center"> 
-                            <input data-id="{{$slider->id}}" name="item_check" type="checkbox">
-                        </td>
-                        <td>
-                            <img id="image_show" src="{{ asset('storage/').'/'.$slider->image_path }}">
-                        </td>
-                        <td>{{$slider->title }}</td>
-                        <td style="max-width: 500px;">{{$slider->description }}</td>
-                        <td class="text-center">
-                            <div class="form-check form-switch">
-                                <input {{ $slider->active == 'on' ? 'checked' : '' }} class="form-check-input active_check" data-id="{{ $slider->id }}" type="checkbox" id="flexSwitchCheckChecked">
-                              </div>
-                        </td>
-                        <td class="text-center">
-                            <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit"><i class="fas fa-edit"></i></button>
-                            <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i class="fas fa-ban"></i></button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-        </div>
-    </div>
+      </div>
+  </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-xl">
@@ -296,12 +379,52 @@
             </div>
             <div class="modal-footer">
                 <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                <button id="submit-btn" type="submit"  class="btn btn-primary btn-spectical"><i class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Tạo mới</button>
+                <button id="submit-btn" type="submit"  class="btn btn-primary "><i class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Tạo mới</button>
             </div>
         </form>
         </div>
       </div>
     </div>
+
+
+    <div class="modal fade" id="modal_edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa slider</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form class='form_edit' enctype="multipart/form-data">
+              @csrf
+            <div class="modal-body">
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Ảnh:</label>
+                  <input onchange="loadFileEdit(event)" type="file" class="form-control" name="image" >
+                  <span class="text-danger error-text slider_image_error"></span>
+                  <div class="text-center mt-3">
+                      <img class="image_edit" style="max-width: 500px; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);" id="output_edit" src="" alt="">
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="recipient-name" class="col-form-label">Tiêu đề:</label>
+                  <input type="text" class="form-control title_edit" name="title">
+                  <span class="text-danger error-text slider_title_error"></span>
   
+                </div>
+                <div class="mb-3">
+                  <label for="message-text" class="col-form-label">Mô tả:</label>
+                  <textarea class="form-control description_edit" name="description"></textarea>
+                  <span class="text-danger error-text slider_description_error"></span>
+                </div>
+                <input type="hidden" name="id">
+              </div>
+              <div class="modal-footer">
+                  <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                  <button type="submit"  class="btn btn-primary submit_edit-btn"><i class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật thay đổi</button>
+              </div>
+          </form>
+          </div>
+        </div>
+      </div>
 @endsection
 

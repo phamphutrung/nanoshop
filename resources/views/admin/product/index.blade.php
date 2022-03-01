@@ -203,18 +203,23 @@
 @endsection
 
 
-    @section('content')
+@section('content')
 
-      <div class="row bg-white" style="position: sticky; top:58px; z-index: 1;   padding-top: 15px">
-        <div class="col-md-12">
-            <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
-              
-            <a  class="btn float-right d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
+<div class="card">
+  <div class="card-header">
+    <h1>Danh Sách Sản Phẩm</h1>
+  </div>
+  <div class="card-body">
+    <div class="row bg-white" style="position: sticky; top:57px; z-index: 1;   padding-top: 15px">
+      <div class="col-md-12">
+          <a class="btn btn-success mb-3 d-inline-block" href="{{ route('admin-product-add') }}" role="button"><i class="fa-regular fa-square-plus mr-2"></i>Thêm danh mục</a>
+            
+          <a  class="btn float-right d-inline-block @php if(request()->input('status') == 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 " href="{{ request()->fullUrlWithQuery(['status' => 'trash',  'page' => '1']) }}" role="button">Thùng rác <span id="count-trash">({{ $countTrash }})</span></a>
 
-          <a class="btn float-right d-inline-block @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt <span id="count-active">({{ $countActive }})</span></a>
-      
-        </div>
-    </div>
+        <a class="btn float-right d-inline-block @php if(request()->input('status') == 'active' || request()->input('status') != 'trash') { echo 'btn-primary'; } else{ echo 'btn-secondary'; } @endphp mb-3 mr-2" href="{{ request()->fullUrlWithQuery(['status' => 'active', 'page' => '1']) }}" role="button">Kích hoạt <span id="count-active">({{ $countActive }})</span></a>
+    
+      </div>
+  </div>
 
     <div class="col-md-12 m-0 p-0" style="margin-top: 6px">
       @if ($products->count() < 1)
@@ -222,8 +227,8 @@
           Không có sản phẩm nào ở đây
       </div>
     @else
-      <table class="table table-hover text-capitalize">
-        <thead class="bg-dark" style="position: sticky; top: 115px; z-index: 2">
+      <table class="table table-hover text-capitalize table-bordered">
+        <thead class="bg-dark" style="position: sticky; top: 125px; z-index: 2">
           <tr>
             <th scope="col" class="text-center">STT</th>
             <th scope="col" class="text-center">Ảnh</th>
@@ -310,6 +315,10 @@
       {{ $products->withQueryString()->links() }}
       @endif
     </div>
+  </div>
+  <div class="card-footer">
+  </div>
+</div>
 
 
 
