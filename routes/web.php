@@ -52,5 +52,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
     Route::post('/slider-add', [AdminSliderController::class, 'add'])->name('admin-slider-add');
     Route::get('/slider-delete', [AdminSliderController::class, 'delete'])->name('admin-slider-delete');
+    Route::post('/slider-action', [AdminSliderController::class, 'action'])->name('admin-slider-action');
 
 });

@@ -65,4 +65,16 @@ class SliderController extends Controller
         slider::destroy($request->id);
         return response()->json(['code' => 1, 'message' => "Đã xóa slider"]);
     }
+
+    public function action(request $request) {
+        if($request->action == 'delete') { 
+            $ids = $request->ids;
+            slider::destroy($ids);
+            return response()->json(['code' => 1, 'message' => 'Đã xóa tất cả lựa chọn']);
+        } else { 
+            $output = 'trung';
+            return response()->json($output);
+        }
+       
+    }
 }

@@ -8,7 +8,7 @@
         img#image_show {
             max-width: 200px;
             border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);
-            min-height: 120px;
+            min-height: 80px;
         }
 
      
@@ -16,7 +16,9 @@
     </style>
 @endsection
 @section('scripts')
-    <script>
+<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script> // cdn alert tify
+
+    <script> // preview image
         function loadFile(event) {
             var reader = new FileReader();
             reader.onload = function(){
@@ -26,14 +28,14 @@
             reader.readAsDataURL(event.target.files[0]);
           };
     </script>
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+    
     <script>
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
-            });
-        $('#form').on('submit', function(e){
+        });
+        $('#form').on('submit', function(e){ //add slider
             e.preventDefault();
             var form = this
             $.ajax({
@@ -64,7 +66,7 @@
                         alertify.success(response.message);
                         var html = "";
                         html += "<tr id='slider-"+ response.slider.id+"'>";
-                        html +="<td>" + '<input type="checkbox" name="item_check">'+ "</td>";
+                        html +="<td class='text-center'>" + '<input data-id="'+ response.slider.id +'" type="checkbox" name="item_check">'+ "</td>";
                         html +="<td>" + "<img id='image_show' src='"+ "storage/" + response.slider.image_path + "'>" +"</td>";
                         html +="<td>" + response.slider.title + "</td>";
                         html +="<td>" + response.slider.description + "</td>";
@@ -79,7 +81,7 @@
             })
         })
 
-        $(document).on('click', '.btn-delete', function(e){
+        $(document).on('click', '.btn-delete', function(e){ // delete slider
             e.preventDefault();
            var id = $(this).attr('data-id');
            Swal.fire({
@@ -98,32 +100,90 @@
                     data: {id : id},
                     dataType: 'json',
                     success: function(response){
-                        $('#slider-' + id).remove()
+                        $('#slider-' + id).fadeOut(800, function() {
+                            $(this).remove();
+                        })
                         alertify.success(response.message);
                     }
                 })
             }
           })
         })
+
+        $(document).on('click', 'input[name="main_checkbox"]', function(e) {  // select all input
+            $('input[name="item_check"]').prop('checked', false);
+           
+            if(this.checked) {
+                $('input[name="item_check"]').each(function() {
+                    $(this).prop('checked', true);
+                })
+                toggleDelAllBtn()
+
+            } else {
+              $('input[name="item_check"]').each(function() {
+                  $(this).prop('checked', false);
+                toggleDelAllBtn()
+              })
+            }
+        })
+
+        $(document).on('change', 'input[name="item_check"]', function() {
+            toggleDelAllBtn()
+        })
+
+        function toggleDelAllBtn() {
+            var lengthCheck = $('input[name="item_check"]:checked').length;
+            if(lengthCheck > 1) {
+                $('#deleteAllBtn').removeClass('d-none').text('Xóa ('+ lengthCheck +')')
+            } else {
+                $('#deleteAllBtn').addClass('d-none');
+            }
+        }
+
+        $(document).on('click', '#deleteAllBtn', function() {
+            var listCheck = [];
+            $('input[name="item_check"]:checked').each(function(){
+                listCheck.push($(this).data('id'));
+            })
+            var countCheck = listCheck.length;
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: countCheck + " slider được chọn để xóa",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+              }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin-slider-action') }}",
+                        type: "POST",
+                        data: {ids: listCheck, action: 'delete' },
+                        dataType: "json",
+                        success:function (response) {
+                            if(response.code == 1) {
+                                $.each(listCheck, function(index, val) {
+                                    $('#slider-' + val).fadeOut(800, function() {
+                                        $(this).remove()
+                                    })
+                                })
+                                alertify.success(response.message);
+                                $('#deleteAllBtn').addClass('d-none');
+                            }
+                        }
+                    })
+                }
+              })
+
+            
+            
+        })
   
     </script>
 
 
-    
-    <script>
-        $(document).on('click', 'input[name="main_checkbox"]', function(e) {
-          if(this.checked) {
-              $('input[name="item_check"]').each(function() {
-                  this.checked = true;
-              })
-          } else {
-            $('input[name="item_check"]').each(function() {
-                this.checked = false;
-            })
-          }
-        })
-    </script>
-    
+   
 @endsection
 
 
@@ -134,21 +194,21 @@
             <button id="add-btn" class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-regular fa-square-plus mr-2" ></i>Thêm slider</button>
         </div>
         <div class="col-md-12">
-            <table class="table table-striped table-bordered table-hover">
+            <table id="slider-table" class="table table-striped table-bordered table-hover">
                 <thead >
                     <tr  class='bg-white' style="position: sticky; z-index: 200; top: 125px">
-                        <th><input name="main_checkbox" type="checkbox"></th>
+                        <th  class="text-center"><input name="main_checkbox" type="checkbox"></th>
                         <th>Ảnh</th>
                         <th>Tiêu đề</th>
                         <th>Mô tả</th>
-                        <th>hành động</th>
+                        <th>hành động <button id="deleteAllBtn" class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
                     </tr>
                 </thead>
                 <tbody id="data_main">
                     @foreach ($sliders as $slider)
                     <tr id="slider-{{$slider->id }}">
-                        <td> 
-                            <input name="item_check" type="checkbox">
+                        <td class="text-center"> 
+                            <input data-id="{{$slider->id}}" name="item_check" type="checkbox">
                         </td>
                         <td>
                             <img id="image_show" src="{{ asset('storage/').'/'.$slider->image_path }}">
