@@ -1,7 +1,7 @@
 <?php
 
 namespace App\models;
-
+// use App\Models\product;
 class cart
 {
     private $listProducts = null;
@@ -11,12 +11,14 @@ class cart
     // gán trạng thái(thông tin) giỏ hàng cũ vào giỏ hàng mới khi được gọi:
     public function __construct($oldCart)
     {
-        $this->listProducts = $oldCart->listProducts;
-        $this->totalPrice = $oldCart->totalPrice;
-        $this->totalQuantity = $oldCart->totalQuantity;
+        if ($oldCart != null) {
+            $this->listProducts = $oldCart->listProducts;
+            $this->totalPrice = $oldCart->totalPrice;
+            $this->totalQuantity = $oldCart->totalQuantity;
+        }
     }
     // thêm 1 sản phẩm bất kì vào giỏ hàng:
-    public function addToCard($product)
+    public function addToCard($product) //truyền vào sản phẩm cần thêm vào giỏ hàng.
     {
         $id = $product->id;
         // tạo và gán giá trị mặc định của sản phẩm mơi thêm vào:
@@ -31,12 +33,33 @@ class cart
             }
         }
         // cập nhật trangk thái sản phẩm mới:
-        $newProduct['totalQuantityItem'] ++;
+        $newProduct['totalQuantityItem']++;
         $newProduct['totalPriceItem'] = $newProduct['totalQuantityItem'] * $newProduct['info']->selling_price;
         // thêm sản phẩm mới với trạng thái được thay đổi vào lại giỏ hàng:
         $this->listProducts[$id] = $newProduct;
         // cập nhật lại tổng tiền và tổng số lượng sản phẩm của giỏ hàng sau khi thêm sản phẩm mới:
-        $this->totalQuantity ++;
+        $this->totalQuantity++;
         $this->totalPrice += $newProduct['info']->selling_price;
+    }
+
+    public function deleteItem($id)
+    { //truyền vào id sản phầm cần xóa khỏi giỏ hàng.
+        if (array_key_exists($id, $this->listProducts)) {
+            $this->totalPrice -= $this->listProducts[$id]['totalPriceItem'];
+            $this->totalQuantity -= $this->listProducts[$id]['totalQuantityItem'];
+            unset($this->listProducts[$id]);
+        }
+    }
+
+    public function updateItem($id, $quatiny)
+    {
+        $this->totalPrice -= $this->listProducts[$id]['totalPriceItem'];
+        $this->totalQuantity -= $this->listProducts[$id]['totalQuantityItem'];
+
+        $this->listProducts[$id]['totalQuantityItem'] = $quatiny;
+        $this->listProducts[$id]['totalPriceItem'] = $this->listProducts[$id]['info']->selling_price * $quatiny;
+
+        $this->totalPrice += $this->listProducts[$id]['totalPriceItem'];
+        $this->totalQuantity += $this->listProducts[$id]['totalQuantityItem'];
     }
 }
