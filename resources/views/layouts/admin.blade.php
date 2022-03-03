@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>@yield('title')</title>
     
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -29,6 +29,9 @@
     <meta name="csrf_token" content="{{ csrf_token() }}">
    @yield('css')
 </head>
+<style>
+   .bg-cyan-200 {background-color: #049cbb7e;}
+</style>
 <body>
     <div class="wrapper">
 

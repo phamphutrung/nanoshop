@@ -54,6 +54,14 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ route('admin-setting') }}" class="nav-link {{ session('module_active')=='setting'?'active':'' }}">
+            <i class="nav-icon fa-solid fa-gear"></i>
+            <p>
+                 Cài Đặt
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('admin-category') }}" class="nav-link ">
               <i class="nav-icon fas fa-sign-out-alt"></i>
               <p onclick="event.preventDefault();

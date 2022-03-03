@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\admin\SliderController as AdminSliderController;
+use App\Http\Controllers\admin\SettingController as AdminSettingController;
+use App\Http\Controllers\testCart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -25,8 +27,12 @@ Route::get('/', function () {
 Auth::routes(["verify"=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+route::get('test-cart', [testCart::class, 'add']);
+
 Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('dashboard');
     // category admin
     Route::get('/category', [AdminCategoryController::class, 'index'])->name('admin-category');
     Route::get('/category-add', [AdminCategoryController::class, 'add'])->name('admin-category-add');
@@ -55,5 +61,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/slider-delete', [AdminSliderController::class, 'delete'])->name('admin-slider-delete');
     Route::post('/slider-update', [AdminSliderController::class, 'update'])->name('admin-slider-update');
     Route::post('/slider-action', [AdminSliderController::class, 'action'])->name('admin-slider-action');
-
+    // setting admin
+    Route::get('/setting', [AdminSettingController::class, 'index'])->name('admin-setting');
 });
