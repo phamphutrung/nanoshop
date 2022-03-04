@@ -79,4 +79,11 @@ class SettingController extends Controller
             return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
         }
     }
+
+    public function delete(request $request) {
+        setting::destroy($request->id);
+        $settings = setting::latest()->paginate(15);
+        $view = view('admin.setting.main_data', compact('settings'))->render();
+        return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
+    }
 }

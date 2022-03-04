@@ -156,6 +156,32 @@
             })
         })
 
+        $(document).on('click', '.btn-delete', function() {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: "Sản phẩm sẽ được đưa vào thùng rác",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                $.ajax({
+                url: "{{ route('admin-setting-delete') }}",
+                type: 'get',
+                data: {id : id},
+                dataType: 'json',
+                success: function(response) {
+                    $('#setting_' + id).fadeOut('slow', function() {
+                        $('#main_data').html(response.view);
+                    });
+                    alertify.success(response.msg)
+                }
+            })
+            })
+        })
+
     </script>
 @endsection
 
@@ -191,7 +217,7 @@
                         </thead>
                         <tbody id="main_data">
                             @foreach ($settings as $setting)
-                                <tr>
+                                <tr id="setting_{{ $setting->id }}">
                                     <td class="text-center">
                                         <input data-id="{{ $setting->id }}" name="item_check" type="checkbox">
                                     </td>

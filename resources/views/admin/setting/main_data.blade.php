@@ -1,5 +1,5 @@
 @foreach ($settings as $setting)
-<tr>
+<tr id="setting_{{ $setting->id }}">
     <td class="text-center">
         <input data-id="{{ $setting->id }}" name="item_check" type="checkbox">
     </td>
