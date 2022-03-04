@@ -31,6 +31,7 @@
 </head>
 <style>
    .bg-cyan-200 {background-color: #049cbb7e;}
+   .bg-cyan-100 {background-color: #4687946b;}
 </style>
 <body>
     <div class="wrapper">

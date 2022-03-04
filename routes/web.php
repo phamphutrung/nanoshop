@@ -63,4 +63,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/slider-action', [AdminSliderController::class, 'action'])->name('admin-slider-action');
     // setting admin
     Route::get('/setting', [AdminSettingController::class, 'index'])->name('admin-setting');
+    Route::post('/setting-add', [AdminSettingController::class, 'add'])->name('admin-setting-add');
+    Route::get('/setting-edit', [AdminSettingController::class, 'edit'])->name('admin-setting-edit');
+    Route::post('/setting-update', [AdminSettingController::class, 'update'])->name('admin-setting-update');
 });

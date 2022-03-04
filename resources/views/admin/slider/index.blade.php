@@ -348,11 +348,11 @@
                     action: 'show form edit'
                 },
                 success: function(response) {
-                    $('.title_edit').val(response.slider.title)
-                    $('.description_edit').val(response.slider.description)
+                    tinyMCE.get("tiny_title_edit").setContent(response.slider.title);
+                    tinyMCE.get("tiny_description_edit").setContent(response.slider.description);
                     $('.image_edit').attr('src', "{{ asset('storage') }}/" + response.slider
                         .image_path)
-                }
+                },
             })
         })
 
@@ -484,13 +484,13 @@
                         </div>
                         <div class="mb-3">
                             <label for="recipient-name" class="col-form-label">Tiêu đề:</label>
-                            <textarea class="form-control title_edit editor" name="title"></textarea>
+                            <textarea id="tiny_title_edit" class="form-control title_edit editor" name="title"></textarea>
                             <span class="text-danger error-text slider_title_error"></span>
 
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Mô tả:</label>
-                            <textarea class="form-control description_edit editor" name="description"></textarea>
+                            <textarea id="tiny_description_edit" class="form-control description_edit editor" name="description"></textarea>
                             <span class="text-danger error-text slider_description_error"></span>
                         </div>
                         <input type="hidden" name="id">
