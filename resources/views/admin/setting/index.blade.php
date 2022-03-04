@@ -4,10 +4,10 @@
 @section('css')
     <style>
     </style>
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
-      <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
 @endsection
 
 @section('scripts')
@@ -60,7 +60,7 @@
     </script>
 
     <script>
-         $.ajaxSetup({
+        $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
@@ -76,16 +76,17 @@
                 processData: false,
                 dataType: 'json',
                 contentType: false,
-                beforeSend: function(){
+                beforeSend: function() {
+                    $(form).find('small.text-danger').text('');
                     $('#btn_add').find('i').removeClass('d-none');
                     $('#btn_add').prop('disabled', true)
                 },
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
                     $('#btn_add').prop('disabled', false);
-                    if(response.code == 0) {
+                    if (response.code == 0) {
                         $.each(response.error, function(index, val) {
-                            $(form).find('small.error_' + index ).text(val);
+                            $(form).find('small.error_' + index).text(val);
                         })
                     } else {
                         $('#main_data').html(response.view);
@@ -98,7 +99,7 @@
                     }
                 }
             })
-          
+
         })
 
         $(document).on('click', '.btn_edit', function() {
@@ -108,16 +109,18 @@
                 url: "{{ route('admin-setting-edit') }}",
                 type: "get",
                 dataType: "json",
-                data: {id:id},
+                data: {
+                    id: id
+                },
                 success: function(response) {
                     $('.config_key_edit').val(response.setting.config_key);
                     tinyMCE.get("tiny_config_value_edit").setContent(response.setting.config_value);
                 }
             })
-         
+
 
         })
-           
+
         $(document).on('submit', '#form_edit', function(e) {
             e.preventDefault();
             var id = $('#form_edit').find('input[name="id"]').val()
@@ -129,16 +132,17 @@
                 processData: false,
                 dataType: 'json',
                 contentType: false,
-                beforeSend: function(){
+                beforeSend: function() {
+                    $(form).find('small.text-danger').text('');
                     $('#btn_update').find('i').removeClass('d-none');
                     $('#btn_update').prop('disabled', true)
                 },
                 success: function(response) {
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
-                    if(response.code == 0) {
+                    if (response.code == 0) {
                         $.each(response.error, function(index, val) {
-                            $(form).find('small.error_' + index ).text(val);
+                            $(form).find('small.error_' + index).text(val);
                         })
                     } else {
                         $('#main_data').html(response.view);
@@ -151,7 +155,7 @@
                 }
             })
         })
-        
+
     </script>
 @endsection
 
@@ -219,24 +223,24 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="form_add" >
+                    <form id="form_add">
                         @csrf
-                    <div class="mb-3">
-                        <label for="" class="form-label">Config key</label>
-                        <input type="text" class="form-control" name="config_key">
-                        <small id="helpId" class="form-text text-danger error_config_key"></small>
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label">Config value</label>
-                        <textarea class="form-control editor" name="config_value"></textarea>
-                        <small id="helpId" class="form-text text-danger error_config_value"></small>
-                    </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Config key</label>
+                            <input type="text" class="form-control" name="config_key">
+                            <small id="helpId" class="form-text text-danger error_config_key"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Config value</label>
+                            <textarea class="form-control editor" name="config_value"></textarea>
+                            <small id="helpId" class="form-text text-danger error_config_value"></small>
+                        </div>
                 </div>
                 <div class="modal-footer bg-cyan-100 text-light">
                     <button id="btn_add" type="submit" class="btn btn-primary"><i
-                        class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i> Tạo mới</button>
+                            class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i> Tạo mới</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>
@@ -252,24 +256,24 @@
                     <form id="form_edit">
                         @csrf
                         <input name="id" type="hidden">
-                    <div class="mb-3">
-                        <label for="" class="form-label">Config key</label>
-                        <input type="text" class="form-control config_key_edit" name="config_key" >
-                        <small id="helpId" class="form-text text-danger error_config_key"></small>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Config key</label>
+                            <input type="text" class="form-control config_key_edit" name="config_key">
+                            <small id="helpId" class="form-text text-danger error_config_key"></small>
 
-                    </div>
-                    <div class="mb-3">
-                        <label for="" class="form-label">Config value</label>
-                        <textarea class="editor" name="config_value" id="tiny_config_value_edit"></textarea>
-                        <small id="helpId" class="form-text text-danger error_config_value"></small>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="form-label">Config value</label>
+                            <textarea class="editor" name="config_value" id="tiny_config_value_edit"></textarea>
+                            <small id="helpId" class="form-text text-danger error_config_value"></small>
 
-                    </div>
+                        </div>
                 </div>
                 <div class="modal-footer bg-cyan-100">
                     <button id="btn_update" type="submit" class="btn btn-primary"><i
-                        class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật</button>
+                            class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật</button>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                </form>
+                    </form>
                 </div>
             </div>
         </div>
