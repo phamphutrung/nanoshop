@@ -247,6 +247,25 @@
             })
         })
 
+        $(document).on('change', '#search_input', function() {
+            var key = $('#search_input').val();
+
+            $.ajax({
+                url: "setting-search?key=" + key,
+                type: 'get',
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#ani_search').removeClass('d-none')
+                    $('#ico_search').addClass('d-none')
+                },
+                success: function(response) {
+                    $('#main_data').html(response.view);
+                    $('#ani_search').addClass('d-none')
+                    $('#ico_search').removeClass('d-none')
+                }
+            })
+        })
+
     </script>
 @endsection
 
@@ -261,7 +280,7 @@
                     <nav class="navbar navbar-expand navbar-light bg-light">
                         <div class="col-md-6">
                             <ul class="nav navbar-nav">
-                                <li class="nav-item active">
+                                <li class="nav-item">
                                     <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config">Thêm
                                         cài
                                         đặt</button>
@@ -273,8 +292,16 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-6">
-                            <input type="text" class="form-control ml-3" name="" id="" placeholder="Tìm kiếm">
+                        <div class="col-md-5" style="position: relative">
+                            <input type="text" class="form-control ml-3" name="search" id="search_input"
+                                placeholder="Nhập tìm kiếm" style="padding-right: 35px">
+                            <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
+                            <i class="fas fa-spinner fa-spin d-none text-muted" id="ani_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
+                        </div>
+                        <div class="col-md-1">
+
                         </div>
                     </nav>
 
@@ -290,23 +317,35 @@
                             </tr>
                         </thead>
                         <tbody id="main_data">
-                            @foreach ($settings as $setting)
-                                <tr id="setting_{{ $setting->id }}">
-                                    <td class="text-center">
-                                        <input data-id="{{ $setting->id }}" name="item_check" type="checkbox">
-                                    </td>
-                                    <td>{!! $setting->config_key !!}</td>
-                                    <td>{!! $setting->config_value !!}</td>
-                                    <td class="d-flex">
-                                        <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit mr-2"
-                                            data-bs-toggle="modal" data-bs-target="#edit_config"><i
-                                                class="fas fa-edit"></i></button>
-                                        <button data-id="{{ $setting->id }}" class="btn-danger btn btn-delete"><i
-                                                class="fas fa-ban"></i></button>
+                            @if ($settings->count() > 0)
+                                @foreach ($settings as $setting)
+                                    <tr id="setting_{{ $setting->id }}">
+                                        <td class="text-center">
+                                            <input data-id="{{ $setting->id }}" name="item_check" type="checkbox">
+                                        </td>
+                                        <td>{!! $setting->config_key !!}</td>
+                                        <td>{!! $setting->config_value !!}</td>
+                                        <td class="d-flex justify-content-center">
+                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit mr-2"
+                                                data-bs-toggle="modal" data-bs-target="#edit_config"><i
+                                                    class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $setting->id }}" class="btn-danger btn btn-delete"><i
+                                                    class="fas fa-ban"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                                {{ $settings->links() }}
+                            @else
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                            <strong>Không tìm thấy kết quả nào.</strong>
+                                        </div>
                                     </td>
                                 </tr>
-                            @endforeach
-                            {{ $settings->links() }}
+                            @endif
                         </tbody>
                     </table>
                 </div>

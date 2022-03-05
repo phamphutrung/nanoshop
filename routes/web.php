@@ -68,5 +68,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/setting-update', [AdminSettingController::class, 'update'])->name('admin-setting-update');
     Route::get('/setting-edit-delete', [AdminSettingController::class, 'delete'])->name('admin-setting-delete');
     Route::get('/setting-edit-delmulti', [AdminSettingController::class, 'deleteMultiple'])->name('admin-setting-delmulti');
+    Route::get('/setting-search', [AdminSettingController::class, 'search'])->name('admin-search');
 
 });

@@ -93,4 +93,11 @@ class SettingController extends Controller
         $view = view('admin.setting.main_data', compact('settings'))->render();
         return response()->json(['view' => $view, 'msg' => 'Đã xóa thành công']);
     }
+
+    public function search(request $request) {
+        $key = $request->get('key');
+        $settings = setting::where('config_key', 'like', '%'.$key.'%')->orWhere('config_value', 'like', '%'.$key.'%')->latest()->paginate(15);
+        $view = view('admin.setting.main_data', compact('settings'))->render();
+        return response()->json(['view' => $view, 'msg'=> $key]);
+    }
 }

@@ -255,31 +255,5 @@ class ProductController extends Controller
         ]);
     }
 
-    function test() {
-        $product = product::find(45);
-        $tags = $product->tags;
-        echo "bang chi tiet san pham" ."<br>";
-        foreach ($tags as $tag) {
-            
-            echo $tag->pivot->created_at ."|||". $tag->name ." ______________ |||".$tag->pivot->qty. "|||".$tag->price. "|||".$tag->pivot->qty * $tag->price."<br>"; 
-        }
-        echo "<br>" ."<br>"."<br>";
-        $category = $product->category;
-        echo "thong tin khach hang:" ."<br>";
-        echo $category->name."|||".$category->created_at;
-
-        echo "<br>" ."<br>"."<br>";
-        echo "danh sach don hang"."<br>";
-        
-        $product = product::find(45);
-        $total = 0;
-        foreach($product->tags as $tag) {
-            $total += $tag->pivot->qty * $tag->price; 
-        }
-        // echo $total ."<br>";
-        $product['total'] = $total;
-        echo $product['total'] ."<br>";
-            echo $product->id."|||".$product->name."|||". $product->category->name."|||".$product->category->created_at."|||" .$product['total']."<br>";
-
-    }
+  
 }

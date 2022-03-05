@@ -30,7 +30,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a href="{{ route('admin-category') }}" class="nav-link {{ session('module_active')=='category'?'active':'' }}">
+          <a href="{{ route('admin-category') }}" class="nav-link {{ session('module_active')=='category'?'active':'' }}" >
             <i class="nav-icon fas  fa-list-alt"></i>
             <p>
                 Danh Mục

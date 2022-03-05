@@ -363,55 +363,87 @@
 @section('content')
 
     <div class="card">
-        <div class="card-header">
-            <h1>Danh Sách Slider</h1>
+        <div class="card-header bg-cyan-200 text-light">
+            <h2>Danh Sách Slider</h2>
         </div>
         <div class="card-body">
-            <div class="row">
-                <div class="col-md-12 bg-white" style="position: sticky; top: 57px; z-index: 1; padding-top: 15px">
-                    <button id="add-btn" class="btn btn-success mb-3" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal"><i class="fa-regular fa-square-plus mr-2"></i>Thêm slider</button>
+            <div class="card">
+                <div class="card-header">
+                    <nav class="navbar navbar-expand navbar-light bg-light">
+                        <div class="col-md-6">
+                            <ul class="nav navbar-nav">
+                                <li class="nav-item">
+                                    <button id="add-btn" class="btn btn-success" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal"><i class="fa-regular fa-square-plus mr-2"></i>Thêm
+                                        slider</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button id="deleteAllBtn" class="btn btn-danger ml-2 d-none"></button>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-5" style="position: relative">
+                            <input type="text" class="form-control ml-3" name="search" id="search_input"
+                                placeholder="Nhập tìm kiếm" style="padding-right: 35px">
+                        </div>
+                        <div class="col-md-1">
+
+                        </div>
+                    </nav>
                 </div>
-                <div class="col-md-12">
+                <div class="card-body">
                     <table id="slider-table" class="table table-hover table-bordered">
-                        <thead class="bg-dark" style="position: sticky; z-index: 200; top: 125px">
+                        <thead class="bg-cyan-200 text-light">
                             <tr>
                                 <th class="text-center"><input name="main_checkbox" type="checkbox"></th>
-                                <th class="text-center" style="min-width: 350px">Ảnh</th>
+                                <th class="text-center">Ảnh</th>
                                 <th class="text-center">Tiêu đề</th>
-                                <th class="text-center" style="min-width: 400px">Mô tả</th>
-                                <th class="text-center" style="min-width: 100px">Kích hoạt</th>
-                                <th class="text-center" style="min-width: 200px">hành động <button id="deleteAllBtn"
-                                        class="btn btn-danger btn-sm ml-2 d-none"></button> </th>
+                                <th class="text-center">Mô tả</th>
+                                <th class="text-center">Kích hoạt</th>
+                                <th class="text-center">hành động</th>
                             </tr>
                         </thead>
-                        <tbody id="data_main">
-                            @foreach ($sliders as $slider)
-                                <tr id="slider-{{ $slider->id }}">
-                                    <td class="text-center">
-                                        <input data-id="{{ $slider->id }}" name="item_check" type="checkbox">
-                                    </td>
-                                    <td class="text-center">
-                                        <img id="image_show" src="{{ asset('storage/') . '/' . $slider->image_path }}">
-                                    </td>
-                                    <td>{!! $slider->title !!}</td>
-                                    <td>{!! $slider->description !!}</td>
-                                    <td class="text-center">
-                                        <div class="form-check form-switch">
-                                            <input {{ $slider->active == 'on' ? 'checked' : '' }}
-                                                class="form-check-input active_check" data-id="{{ $slider->id }}"
-                                                type="checkbox" id="flexSwitchCheckChecked">
+                        <tbody id="main_data">
+                            @if ($sliders->count() > 0)
+                                @foreach ($sliders as $slider)
+                                    <tr id="slider-{{ $slider->id }}">
+                                        <td class="text-center">
+                                            <input data-id="{{ $slider->id }}" name="item_check" type="checkbox">
+                                        </td>
+                                        <td class="text-center">
+                                            <img id="image_show"
+                                                src="{{ asset('storage/') . '/' . $slider->image_path }}">
+                                        </td>
+                                        <td>{!! $slider->title !!}</td>
+                                        <td>{!! $slider->description !!}</td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch">
+                                                <input {{ $slider->active == 'on' ? 'checked' : '' }}
+                                                    class="form-check-input active_check" data-id="{{ $slider->id }}"
+                                                    type="checkbox" id="flexSwitchCheckChecked">
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit"
+                                                data-bs-toggle="modal" data-bs-target="#modal_edit"><i
+                                                    class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i
+                                                    class="fas fa-ban"></i></button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="6">
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                            <strong>Không tìm thấy kết quả nào.</strong>
                                         </div>
                                     </td>
-                                    <td class="text-center">
-                                        <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit"
-                                            data-bs-toggle="modal" data-bs-target="#modal_edit"><i
-                                                class="fas fa-edit"></i></button>
-                                        <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i
-                                                class="fas fa-ban"></i></button>
-                                    </td>
                                 </tr>
-                            @endforeach
+                            @endif
+
                         </tbody>
                     </table>
                 </div>
@@ -490,7 +522,8 @@
                         </div>
                         <div class="mb-3">
                             <label for="message-text" class="col-form-label">Mô tả:</label>
-                            <textarea id="tiny_description_edit" class="form-control description_edit editor" name="description"></textarea>
+                            <textarea id="tiny_description_edit" class="form-control description_edit editor"
+                                name="description"></textarea>
                             <span class="text-danger error-text slider_description_error"></span>
                         </div>
                         <input type="hidden" name="id">
