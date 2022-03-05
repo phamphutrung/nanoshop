@@ -55,30 +55,40 @@
             }
         });
 
-        $(document).on('change', '.action_trending', function(e) {
-            let url = $(this).attr('data-url');
-            let selector = $(this).attr('data-id');
+        $(document).on('change', '.trending_check', function(e) { // ON/OFF trending
+            var id = $(this).data('id');
+            var isTrending = this.checked ? 1 : 0;
             $.ajax({
-                type: "get",
-                url: url,
+                url: "{{ route('admin-product-updatetrending') }}",
+                type: 'get',
                 data: {
-                    'trending': $(this).val()
+                    id: id,
+                    isTrending: isTrending
                 },
                 dataType: 'json',
                 success: function(response) {
-                    alertify.success('Đã cập nhật trạng thái xu hướng.');
-                    if (response.value == 0) {
-                        $('#' + selector).html(
-                            "<i class='fa-solid fa-xmark text-danger' style='font-size: 1.7rem'></i>"
-                        );
-                    } else {
-                        $('#' + selector).html(
-                            "<i class='fa-solid fa-check text-success' style='font-size: 1.9rem'></i>"
-                        );
-                    }
+                    alertify.success(response.msg)
                 }
             })
         })
+
+        $(document).on('change', '.status_check', function(e) { // ON/OFF status
+            var id = $(this).data('id');
+            var isStatus = this.checked ? 1 : 0;
+            $.ajax({
+                url: "{{ route('admin-product-updatestatus') }}",
+                type: 'get',
+                data: {
+                    id: id,
+                    isStatus: isStatus
+                },
+                dataType: 'json',
+                success: function(response) {
+                    alertify.success(response.msg)
+                }
+            })
+        })
+
         $(document).on('change', '.action_status', function(e) {
             let url = $(this).attr('data-url');
             let selector = $(this).attr('data-id');
@@ -105,58 +115,36 @@
             })
         })
 
-        $(document).on('click', '.action_delete', function(e) {
-            e.preventDefault();
-            let url = $(this).attr('href');
-            let id = $(this).attr('data-id');
+        $(document).on('click', '.btn_delete', function(e) {
+            var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
                 text: "Sản phẩm sẽ được đưa vào thùng rác",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#198754',
+                confirmButtonColor: '#049cbb7e',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({
-                        type: 'GET',
-                        url: url,
+                        url: "{{ route('admin-product-delete') }}",
+                        type: 'get',
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
                         success: function(response) {
-                            $('#product-' + id).remove()
-                            $('#count-trash').text('(' + response.countTrash + ')')
-                            $('#count-active').text('(' + response.countActive + ')')
+                            $('#product-' + id).fadeOut('slow', function() {
+                                $('#main_data').html(response.view)
+                            })
+                            alertify.success(response.msg);
                         }
                     })
                 }
             })
         })
-        $(document).on('click', '.action_restore', function(e) {
-            e.preventDefault();
-            let url = $(this).attr('href');
-            let id = $(this).attr('data-id');
-            Swal.fire({
-                title: 'Bạn muốn khôi phục?',
-                text: "Sản phẩm sẽ được khôi phục lại.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#198754',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, Restore'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $.ajax({
-                        type: 'GET',
-                        url: url,
-                        success: function(response) {
-                            $('#product-' + id).remove()
-                            $('#count-trash').text('(' + response.countTrash + ')')
-                            $('#count-active').text('(' + response.countActive + ')')
-                        }
-                    })
-                }
-            })
-        })
+
         $(document).on('click', '.action_force', function(e) {
             e.preventDefault();
             let url = $(this).attr('href');
@@ -246,7 +234,7 @@
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
                         </div>
                         <div class="col-md-1">
-                           
+
                         </div>
                     </nav>
                 </div>
@@ -264,53 +252,75 @@
                                 <th scope="col" class="text-center">Hành động</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            @foreach ($products as $key => $product)
-                                <tr id="product-{{ $product->id }}">
-                                    <th class="text-center" scope="row">{{ $products->firstItem() + $key }}</th>
+                        <tbody id="main_data">
+                            @if ($products->count() > 0)
+                                @foreach ($products as $key => $product)
+                                    <tr id="product-{{ $product->id }}">
+                                        <th class="text-center"></th>
 
-                                    <td class="text-center">
-                                        <img style="width: 5rem;
-                                                      height: 5rem;
-                                                      border-radius: 10px;
-                                                      box-shadow: 0 0 8px rgba(0,0,0,0.2);"
-                                            src="{{ asset('storage/' . $product->feature_image_path) }}" alt="">
-                                    </td class="text-center">
+                                        <td class="text-center">
+                                            <img style="width: 5rem;
+                                                                                  height: 5rem;
+                                                                                  border-radius: 10px;
+                                                                                  box-shadow: 0 0 8px rgba(0,0,0,0.2);"
+                                                src="{{ asset('storage/' . $product->feature_image_path) }}"
+                                                alt="ảnh đại diện">
+                                        </td class="text-center">
 
-                                    <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
-                                        class="text-center text-bold productItem" data-id="{{ $product->id }}"
-                                        style="cursor: pointer;" data-bs-toggle="modal"
-                                        data-bs-target="#exampleModal">{{ $product->name }}</td>
+                                        <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
+                                            class="text-center text-bold productItem" data-id="{{ $product->id }}"
+                                            style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            {{ $product->name }}</td>
 
-                                    <td class="text-center"> {{ $product->selling_price }} </td>
+                                        <td class="text-center"> {{ $product->selling_price }} </td>
 
-                                    <td class="text-center">
-                                        {{ $product->category ? $product->category->name : '' }}
-                                    </td>
+                                        <td class="text-center">
+                                            {{ $product->category ? $product->category->name : '' }}
+                                        </td>
 
-                                    <td class="text-center">
-                                      
-                                    </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch">
+                                                <input {{ $product->trending == 1 ? 'checked' : '' }}
+                                                    class="form-check-input trending_check" data-id="{{ $product->id }}"
+                                                    type="checkbox" id="flexSwitchCheckChecked">
+                                            </div>
+                                        </td>
 
-                                    <td class="text-center">
-                                       
-                                    </td>
+                                        <td class="text-center">
+                                            <div class="form-check form-switch">
+                                                <input {{ $product->status == 1 ? 'checked' : '' }}
+                                                    class="form-check-input status_check" data-id="{{ $product->id }}"
+                                                    type="checkbox" id="flexSwitchCheckChecked">
+                                            </div>
+                                        </td>
                                         <td class="text-center">
                                             <a data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"
-                                                class="btn btn-sm btn-primary"
+                                                class="btn opacity-75 btn-primary"
                                                 href="{{ route('admin-product-edit', [$product->id]) }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <button data-id="{{ $product->id }} " data-toggle="tooltip"
-                                                data-placement="top" title="Xóa" class="btn btn-sm btn-danger action_delete"
-                                                href="{{ route('admin-product-delete', [$product->id]) }}">
+                                                data-placement="top" title="Xóa"
+                                                class="btn btn-danger opacity-75 btn_delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>
+                                    </tr>
+                                @endforeach
+                            @else
+                                <tr>
+                                    <td colspan="8">
+                                        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                            <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                                aria-label="Close"></button>
+                                            <strong>Không tìm thấy sản phẩm nào</strong>
+                                        </div>
+                                    </td>
                                 </tr>
-                            @endforeach
+                            @endif
                         </tbody>
                     </table>
+                    <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                 </div>
             </div>
         </div>

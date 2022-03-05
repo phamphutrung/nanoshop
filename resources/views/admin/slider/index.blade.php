@@ -23,6 +23,7 @@
     <script>
         var editor_config = {
             path_absolute: "/",
+            entity_encoding: "raw",
             selector: 'textarea.editor',
             relative_urls: false,
             plugins: [
@@ -122,28 +123,7 @@
                         $('#output').prop('src', '')
                         $(form)[0].reset();
                         alertify.success(response.message);
-                        var html = "";
-                        html += "<tr id='slider-" + response.slider.id + "'>";
-                        html += "<td class='text-center'>" + '<input data-id="' + response.slider.id +
-                            '" type="checkbox" name="item_check">' + "</td>";
-                        html += "<td class='text-center'>" + "<img id='image_show' src='" + "storage/" +
-                            response.slider.image_path + "'>" + "</td>";
-                        html += "<td>" + response.slider.title + "</td>";
-                        html += "<td>" + response.slider.description + "</td>";
-                        html += '<td class="text-center">';
-                        html += '<div class="form-check form-switch">';
-                        html += '<input class="form-check-input active_check" data-id="' + response
-                            .slider.id + '" type="checkbox" id="flexSwitchCheckChecked">';
-                        html += '</div>';
-                        html += '</td>';
-                        html += "<td class='text-center'>";
-                        html += "<button data-id='" + response.slider.id +
-                            "' class='btn-primary btn btn-edit' data-bs-toggle='modal' data-bs-target='#modal_edit'><i class='fas fa-edit'></i></button> ";
-                        html += "<button data-id='" + response.slider.id +
-                            "' class='btn-danger btn btn-delete'><i class='fas fa-ban'></i></button>";
-                        html += "</td>";
-                        html += "</tr>";
-                        $('#data_main').prepend(html)
+                        $('#main_data').html(response.view);
                     }
                 }
             })
@@ -179,29 +159,7 @@
                         });
                         $(form)[0].reset();
                         alertify.success(response.message);
-                        var html = "";
-                        html += "<td class='text-center'>" + '<input data-id="' + response.slider.id +
-                            '" type="checkbox" name="item_check">' + "</td>";
-                        html += "<td class='text-center'>" + "<img id='image_show' src='" + "storage/" +
-                            response.slider.image_path + "'>" + "</td>";
-                        html += "<td>" + response.slider.title + "</td>";
-                        html += "<td>" + response.slider.description + "</td>";
-                        html += '<td class="text-center">';
-                        html += '<div class="form-check form-switch">';
-                        html += '<input class="form-check-input active_check" data-id="' + response
-                            .slider.id + '" type="checkbox" id="flexSwitchCheckChecked">';
-                        html += '</div>';
-                        html += '</td>';
-                        html += "<td class='text-center'>";
-                        html += "<button data-id='" + response.slider.id +
-                            "' class='btn-primary btn btn-edit' data-bs-toggle='modal' data-bs-target='#modal_edit'><i class='fas fa-edit'></i></button> ";
-                        html += "<button data-id='" + response.slider.id +
-                            "' class='btn-danger btn btn-delete'><i class='fas fa-ban'></i></button>";
-                        html += "</td>";
-                        $('#slider-' + id).html(html);
-
-
-
+                        $('#main_data').html(response.view);
                     }
                 }
             })
@@ -253,7 +211,7 @@
                         dataType: 'json',
                         success: function(response) {
                             $('#slider-' + id).fadeOut(800, function() {
-                                $(this).remove();
+                                $('#main_data').html(response.view);
                             })
                             alertify.success(response.message);
 
@@ -321,7 +279,7 @@
                             if (response.code == 1) {
                                 $.each(listCheck, function(index, val) {
                                     $('#slider-' + val).fadeOut(800, function() {
-                                        $(this).remove()
+                                        $('#main_data').html(response.view);
                                     })
                                 })
                                 alertify.success(response.message);
@@ -356,6 +314,32 @@
             })
         })
 
+        $(document).on('change', '#search_input', function() {
+            var key = $('#search_input').val();
+
+            $.ajax({
+                url: "slider-search?key=" + key,
+                type: 'get',
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#ani_search').removeClass('d-none')
+                    $('#ico_search').addClass('d-none')
+                },
+                success: function(response) {
+                    $('#main_data').html(response.view);
+                    $('#ani_search').addClass('d-none')
+                    $('#ico_search').removeClass('d-none')
+                }
+            })
+        })
+        $(document).on('focus', '#search_input', function() {
+            $('#area_search').addClass('col-md-5')
+        })
+        $(document).on('blur', '#search_input', function() {
+            $('#area_search').removeClass('col-md-5')
+            $('#area_search').addClass('col-md-2')
+        })
+
     </script>
 @endsection
 
@@ -369,7 +353,7 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-header">
-                    <nav class="navbar navbar-expand navbar-light bg-light">
+                    <nav class="navbar navbar-expand navbar-light bg-light d-flex justify-content-between">
                         <div class="col-md-6">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
@@ -382,12 +366,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-5" style="position: relative">
+                        <div id="area_search" class="col-md-2" style="position: relative">
                             <input type="text" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
-                        </div>
-                        <div class="col-md-1">
-
+                            <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
+                            <i class="fas fa-spinner fa-spin d-none text-muted" id="ani_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
                         </div>
                     </nav>
                 </div>
@@ -454,7 +439,7 @@
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header bg-cyan-200 text-light">
                     <h5 class="modal-title" id="exampleModalLabel">Thêm slider</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -483,7 +468,7 @@
 
                         </div>
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-cyan-100">
                         <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button id="submit-btn" type="submit" class="btn btn-primary "><i
                                 class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Tạo mới</button>
@@ -497,7 +482,7 @@
     <div class="modal fade" id="modal_edit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header  bg-cyan-200 text-light">
                     <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa slider</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
@@ -528,7 +513,7 @@
                         </div>
                         <input type="hidden" name="id">
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer bg-cyan-100">
                         <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary submit_edit-btn"><i
                                 class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật thay đổi</button>

@@ -163,7 +163,7 @@
                 text: "Sản phẩm sẽ được đưa vào thùng rác",
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#198754',
+                confirmButtonColor: '#049cbb7e',
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
@@ -265,6 +265,13 @@
                 }
             })
         })
+        $(document).on('focus', '#search_input', function() {
+            $('#area_search').addClass('col-md-5')
+        })
+        $(document).on('blur', '#search_input', function() {
+            $('#area_search').removeClass('col-md-5')
+            $('#area_search').addClass('col-md-2')
+        })
 
     </script>
 @endsection
@@ -277,7 +284,7 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-header">
-                    <nav class="navbar navbar-expand navbar-light bg-light">
+                    <nav class="navbar navbar-expand navbar-light bg-light d-flex justify-content-between">
                         <div class="col-md-6">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
@@ -292,16 +299,13 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-5" style="position: relative">
+                        <div id="area_search" class="col-md-2" style="position: relative">
                             <input type="text" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
                             <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>
                             <i class="fas fa-spinner fa-spin d-none text-muted" id="ani_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>
-                        </div>
-                        <div class="col-md-1">
-
                         </div>
                     </nav>
 
@@ -326,15 +330,14 @@
                                         <td>{!! $setting->config_key !!}</td>
                                         <td>{!! $setting->config_value !!}</td>
                                         <td class="d-flex justify-content-center">
-                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit mr-2"
+                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit opacity-75 mr-2"
                                                 data-bs-toggle="modal" data-bs-target="#edit_config"><i
                                                     class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $setting->id }}" class="btn-danger btn btn-delete"><i
+                                            <button data-id="{{ $setting->id }}" class="btn-danger btn opacity-75 btn-delete"><i
                                                     class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
-                                {{ $settings->links() }}
                             @else
                                 <tr>
                                     <td colspan="6">
@@ -348,6 +351,7 @@
                             @endif
                         </tbody>
                     </table>
+                    <div class="mt-2 d-flex justify-content-end">{{ $settings->links() }}</div>
                 </div>
             </div>
         </div>

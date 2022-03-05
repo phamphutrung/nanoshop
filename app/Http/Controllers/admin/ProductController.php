@@ -24,9 +24,9 @@ class ProductController extends Controller
     }
     public function index(request $request) {   
         if($request->status == 'trash') {
-            $products = product::latest()->onlyTrashed()->paginate(15);
+            $products = product::latest()->onlyTrashed()->paginate(5);
         } else {
-            $products = product::latest()->paginate(15);
+            $products = product::latest()->paginate(5);
         }
         $countActive = product::all()->count();
         $countTrash = product::onlyTrashed()->count();
@@ -192,14 +192,18 @@ class ProductController extends Controller
         return redirect()->route('admin-product')->with('status', 'Cập nhật sản phẩm thành công');
     }
 
-    public function delete($id) {
-        product::destroy($id);
+    public function delete(request $request) {
+        product::destroy($request->id);
         $countActive = product::all()->count();
         $countTrash = product::onlyTrashed()->count();
+        $products = product::latest()->paginate(5);
+        $view = view('admin.product.main_data', compact('products'))->render();
         return response()->json([
             'countActive' => $countActive,
-            'countTrash' => $countTrash
-        ], 200);
+            'countTrash' => $countTrash,
+            'msg' => 'Đã xóa sản phẩm',
+            'view' => $view,
+        ]);
     }
 
     public function restore ($id) {
@@ -234,24 +238,22 @@ class ProductController extends Controller
         ], 200);
     }
 
-    public function updatetrending(request $request, $id) {
-        $product = product::find($id);
+    public function updatetrending(request $request) {
+        $product = product::find($request->id);
         $product->update([
-            'trending' => $request->trending
+            'trending' => $request->isTrending,
         ]);
         return response()->json([
-            'message' => 'Đã cập nhật thay đổi',
-            'value' => $request->trending,
+            'msg' => 'Đã cập nhật xu hướng',
         ]);
     }
-    public function updatestatus(request $request, $id) {
-        $product = product::find($id);
+    public function updatestatus(request $request) {
+        $product = product::find($request->id);
         $product->update([
-            'status' => $request->status
+            'status' => $request->isStatus,
         ]);
         return response()->json([
-            'message' => 'Đã cập nhật thay đổi',
-            'value' => $request->status,
+            'msg' => 'Đã cập nhật trạng thái kích hoạt',
         ]);
     }
 

@@ -49,11 +49,11 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/product-insert', [AdminProductController::class, 'insert'])->name('admin-product-insert');
     Route::get('/product-edit-{id}', [AdminproductController::class, 'edit'])->name('admin-product-edit');
     Route::post('/product-update-{id}', [AdminproductController::class, 'update'])->name('admin-product-update');
-    Route::get('/product-delete-{id}', [AdminproductController::class, 'delete'])->name('admin-product-delete');
+    Route::get('/product-delete', [AdminproductController::class, 'delete'])->name('admin-product-delete');
     Route::get('/product-restore-{id}', [AdminproductController::class, 'restore'])->name('admin-product-restore');
     Route::get('/product-force-{id}', [AdminproductController::class, 'force'])->name('admin-product-force');
-    Route::get('/product-updatetrending-{id}', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
-    Route::get('/product-updatestatus-{id}', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
+    Route::get('/product-updatetrending', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
+    Route::get('/product-updatestatus', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
     Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('view-product-detail');
     // slider admin
     Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
@@ -61,6 +61,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/slider-delete', [AdminSliderController::class, 'delete'])->name('admin-slider-delete');
     Route::post('/slider-update', [AdminSliderController::class, 'update'])->name('admin-slider-update');
     Route::post('/slider-action', [AdminSliderController::class, 'action'])->name('admin-slider-action');
+    Route::get('/slider-search', [AdminSliderController::class, 'search'])->name('admin-slider-search');
     // setting admin
     Route::get('/setting', [AdminSettingController::class, 'index'])->name('admin-setting');
     Route::post('/setting-add', [AdminSettingController::class, 'add'])->name('admin-setting-add');
@@ -68,6 +69,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/setting-update', [AdminSettingController::class, 'update'])->name('admin-setting-update');
     Route::get('/setting-edit-delete', [AdminSettingController::class, 'delete'])->name('admin-setting-delete');
     Route::get('/setting-edit-delmulti', [AdminSettingController::class, 'deleteMultiple'])->name('admin-setting-delmulti');
-    Route::get('/setting-search', [AdminSettingController::class, 'search'])->name('admin-search');
+    Route::get('/setting-search', [AdminSettingController::class, 'search'])->name('admin-setting-search');
 
 });
