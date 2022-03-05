@@ -86,4 +86,11 @@ class SettingController extends Controller
         $view = view('admin.setting.main_data', compact('settings'))->render();
         return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
     }
+
+    public function deleteMultiple(request $request) {
+        setting::destroy($request->listId);
+        $settings = setting::latest()->paginate(15);
+        $view = view('admin.setting.main_data', compact('settings'))->render();
+        return response()->json(['view' => $view, 'msg' => 'Đã xóa thành công']);
+    }
 }

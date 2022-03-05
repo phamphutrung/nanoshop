@@ -102,7 +102,7 @@
 
         })
 
-        $(document).on('click', '.btn_edit', function() {
+        $(document).on('click', '.btn_edit', function() { // show form edit
             var id = $(this).data('id');
             $('#form_edit').find('input[name="id"]').val(id);
             $.ajax({
@@ -121,7 +121,7 @@
 
         })
 
-        $(document).on('submit', '#form_edit', function(e) {
+        $(document).on('submit', '#form_edit', function(e) { // update 
             e.preventDefault();
             var id = $('#form_edit').find('input[name="id"]').val()
             var form = this;
@@ -156,7 +156,7 @@
             })
         })
 
-        $(document).on('click', '.btn-delete', function() {
+        $(document).on('click', '.btn-delete', function() { // delete single record
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
@@ -167,18 +167,83 @@
                 cancelButtonColor: '#6c757d',
                 confirmButtonText: 'Yes, delete it!'
             }).then((result) => {
-                $.ajax({
-                url: "{{ route('admin-setting-delete') }}",
-                type: 'get',
-                data: {id : id},
-                dataType: 'json',
-                success: function(response) {
-                    $('#setting_' + id).fadeOut('slow', function() {
-                        $('#main_data').html(response.view);
-                    });
-                    alertify.success(response.msg)
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin-setting-delete') }}",
+                        type: 'get',
+                        data: {
+                            id: id
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            $('#setting_' + id).fadeOut('slow', function() {
+                                $('#main_data').html(response.view);
+                            });
+                            alertify.success(response.msg)
+                        }
+                    })
                 }
             })
+        })
+
+        $(document).on('click', 'input[name="main_check"]', function() {
+            if (this.checked) {
+                $('input[name="item_check"]').prop('checked', true)
+            } else {
+                $('input[name="item_check"]').prop('checked', false)
+            }
+            toggleBtnDelAll()
+        })
+
+        $(document).on('click', 'input[name="item_check"]', function() {
+            toggleBtnDelAll()
+        })
+
+        function toggleBtnDelAll() {
+            var count = $('input[name="item_check"]:checked').length;
+            if (count > 1) {
+                $('.btn_del_all').removeClass('d-none')
+                $('.btn_del_all span').text(count)
+            } else {
+                $('.btn_del_all').addClass('d-none')
+            }
+        }
+
+        $(document).on('click', '.btn_del_all', function() {
+            var count = $('input[name="item_check"]:checked').length;
+            var listId = [];
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: count + " phần tử được chọn sẽ được xóa",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $('input[name="item_check"]:checked').each(function() {
+                        listId.push($(this).data('id'))
+                    })
+
+                    $.ajax({
+                        url: "{{ route('admin-setting-delmulti') }}",
+                        type: 'get',
+                        data: {
+                            listId: listId
+                        },
+                        dataType: 'json',
+                        success: function(response) {
+                            $.each(listId, function(index, val) {
+                                $('#setting_' + val).fadeOut(800, function() {
+                                    $('#main_data').html(response.view)
+                                })
+                            })
+                            $('.btn_del_all').addClass('d-none')
+                            alertify.success(response.msg)
+                        }
+                    })
+                }
             })
         })
 
@@ -194,22 +259,31 @@
             <div class="card">
                 <div class="card-header">
                     <nav class="navbar navbar-expand navbar-light bg-light">
-                        <ul class="nav navbar-nav">
-                            <li class="nav-item active">
-                                <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config">Thêm cài
-                                    đặt</button>
-                            </li>
-                            <li class="nav-item">
-
-                            </li>
-                        </ul>
+                        <div class="col-md-6">
+                            <ul class="nav navbar-nav">
+                                <li class="nav-item active">
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config">Thêm
+                                        cài
+                                        đặt</button>
+                                </li>
+                                <li class="nav-item">
+                                    <button class="btn btn_del_all btn-danger ml-2 d-none">Xóa (<span></span>)</button>
+                                </li>
+                                <li class="nav-item">
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" class="form-control ml-3" name="" id="" placeholder="Tìm kiếm">
+                        </div>
                     </nav>
+
                 </div>
                 <div class="card-body">
                     <table class="table table-hover table-bordered">
                         <thead class="thead-inverse thead-default bg-cyan-200 text-light">
                             <tr>
-                                <th class="text-center"><input name="main_checkbox" type="checkbox"></th>
+                                <th class="text-center"><input name="main_check" type="checkbox"></th>
                                 <th>Thiết lập</th>
                                 <th>Giá trị</th>
                                 <th>Hành động</th>
