@@ -9,6 +9,8 @@
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
+    {{-- cdn select2 css --}}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
     <style>
         .detail_image {
@@ -31,12 +33,23 @@
             background-color: #4b4645 !important;
         }
 
+        .select2-selection.select2-selection--single {
+            padding-bottom: 27px;
+        }
+
     </style>
 @endsection
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#select_category_filter').select2();
+        });
+
+    </script>
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -174,7 +187,7 @@
         $(document).on('click', '.productItem', function(e) {
             let id = $(this).attr('data-id');
             $.ajax({
-                url: "{{ route('view-product-detail') }}",
+                url: "{{ route('admin-product-detail') }}",
                 type: "GET",
                 dataType: "json",
                 data: {
@@ -200,6 +213,37 @@
                 }
             })
         })
+        $(document).on('focus', '#search_input', function() {
+            $('#area_search').addClass('col-md-4')
+        })
+        $(document).on('blur', '#search_input', function() {
+            $('#area_search').removeClass('col-md-4')
+            $('#area_search').addClass('col-md-2')
+        })
+
+        function getRecords() {
+            var idCat = $('#select_category_filter').val()
+            var search_string = $('#search_input').val()
+            $.ajax({
+                url: "{{ route('admin-product-filter') }}",
+                type: 'get',
+                dataType: 'json',
+                data: {
+                    idCat: idCat,
+                    search_string: search_string
+                },
+                success: function(response) {
+                    $('#main_data').html(response.view)
+                }
+            })
+        }
+
+        $(document).on('keyup', '#search_input', function(event) {
+            getRecords()
+        })
+        $('#select_category_filter').on('change', function() {
+            getRecords()
+        })
 
     </script>
 @endsection
@@ -214,8 +258,8 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-header">
-                    <nav class="navbar navbar-expand navbar-light bg-light">
-                        <div class="col-md-6">
+                    <nav class="navbar navbar-expand navbar-light bg-light d-flex ">
+                        <div class="col-md-2 me-auto">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
                                     <a class="btn btn-success" href="{{ route('admin-product-add') }}"><i
@@ -229,17 +273,25 @@
                                 </li>
                             </ul>
                         </div>
-                        <div class="col-md-5" style="position: relative">
+                        <div class="col-md-2">
+                            <select name="" id="select_category_filter" class="form-control">
+                                <option value=0 >Tất cả danh mục</option>
+                                {!! $htmlSelectOptionCategory !!}
+                            </select>
+                        </div>
+                        <div id="area_search" class="col-md-2" style="position: relative">
                             <input type="text" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
-                        </div>
-                        <div class="col-md-1">
-
+                            <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
+                            <i class="fas fa-spinner fa-spin d-none text-muted" id="ani_search"
+                                style="position: absolute; right: 0; top: 0.7rem;"></i>
                         </div>
                     </nav>
                 </div>
+
                 <div class="card-body">
-                    <table class="table table-hover text-capitalize table-bordered">
+                    <table class="table table-hover table-bordered">
                         <thead class="bg-cyan-200 text-light">
                             <tr>
                                 <th scope="col" class="text-center">STT</th>
@@ -260,9 +312,9 @@
 
                                         <td class="text-center">
                                             <img style="width: 5rem;
-                                                                                  height: 5rem;
-                                                                                  border-radius: 10px;
-                                                                                  box-shadow: 0 0 8px rgba(0,0,0,0.2);"
+                                                                                                      height: 5rem;
+                                                                                                      border-radius: 10px;
+                                                                                                      box-shadow: 0 0 8px rgba(0,0,0,0.2);"
                                                 src="{{ asset('storage/' . $product->feature_image_path) }}"
                                                 alt="ảnh đại diện">
                                         </td class="text-center">
@@ -275,7 +327,8 @@
                                         <td class="text-center"> {{ $product->selling_price }} </td>
 
                                         <td class="text-center">
-                                            {{ $product->category ? $product->category->name : '' }}
+                                            {{-- {{ $product->category ? $product->category->name : '' }} --}}
+                                            {{ optional($product->category)->name }}
                                         </td>
 
                                         <td class="text-center">
@@ -318,14 +371,13 @@
                                     </td>
                                 </tr>
                             @endif
+                            <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                         </tbody>
                     </table>
-                    <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                 </div>
             </div>
         </div>
     </div>
-
 
 
     <!-- Modal -->

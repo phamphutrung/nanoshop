@@ -116,7 +116,7 @@
                         $.each(response.error, function(index, val) {
                             $(form).find('span.slider_' + index + '_error').text(val);
                         })
-                    } else {
+                    } else if (response.code == 1){
                         $("#exampleModal").slideUp(300, function() {
                             $("#exampleModal").modal('hide');
                         });
@@ -297,12 +297,13 @@
         $(document).on('click', '.btn-edit', function(e) { //show form edit record
             var id = $(this).data('id');
             $('.form_edit').find('input[name="id"]').val(id)
+            // alert(id)
             $.ajax({
                 url: "{{ route('admin-slider-action') }}",
                 type: "POST",
                 dataType: 'json',
                 data: {
-                    id,
+                    id: id,
                     action: 'show form edit'
                 },
                 success: function(response) {
@@ -310,11 +311,12 @@
                     tinyMCE.get("tiny_description_edit").setContent(response.slider.description);
                     $('.image_edit').attr('src', "{{ asset('storage') }}/" + response.slider
                         .image_path)
+                
                 },
             })
         })
 
-        $(document).on('change', '#search_input', function() {
+        $(document).on('keyup', '#search_input', function() {
             var key = $('#search_input').val();
 
             $.ajax({

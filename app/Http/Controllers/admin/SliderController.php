@@ -5,6 +5,7 @@ namespace App\Http\Controllers\admin;
 use App\Http\Controllers\Controller;
 use App\Models\slider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -27,7 +28,6 @@ class SliderController extends Controller
 
     public function add(request $request)
     {
-
         $validator = Validator::make(
             $request->all(),
             [
@@ -150,14 +150,15 @@ class SliderController extends Controller
         } else 
         if ($request->action == "show form edit") {
             $slider = slider::find($request->id);
-            return response()->json(['slider' => $slider, 'message' => 'Đã cập nhật slider']);
+            return response()->json(['slider' => $slider]);
         }
     }
 
-    public function search(request $request) {
+    public function search(request $request)
+    {
         $key = $request->key;
-        $sliders = slider::where('title', 'like', '%'.$key.'%')->latest()->paginate(15);
+        $sliders = slider::where('title', 'like', '%' . $key . '%')->latest()->paginate(15);
         $view = view('admin.slider.main_data', compact('sliders'))->render();
-        return response()->json(['view' => $view, 'msg'=> $key]);
+        return response()->json(['view' => $view, 'msg' => $key]);
     }
 }

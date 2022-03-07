@@ -20,7 +20,7 @@
         <td class="text-center"> {{ $product->selling_price }} </td>
 
         <td class="text-center">
-            {{ $product->category ? $product->category->name : '' }}
+            {{ optional( $product->category)->name  }}
         </td>
 
         <td class="text-center">
@@ -63,3 +63,4 @@
     </td>
 </tr>
 @endif
+<div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>

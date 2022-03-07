@@ -54,7 +54,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/product-force-{id}', [AdminproductController::class, 'force'])->name('admin-product-force');
     Route::get('/product-updatetrending', [AdminproductController::class, 'updatetrending'])->name('admin-product-updatetrending');
     Route::get('/product-updatestatus', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
-    Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('view-product-detail');
+    Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('admin-product-detail');
+    Route::get('/product-filter', [AdminproductController::class, 'filter'])->name('admin-product-filter');
     // slider admin
     Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
     Route::post('/slider-add', [AdminSliderController::class, 'add'])->name('admin-slider-add');

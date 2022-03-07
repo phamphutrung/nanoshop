@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\DB;
 
 class product extends Model
 {
@@ -24,4 +25,6 @@ class product extends Model
     function category() {
         return $this->belongsTo('App\models\category');
     }
+
+   
 }
