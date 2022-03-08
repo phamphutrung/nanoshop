@@ -23,6 +23,9 @@
         .select2-selection__choice {
             background-color: #4b4645 !important;
         }
+        .select2-selection.select2-selection--single {    
+            padding-bottom: 28px;
+        }
 
     </style>
 
@@ -82,11 +85,13 @@
     <script>
         $(".tags_select2_choose").select2({
             tags: true,
-            tokenSeparators: [',', '']
+            tokenSeparators: [',', ''],
+            placeholder: "Thêm tags",
+            allowClear: true
         })
 
         $(".category_select2_choose").select2({
-
+          
         })
 
     </script>
@@ -178,7 +183,7 @@
                         <div class="col-md-12 mb-4">
                             <label for="category">Danh mục</label>
                             <select class="form-select category_select2_choose" name="category_id">
-                                <option value="0" selected>Chọn danh mục</option>
+                                <option value="0">Chọn danh mục</option>
                                 {!! $htmlSelectOptionCategory !!}
                             </select>
                         </div>

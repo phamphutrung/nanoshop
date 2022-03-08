@@ -23,6 +23,9 @@
         .select2-selection__choice {
             background-color: #4b4645 !important;
         }
+        .select2-selection.select2-selection--single {    
+            padding-bottom: 28px;
+        }
 
     </style>
 

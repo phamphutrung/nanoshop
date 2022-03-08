@@ -63,7 +63,7 @@
                                               box-shadow: 0 0 8px rgba(0,0,0,0.2);"
                                             src="{{ asset('storage/' . $category->avt) }}" alt="">
                                     </td>
-                                    <td>{{ $category->name }}</td>
+                                    <td class="text-bold">{{ $category->name }}</td>
                                     <td>
                                         @php
                                             foreach ($categoriesArray as $item) {

@@ -5,6 +5,7 @@ use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\admin\SliderController as AdminSliderController;
 use App\Http\Controllers\admin\SettingController as AdminSettingController;
+use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\testCart;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -71,5 +72,8 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::get('/setting-edit-delete', [AdminSettingController::class, 'delete'])->name('admin-setting-delete');
     Route::get('/setting-edit-delmulti', [AdminSettingController::class, 'deleteMultiple'])->name('admin-setting-delmulti');
     Route::get('/setting-search', [AdminSettingController::class, 'search'])->name('admin-setting-search');
+    //admin user
+    Route::get('/user', [AdminUserController::class, 'index'])->name('admin-user');
+    Route::post('/user-add', [AdminUserController::class, 'add'])->name('admin-user-add');
 
 });

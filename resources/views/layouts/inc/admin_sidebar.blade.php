@@ -10,7 +10,7 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex text-white">
       <div class="image mt-1">
-         <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> 
+         {{-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">  --}}
         <i class="fa-solid fa-user "></i>
       </div>
       <div class="info">
@@ -46,6 +46,14 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ route('admin-user') }}" class="nav-link {{ session('module_active')=='user'?'active':'' }}">
+            <i class="nav-icon fas fa-users"></i>
+            <p>
+                 Thành viên
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('admin-slider') }}" class="nav-link {{ session('module_active')=='slider'?'active':'' }}">
             <i class="nav-icon fa-solid fa-sliders"></i>
             <p>
@@ -61,6 +69,7 @@
             </p>
           </a>
         </li>
+
         <li class="nav-item">
           <a href="{{ route('admin-category') }}" class="nav-link ">
               <i class="nav-icon fas fa-sign-out-alt"></i>

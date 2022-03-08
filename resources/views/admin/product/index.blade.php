@@ -275,7 +275,7 @@
                         </div>
                         <div class="col-md-2">
                             <select name="" id="select_category_filter" class="form-control">
-                                <option value=0 >Tất cả danh mục</option>
+                                <option value=0>Tất cả danh mục</option>
                                 {!! $htmlSelectOptionCategory !!}
                             </select>
                         </div>
@@ -311,16 +311,13 @@
                                         <th class="text-center"></th>
 
                                         <td class="text-center">
-                                            <img style="width: 5rem;
-                                                                                                      height: 5rem;
-                                                                                                      border-radius: 10px;
-                                                                                                      box-shadow: 0 0 8px rgba(0,0,0,0.2);"
+                                            <img style="width: 5rem; height: 5rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);"
                                                 src="{{ asset('storage/' . $product->feature_image_path) }}"
                                                 alt="ảnh đại diện">
                                         </td class="text-center">
 
                                         <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
-                                            class="text-center text-bold productItem" data-id="{{ $product->id }}"
+                                            class="text-center text-bold productItem text-primary" data-id="{{ $product->id }}"
                                             style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             {{ $product->name }}</td>
 
