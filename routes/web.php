@@ -31,7 +31,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 route::get('test-cart', [testCart::class, 'add']);
 
-Route::middleware(['auth', 'isAdmin'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('dashboard');
     // category admin
@@ -77,5 +77,6 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     Route::post('/user-add', [AdminUserController::class, 'add'])->name('admin-user-add');
     Route::get('/user-edit', [AdminUserController::class, 'edit'])->name('admin-user-edit');
     Route::post('/user-update', [AdminUserController::class, 'update'])->name('admin-user-update');
+    Route::get('/user-action', [AdminUserController::class, 'action'])->name('admin-user-action');
 
 });

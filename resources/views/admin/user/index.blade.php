@@ -126,7 +126,9 @@
             $.ajax({
                 url: "{{ route('admin-user-edit') }}",
                 type: 'get',
-                data: {id: id},
+                data: {
+                    id: id
+                },
                 dataType: 'json',
                 success: function(response) {
                     $('#name_edit').val(response.user.name);
@@ -137,7 +139,7 @@
             })
         })
 
-        $(document).on('submit', '#form_edit', function(e) {
+        $(document).on('submit', '#form_edit', function(e) { // update user
             e.preventDefault();
             var form = this;
             var id = $(this).find('input[name="id"]').val();
@@ -156,7 +158,7 @@
                 success: function(response) {
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
-                    if(response.code == 0) {
+                    if (response.code == 0) {
 
                     } else {
                         $('#main_data').html(response.view);
@@ -168,6 +170,39 @@
                 }
             })
         })
+
+        $(document).on('click', '.btn-delete', function(e) {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: "Thành viên sẽ được đưa vào thùng rác",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin-user-action') }}",
+                        type: "get",
+                        dataType: 'json',
+                        data: {
+                            id: id,
+                            action: 'delete single'
+                        },
+                        success: function(response) {
+                            $('#user_' + id).fadeOut('slow', function() {
+                                $('#main_data').html(response.view);
+                            });
+                            alertify.success(response.msg)
+                        }
+                    })
+                }
+            })
+
+        })
+
     </script>
 @endsection
 @section('content')
@@ -217,16 +252,21 @@
                         <tbody id="main_data">
                             @if ($users->count() > 0)
                                 @foreach ($users as $user)
-                                    <tr>
+                                    <tr id="user_{{ $user->id }}">
                                         <td class="text-center">
                                             <input type="checkbox" name="item_check">
                                         </td>
                                         <td class="text-primary text-bold">{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>phạm trung</td>
+                                        <td>
+                                            @foreach ($user->roles as $role)
+                                                <span class="badge rounded-pill bg-info">{{ $role->name }}</span>
+                                            @endforeach
+                                        </td>
                                         <td class="d-flex justify-content-center">
-                                            <button data-id="{{ $user->id }}" class="btn-primary btn btn-edit mr-2" data-bs-toggle="modal"
-                                                data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $user->id }}" class="btn-primary btn btn-edit mr-2"
+                                                data-bs-toggle="modal" data-bs-target="#edit_user_modal"><i
+                                                    class="fas fa-edit"></i></button>
                                             <button data-id="{{ $user->id }}" class="btn-danger btn btn-delete"><i
                                                     class="fas fa-ban"></i></button>
                                         </td>
@@ -313,14 +353,16 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="" class="col-form-label">Tên:</label>
-                            <input class="form-control" type="text" placeholder="Nhập tên thành viên" name="name" id="name_edit">
+                            <input class="form-control" type="text" placeholder="Nhập tên thành viên" name="name"
+                                id="name_edit">
                             <span class="text-danger error-text error_name"></span>
 
                         </div>
                         <div class="mb-3">
                             <label for="" class="col-form-label">Email: <span
                                     style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
-                            <input class="form-control" type="email" placeholder="Nhập email thành viên" name="email" id="email_edit">
+                            <input class="form-control" type="email" placeholder="Nhập email thành viên" name="email"
+                                id="email_edit">
                             <span class="text-danger error-text error_email"></span>
                         </div>
                         <div class="mb-3">
@@ -333,8 +375,8 @@
                             <label for="" class="col-form-label">Vài trò: <span
                                     style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
                             <select class="d-block" name="roles[]" id="role_edit" multiple>
-                                
-                             
+
+
                             </select>
                             <span class="text-danger error-text error_roles"></span>
                         </div>

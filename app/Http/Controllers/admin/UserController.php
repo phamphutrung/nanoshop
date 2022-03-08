@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -106,5 +107,17 @@ class UserController extends Controller
             $view = view('admin.user.main_data', compact('users'))->render();
             return response()->json(['view' => $view, 'msg' => 'Đã cập nhật thành viên']);
         }
+    }
+
+    function action(request $request) {
+        if($request->action == "delete single") {
+            User::destroy($request->id);
+        }
+
+        DB::table('role_user')->where('user_id', $request->id)->delete();
+        
+        $users = User::latest()->paginate(15);
+        $view = view('admin.user.main_data', compact('users'))->render();
+        return response()->json(['view' => $view, 'msg' => "Đã xóa thành viên"]);
     }
 }
