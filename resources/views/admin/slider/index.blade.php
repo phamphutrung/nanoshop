@@ -129,7 +129,7 @@
             })
         })
 
-        $(document).on('submit', '.form_edit', function(e) { //edit slider
+        $(document).on('submit', '.form_edit', function(e) { //update slider
             e.preventDefault();
             var id = $('.form_edit').find('input[name="id"]').val()
 

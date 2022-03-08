@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .select2-selection__choice {
-            background-color: #4b4645 !important;
+            background-color: #048eaaa9 !important;
         }
 
         span.select2-container.select2-container--default {
@@ -31,6 +31,11 @@
 
             $("#role").select2({
                 dropdownParent: $("#add_user_modal"),
+                // tokenSeparators: [',', ''],
+                placeholder: "Chọn vai trò cho thành viên",
+            });
+            $("#role_edit").select2({
+                dropdownParent: $("#edit_user_modal"),
                 // tokenSeparators: [',', ''],
                 placeholder: "Chọn vai trò cho thành viên",
             });
@@ -109,12 +114,60 @@
             })
         })
 
-        $(document).on('click', '#add-btn', function() {
+        $(document).on('click', '#add-btn', function() { // reset form add
             $('#form_add').find('input').val('')
             $('#form_add').find('span.error-text').text('')
             $('#form_add').find('select').prop('selected', false)
         })
 
+        $(document).on('click', '.btn-edit', function() { // show form edit
+            var id = $(this).data('id');
+            $('input[name="id"]').val(id);
+            $.ajax({
+                url: "{{ route('admin-user-edit') }}",
+                type: 'get',
+                data: {id: id},
+                dataType: 'json',
+                success: function(response) {
+                    $('#name_edit').val(response.user.name);
+                    $('#email_edit').val(response.user.email);
+                    $('#password_edit').val(response.user.password);
+                    $('#role_edit').html(response.htmlSelectOptionRoles)
+                }
+            })
+        })
+
+        $(document).on('submit', '#form_edit', function(e) {
+            e.preventDefault();
+            var form = this;
+            var id = $(this).find('input[name="id"]').val();
+            $.ajax({
+                url: "{{ route('admin-user-update') }}",
+                type: 'POST',
+                dataType: 'json',
+                data: new FormData(form),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(form).find('span.text-danger').text('');
+                    $('#btn_update').find('i').removeClass('d-none');
+                    $('#btn_update').prop('disabled', true)
+                },
+                success: function(response) {
+                    $('#btn_update').find('i').addClass('d-none');
+                    $('#btn_update').prop('disabled', false)
+                    if(response.code == 0) {
+
+                    } else {
+                        $('#main_data').html(response.view);
+                        $("#edit_user_modal").slideUp(300, function() {
+                            $("#edit_user_modal").modal('hide');
+                        });
+                        alertify.success(response.msg)
+                    }
+                }
+            })
+        })
     </script>
 @endsection
 @section('content')
@@ -172,9 +225,9 @@
                                         <td>{{ $user->email }}</td>
                                         <td>phạm trung</td>
                                         <td class="d-flex justify-content-center">
-                                            <button class="btn-primary btn btn-edit mr-2" data-bs-toggle="modal"
-                                                data-bs-target="#"><i class="fas fa-edit"></i></button>
-                                            <button data-id="" class="btn-danger btn btn-delete"><i
+                                            <button data-id="{{ $user->id }}" class="btn-primary btn btn-edit mr-2" data-bs-toggle="modal"
+                                                data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $user->id }}" class="btn-danger btn btn-delete"><i
                                                     class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
@@ -242,6 +295,54 @@
                     <div class="modal-footer bg-cyan-100">
                         <button id="btn_add" type="submit" class="btn btn-primary btn_add"><i
                                 class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Tạo mới</button>
+                        <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="edit_user_modal" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header bg-cyan-200 text-light">
+                    <h5 class="modal-title" id="exampleModalLabel">Chỉnh sửa thành viên</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form_edit">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="" class="col-form-label">Tên:</label>
+                            <input class="form-control" type="text" placeholder="Nhập tên thành viên" name="name" id="name_edit">
+                            <span class="text-danger error-text error_name"></span>
+
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="col-form-label">Email: <span
+                                    style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
+                            <input class="form-control" type="email" placeholder="Nhập email thành viên" name="email" id="email_edit">
+                            <span class="text-danger error-text error_email"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="col-form-label">Mật khẩu: </label>
+                            <input class="form-control" type="text" placeholder="Nhập mật khẩu cho tài khoản"
+                                name="password" id="password_edit">
+                            <span class="text-danger error-text error_password"></span>
+                        </div>
+                        <div class="mb-3">
+                            <label for="" class="col-form-label">Vài trò: <span
+                                    style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
+                            <select class="d-block" name="roles[]" id="role_edit" multiple>
+                                
+                             
+                            </select>
+                            <span class="text-danger error-text error_roles"></span>
+                        </div>
+                        <input type="hidden" name="id">
+                    </div>
+                    <div class="modal-footer bg-cyan-100">
+                        <button id="btn_update" type="submit" class="btn btn-primary btn_add"><i
+                                class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật</button>
                         <button id="close-btn" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                     </div>
                 </form>

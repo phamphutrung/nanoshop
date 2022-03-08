@@ -8,9 +8,9 @@
         <td>{{ $user->email }}</td>
         <td>phạm trung</td>
         <td class="d-flex justify-content-center">
-            <button class="btn-primary btn btn-edit mr-2" data-bs-toggle="modal"
-                data-bs-target="#"><i class="fas fa-edit"></i></button>
-            <button data-id="" class="btn-danger btn btn-delete"><i
+            <button data-id="{{ $user->id }}" class="btn-primary btn btn-edit mr-2" data-bs-toggle="modal"
+                data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
+            <button data-id="{{ $user->id }}" class="btn-danger btn btn-delete"><i
                     class="fas fa-ban"></i></button>
         </td>
     </tr>

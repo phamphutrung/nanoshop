@@ -75,5 +75,7 @@ Route::middleware(['auth', 'isAdmin'])->group(function () {
     //admin user
     Route::get('/user', [AdminUserController::class, 'index'])->name('admin-user');
     Route::post('/user-add', [AdminUserController::class, 'add'])->name('admin-user-add');
+    Route::get('/user-edit', [AdminUserController::class, 'edit'])->name('admin-user-edit');
+    Route::post('/user-update', [AdminUserController::class, 'update'])->name('admin-user-update');
 
 });
