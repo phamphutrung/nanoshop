@@ -32,7 +32,8 @@ class UserController extends Controller
         $validator  = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
-            'roles' => 'required'
+            'roles' => 'required',
+            'name' => 'required'
         ], [
             'required' => 'Không được để trống',
             'unique' => 'Email đã tồn tại',
@@ -79,14 +80,15 @@ class UserController extends Controller
         $id = $request->id;
         $validator = Validator::make($request->all(),[
             'email' => "required|email|unique:users,email,$id,id",
-            'roles' => 'required'
+            'roles' => 'required',
+            'name' => 'required'
         ], [
             'required' => 'Không được để trống',
             'unique' => 'Email đã tồn tại',
         ]);
         if ($validator->fails()) {
             $error = $validator->errors()->toArray();
-            return response()->json(['code' => 1, 'error' => $error]);
+            return response()->json(['code' => 0, 'error' => $error]);
         } else {
             $data_update = [
                 'name' => $request->name,
@@ -101,7 +103,7 @@ class UserController extends Controller
                 foreach ($request->roles as $roleId) {
                     $roleIds[] = $roleId;
                 }
-                $user->roles()->sync($roleIds);
+                $user->roles()->sync($roleIds); // bất cứ id nào k có trong mảng roleIds sẽ được xóa ra khỏi bảng trung gian
             }
             $users = User::latest()->paginate(15);
             $view = view('admin.user.main_data', compact('users'))->render();
@@ -112,9 +114,16 @@ class UserController extends Controller
     function action(request $request) {
         if($request->action == "delete single") {
             User::destroy($request->id);
+            DB::table('role_user')->where('user_id', $request->id)->delete();
+        } 
+
+        if($request->action == "delete multiple") {
+            User::destroy($request->listId);
+            foreach($request->listId as $id) {
+                DB::table('role_user')->where('user_id', $id)->delete();
+            }
         }
 
-        DB::table('role_user')->where('user_id', $request->id)->delete();
         
         $users = User::latest()->paginate(15);
         $view = view('admin.user.main_data', compact('users'))->render();

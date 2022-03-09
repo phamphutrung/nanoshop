@@ -316,9 +316,8 @@
             })
         })
 
-        $(document).on('keyup', '#search_input', function() {
+        $(document).on('change', '#search_input', function() {
             var key = $('#search_input').val();
-
             $.ajax({
                 url: "slider-search?key=" + key,
                 type: 'get',

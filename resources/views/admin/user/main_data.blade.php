@@ -2,9 +2,9 @@
     @foreach ($users as $user)
         <tr id="user_{{ $user->id }}">
             <td class="text-center">
-                <input type="checkbox" name="item_check">
+                <input value="{{ $user->id}}" type="checkbox" name="item_check">
             </td>
-            <td class="text-primary text-bold">{{ $user->name }}</td>
+            <td class="text-primary text-capitalize text-bold">{{ $user->name }}</td>
             <td>{{ $user->email }}</td>
             <td>
                 @foreach ($user->roles as $role)

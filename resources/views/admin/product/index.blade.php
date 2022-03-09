@@ -317,7 +317,7 @@
                                         </td class="text-center">
 
                                         <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
-                                            class="text-center text-bold productItem text-primary" data-id="{{ $product->id }}"
+                                            class="text-center text-bold text-capitalize productItem text-primary" data-id="{{ $product->id }}"
                                             style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                             {{ $product->name }}</td>
 
@@ -325,7 +325,8 @@
 
                                         <td class="text-center">
                                             {{-- {{ $product->category ? $product->category->name : '' }} --}}
-                                            {{ optional($product->category)->name }}
+                                            <span class="badge bg-warning text-dark">{{ optional($product->category)->name }}</span>
+                                            
                                         </td>
 
                                         <td class="text-center">
@@ -345,13 +346,13 @@
                                         </td>
                                         <td class="text-center">
                                             <a data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"
-                                                class="btn opacity-75 btn-primary"
+                                                class="btn btn-primary"
                                                 href="{{ route('admin-product-edit', [$product->id]) }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <button data-id="{{ $product->id }} " data-toggle="tooltip"
                                                 data-placement="top" title="Xóa"
-                                                class="btn btn-danger opacity-75 btn_delete">
+                                                class="btn btn-danger btn_delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>

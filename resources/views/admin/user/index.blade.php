@@ -80,6 +80,43 @@
             }
         }
 
+        $(document).on('click', '#deleteAllBtn', function() {
+            var listId = [];
+            $('input[name="item_check"]:checked').each(function() {
+                listId.push($(this).val());
+            })
+            var countCheck = listId.length;
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: countCheck + " user được chọn để xóa",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin-user-action') }}",
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                            listId: listId,
+                            action: 'delete multiple'
+                        },
+                        success: function(response) {
+                            $('#deleteAllBtn').addClass('d-none');
+                            $.each(listId, function(index, val) {
+                                $('#user_' + val).fadeOut('slow', function() {
+                                    $('#main_data').html(response.view);
+                                })
+                            })
+                        }
+                    })
+                }
+            })
+        })
+
         $(document).on('submit', '#form_add', function(e) { // add user
             e.preventDefault();
 
@@ -159,7 +196,9 @@
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
                     if (response.code == 0) {
-
+                        $.each(response.error, function(index, val) {
+                            $(form).find('span.error_' + index).text(val);
+                        })
                     } else {
                         $('#main_data').html(response.view);
                         $("#edit_user_modal").slideUp(300, function() {
@@ -171,7 +210,7 @@
             })
         })
 
-        $(document).on('click', '.btn-delete', function(e) {
+        $(document).on('click', '.btn-delete', function(e) { // delete single user
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
@@ -254,9 +293,9 @@
                                 @foreach ($users as $user)
                                     <tr id="user_{{ $user->id }}">
                                         <td class="text-center">
-                                            <input type="checkbox" name="item_check">
+                                            <input value="{{ $user->id }}" type="checkbox" name="item_check">
                                         </td>
-                                        <td class="text-primary text-bold">{{ $user->name }}</td>
+                                        <td class="text-primary text-capitalize text-bold">{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td>
                                             @foreach ($user->roles as $role)
@@ -301,7 +340,8 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="" class="col-form-label">Tên:</label>
+                            <label for="" class="col-form-label">Tên: <span
+                                    style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
                             <input class="form-control" type="text" placeholder="Nhập tên thành viên" name="name" id="">
                             <span class="text-danger error-text error_name"></span>
 
@@ -352,7 +392,8 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="" class="col-form-label">Tên:</label>
+                            <label for="" class="col-form-label">Tên: <span
+                                    style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
                             <input class="form-control" type="text" placeholder="Nhập tên thành viên" name="name"
                                 id="name_edit">
                             <span class="text-danger error-text error_name"></span>

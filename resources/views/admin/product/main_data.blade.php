@@ -20,7 +20,7 @@
         <td class="text-center"> {{ $product->selling_price }} </td>
 
         <td class="text-center">
-            {{ optional( $product->category)->name  }}
+            <span class="badge bg-warning text-dark">{{ optional($product->category)->name }}</span>
         </td>
 
         <td class="text-center">
@@ -40,13 +40,13 @@
         </td>
         <td class="text-center">
             <a data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"
-                class="btn opacity-75 btn-primary"
+                class="btn btn-primary"
                 href="{{ route('admin-product-edit', [$product->id]) }}">
                 <i class="fa-solid fa-pen-to-square"></i>
             </a>
             <button data-id="{{ $product->id }} " data-toggle="tooltip"
                 data-placement="top" title="Xóa"
-                class="btn btn-danger opacity-75 btn_delete">
+                class="btn btn-danger btn_delete">
                 <i class="fa-solid fa-trash"></i>
             </button>
         </td>
