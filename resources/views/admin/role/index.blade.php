@@ -116,6 +116,37 @@
             })
         })
 
+        $(document).on('click', '.btn_delete', function() {
+            var id = $(this).data('id');
+            Swal.fire({
+                title: 'Bạn muốn xóa?',
+                text: "Vai trò sẽ được xóa",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#198754',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "{{ route('admin-role-delete') }}",
+                        type: "get",
+                        dataType: 'json',
+                        data: {
+                            id: id,
+                        },
+                        success: function(response) {
+                            $('#role_' + id).fadeOut('slow', function() {
+                                $('#main_data').html(response.view);
+                            });
+                            // window.location.reload()
+                            alertify.success(response.msg)
+                        }
+                    })
+                }
+            })
+        })
+
         $('.check_main').on('click', function() {
             $(this).parents('.card').find('input').prop('checked', $(this).prop('checked'));
         })
@@ -166,7 +197,7 @@
                         <tbody id="main_data">
                             @if ($roles->count() > 0)
                                 @foreach ($roles as $role)
-                                    <tr>
+                                    <tr id="role_{{ $role->id }}">
                                         <td class="text-center"><strong>{{ $role->name }}</strong></td>
                                         <td class="">{{ $role->title }}</td>
                                         <td class="d-flex justify-content-center">

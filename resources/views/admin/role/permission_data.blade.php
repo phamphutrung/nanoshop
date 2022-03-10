@@ -14,8 +14,8 @@
                 <div class="form-check form-check-inline">
                     <input type="checkbox" class="form-check-input check_item"
                         {{ $permissionOfRoles->contains('id', $permissionChild->id) ? 'checked' : '' }}
-                        name="permission_ids[]" id="{{ $permissionChild->title }}" value="{{ $permissionChild->id }}">
-                    <label class="form-check-label" for="{{ $permissionChild->title }}">
+                        name="permission_ids[]" id="b_{{ $permissionChild->title }}" value="{{ $permissionChild->id }}">
+                    <label class="form-check-label" for="b_{{ $permissionChild->title }}">
                         {{ $permissionChild->name }}
                     </label>
                 </div>

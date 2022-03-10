@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\permission;
 use App\Models\role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class RoleController extends Controller
@@ -77,5 +78,14 @@ class RoleController extends Controller
         $permissionOfRoles = $role->permissions;
         $viewPermission_data = view('admin.role.permission_data', compact('permissionParents', 'permissionOfRoles'))->render();
         return response()->json(['role' => $role, 'viewPermission_data' => $viewPermission_data]);
+    }
+
+    function delete(request $request) {
+        $role = role::find($request->id);
+        $role->permissions()->detach();
+        $role->delete();
+        $roles = role::latest()->paginate(15);
+        $view = view('admin.role.main_data', compact('roles'))->render();
+        return response()->json(['msg' => 'Đã xóa vai trò', 'view' => $view]);
     }
 }

@@ -1,6 +1,6 @@
 @if ($roles->count() > 0)
     @foreach ($roles as $role)
-        <tr>
+        <tr id="role_{{ $role->id }}">
             <td class="text-center"><strong>{{ $role->name }}</strong></td>
             <td class="">{{ $role->title }}</td>
             <td class="d-flex justify-content-center">

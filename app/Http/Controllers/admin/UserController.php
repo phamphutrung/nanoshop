@@ -118,8 +118,6 @@ class UserController extends Controller
                 DB::table('role_user')->where('user_id', $id)->delete();
             }
         }
-
-
         $users = User::latest()->paginate(15);
         $view = view('admin.user.main_data', compact('users'))->render();
         return response()->json(['view' => $view, 'msg' => "Đã xóa thành viên"]);

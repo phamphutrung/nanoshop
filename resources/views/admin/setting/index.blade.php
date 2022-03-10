@@ -329,7 +329,7 @@
                                         </td>
                                         <td>{!! $setting->config_key !!}</td>
                                         <td>{!! $setting->config_value !!}</td>
-                                        <td class="d-flex justify-content-center">
+                                        <td class=" text-center">
                                             <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit btn-sm mr-2"
                                                 data-bs-toggle="modal" data-bs-target="#edit_config"><i
                                                     class="fas fa-edit"></i></button>

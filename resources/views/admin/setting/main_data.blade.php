@@ -7,9 +7,9 @@
             <td>{!! $setting->config_key !!}</td>
             <td>{!! $setting->config_value !!}</td>
             <td class="d-flex justify-content-center">
-                <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit mr-2 opacity-75" data-bs-toggle="modal"
+                <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit mr-2 btn-sm" data-bs-toggle="modal"
                     data-bs-target="#edit_config"><i class="fas fa-edit"></i></button>
-                <button data-id="{{ $setting->id }}" class="btn-danger btn btn-delete opacity-75"><i
+                <button data-id="{{ $setting->id }}" class="btn-danger btn btn-delete btn-sm"><i
                         class="fas fa-ban"></i></button>
             </td>
         </tr>

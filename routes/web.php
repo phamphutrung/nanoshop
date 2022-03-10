@@ -90,6 +90,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/role-add', [RoleController::class, 'add'])->name('admin-role-add');
     Route::get('/role-edit', [RoleController::class, 'edit'])->name('admin-role-edit');
     Route::post('/role-update', [RoleController::class, 'update'])->name('admin-role-update');
+    Route::get('/role-delete', [RoleController::class, 'delete'])->name('admin-role-delete');
 
 
 
