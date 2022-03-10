@@ -58,24 +58,26 @@ class UserController extends Controller
         }
     }
 
-    function edit(request $request) {
+    function edit(request $request)
+    {
         $user = User::find($request->id);
         $roles = role::all();
         $roleOfusers = $user->roles;
         $htmlSelectOptionRoles = '';
         foreach ($roles as $role) {
-            if( $roleOfusers->contains('id', $role->id)) {
-                $htmlSelectOptionRoles .= '<option selected value="' .$role->id .'">'. $role->name .'</option>';
+            if ($roleOfusers->contains('id', $role->id)) {
+                $htmlSelectOptionRoles .= '<option selected value="' . $role->id . '">' . $role->name . '</option>';
             } else {
-                $htmlSelectOptionRoles .= '<option value="' .$role->id .'">'. $role->name .'</option>';
+                $htmlSelectOptionRoles .= '<option value="' . $role->id . '">' . $role->name . '</option>';
             }
         }
         return response()->json(['user' => $user, 'htmlSelectOptionRoles' => $htmlSelectOptionRoles]);
     }
 
-    function update(request $request) {
+    function update(request $request)
+    {
         $id = $request->id;
-        $validator = Validator::make($request->all(),[
+        $validator = Validator::make($request->all(), [
             'email' => "required|email|unique:users,email,$id,id",
             'roles' => 'required',
             'name' => 'required'
@@ -91,37 +93,33 @@ class UserController extends Controller
                 'name' => $request->name,
                 'email' => $request->email,
             ];
-            if($request->password) {
+            if ($request->password) {
                 $data_update['password'] = Hash::make($request->password);
             }
             $user = User::find($id);
             $user->update($data_update);
-            if ($request->roles) {
-                foreach ($request->roles as $roleId) {
-                    $roleIds[] = $roleId;
-                }
-                $user->roles()->sync($roleIds); // bất cứ id nào k có trong mảng roleIds sẽ được xóa ra khỏi bảng trung gian
-            }
+            $user->roles()->sync($request->roles); // bất cứ id nào k có trong mảng roleIds sẽ được xóa ra khỏi bảng trung gian
             $users = User::latest()->paginate(15);
             $view = view('admin.user.main_data', compact('users'))->render();
             return response()->json(['view' => $view, 'msg' => 'Đã cập nhật thành viên']);
         }
     }
 
-    function action(request $request) {
-        if($request->action == "delete single") {
+    function action(request $request)
+    {
+        if ($request->action == "delete single") {
             User::destroy($request->id);
             DB::table('role_user')->where('user_id', $request->id)->delete();
-        } 
+        }
 
-        if($request->action == "delete multiple") {
+        if ($request->action == "delete multiple") {
             User::destroy($request->listId);
-            foreach($request->listId as $id) {
+            foreach ($request->listId as $id) {
                 DB::table('role_user')->where('user_id', $id)->delete();
             }
         }
 
-        
+
         $users = User::latest()->paginate(15);
         $view = view('admin.user.main_data', compact('users'))->render();
         return response()->json(['view' => $view, 'msg' => "Đã xóa thành viên"]);

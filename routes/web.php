@@ -89,6 +89,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/role', [RoleController::class, 'index'])->name('admin-role');
     Route::post('/role-add', [RoleController::class, 'add'])->name('admin-role-add');
     Route::get('/role-edit', [RoleController::class, 'edit'])->name('admin-role-edit');
+    Route::post('/role-update', [RoleController::class, 'update'])->name('admin-role-update');
+
 
 
 });

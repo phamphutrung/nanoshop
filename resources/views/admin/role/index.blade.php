@@ -11,7 +11,7 @@
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script> // cdn alert tify
 
     <script>
-         $.ajaxSetup({
+        $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
@@ -62,20 +62,63 @@
             })
         })
 
-        $(document).on('click', '.btn_edit', function(){
+        $(document).on('click', '.btn_edit', function() { // show form edit
             var id = $(this).data('id');
+            $('input[name="id"]').val(id);
             $.ajax({
                 url: "{{ route('admin-role-edit') }}",
                 type: 'get',
                 dataType: 'json',
-                data: {id:id},
+                data: {
+                    id: id
+                },
                 success: function(response) {
                     $('#name_edit').val(response.role.name);
                     $('#title_edit').val(response.role.title);
                     $('#permission_data').html(response.viewPermission_data)
                 }
             })
-        }) 
+        })
+
+        $(document).on('submit', '#form_edit', function(e) { // update user
+            e.preventDefault();
+            var form = this;
+            var id = $(this).find('input[name="id"]').val();
+            $.ajax({
+                url: "{{ route('admin-role-update') }}",
+                type: 'POST',
+                dataType: 'json',
+                data: new FormData(form),
+                contentType: false,
+                processData: false,
+                beforeSend: function() {
+                    $(form).find('span.text-danger').text('');
+                    $('#btn_update').find('i').removeClass('d-none');
+                    $('#btn_update').prop('disabled', true)
+                },
+                success: function(response) {
+                    $('#btn_update').find('i').addClass('d-none');
+                    $('#btn_update').prop('disabled', false)
+                    if (response.code == 0) {
+                        $.each(response.errors, function(index, val) {
+                            $(form).find('small.error_' + index).text(val);
+                        })
+                    } else {
+                        $('#main_data').html(response.view);
+                        $("#edit_role_model").slideUp(300, function() {
+                            $("#edit_role_model").modal('hide');
+                        });
+                        alertify.success(response.msg)
+                        $(form)[0].reset();
+                        $(form).find('small').text('')
+                    }
+                }
+            })
+        })
+
+        $('.check_main').on('click', function() {
+            $(this).parents('.card').find('input').prop('checked', $(this).prop('checked'));
+        })
 
     </script>
 @endsection
@@ -185,7 +228,7 @@
                                 <div class="card border-primary">
                                     <div class="card-header bg-cyan-200 text-light">
                                         <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name=""
+                                            <input type="checkbox" class="form-check-input check_main" name=""
                                                 id="{{ $permissionParent->name }}">
                                             <label class="form-check-label" for="{{ $permissionParent->name }}">
                                                 Module {{ $permissionParent->name }}
@@ -195,8 +238,8 @@
                                     <div class="card-body d-flex justify-content-between">
                                         @foreach ($permissionParent->permissionChilds as $permissionChild)
                                             <div class="form-check form-check-inline">
-                                                <input type="checkbox" class="form-check-input role_category_check_item"
-                                                    name="permissions[]" id="{{ $permissionChild->name }}"
+                                                <input type="checkbox" class="form-check-input check_item"
+                                                    name="permission_ids[]" id="{{ $permissionChild->name }}"
                                                     value="{{ $permissionChild->id }}">
                                                 <label class="form-check-label" for="{{ $permissionChild->name }}">
                                                     {{ $permissionChild->name }}
@@ -231,7 +274,8 @@
                         <div class="col-md-12">
                             <div class="mb-3">
                                 <label for="" class="form-label">Tên: </label>
-                                <input type="text" name="name" id="name_edit" class="form-control" placeholder="Nhập tên vai trò">
+                                <input type="text" name="name" id="name_edit" class="form-control"
+                                    placeholder="Nhập tên vai trò">
                                 <small id="" class="text-danger text-error error_name"></small>
                             </div>
                             <div class="mb-3">
@@ -239,34 +283,11 @@
                                 <input type="text" name="title" id="title_edit" class="form-control"
                                     placeholder="Nhập mô tả của vai trò">
                             </div>
+                            <input type="hidden" name="id">
                         </div>
 
                         <div class="col-md-12" id="permission_data">
-                            @foreach ($permissionParents as $permissionParent)
-                                <div class="card border-primary">
-                                    <div class="card-header bg-cyan-200 text-light">
-                                        <div class="form-check form-check-inline">
-                                            <input type="checkbox" class="form-check-input" name=""
-                                                id="{{ $permissionParent->name }}">
-                                            <label class="form-check-label" for="{{ $permissionParent->name }}">
-                                                Module {{ $permissionParent->name }}
-                                            </label>
-                                        </div>
-                                    </div>
-                                    <div class="card-body d-flex justify-content-between">
-                                        @foreach ($permissionParent->permissionChilds as $permissionChild)
-                                            <div class="form-check form-check-inline">
-                                                <input type="checkbox" class="form-check-input role_category_check_item"
-                                                    name="permissions[]" id="{{ $permissionChild->name }}"
-                                                    value="{{ $permissionChild->id }}">
-                                                <label class="form-check-label" for="{{ $permissionChild->name }}">
-                                                    {{ $permissionChild->name }}
-                                                </label>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endforeach
+                          
                         </div>
                     </div>
                     <div class="modal-footer">
