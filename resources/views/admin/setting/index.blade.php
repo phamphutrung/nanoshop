@@ -330,10 +330,10 @@
                                         <td>{!! $setting->config_key !!}</td>
                                         <td>{!! $setting->config_value !!}</td>
                                         <td class="d-flex justify-content-center">
-                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit opacity-75 mr-2"
+                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit btn-sm mr-2"
                                                 data-bs-toggle="modal" data-bs-target="#edit_config"><i
                                                     class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $setting->id }}" class="btn-danger btn opacity-75 btn-delete"><i
+                                            <button data-id="{{ $setting->id }}" class="btn-danger btn btn-sm btn-delete"><i
                                                     class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>

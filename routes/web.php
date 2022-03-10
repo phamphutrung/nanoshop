@@ -88,5 +88,7 @@ Route::middleware(['auth'])->group(function () {
     // admin role 
     Route::get('/role', [RoleController::class, 'index'])->name('admin-role');
     Route::post('/role-add', [RoleController::class, 'add'])->name('admin-role-add');
+    Route::get('/role-edit', [RoleController::class, 'edit'])->name('admin-role-edit');
+
 
 });

@@ -36,8 +36,19 @@ class RoleController extends Controller
         } else {
             $role = role::create($request->all());
             $role->permissions()->attach($request->permissions);
-            return response()->json(['msg' => 'Đã thêm vai trò']);
+            $roles = role::latest()->paginate(15);
+            $view = view('admin.role.main_data', compact('roles'))->render();
+            return response()->json(['msg' => 'Đã thêm vai trò', 'view' => $view]);
         }
+    }
+
+    function edit(request $request) {
+        $id = $request->id;
+        $role = role::find($id);
+        $permissionParents = permission::where('parent_id', 0)->get();
+        $permissionOfRoles = $role->permissions;
+        $viewPermission_data = view('admin.role.permission_data', compact('permissionParents', 'permissionOfRoles'))->render();
+        return response()->json(['role' => $role, 'viewPermission_data' => $viewPermission_data]);
     }
 
 }

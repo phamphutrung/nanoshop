@@ -4,9 +4,9 @@
             <td class="text-center"><strong>{{ $role->name }}</strong></td>
             <td class="">{{ $role->title }}</td>
             <td class="d-flex justify-content-center">
-                <button data-id="{{ $role->id }}" class="btn-primary btn-sm btn btn-edit mr-2"
-                    data-bs-toggle="modal" data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
-                <button data-id="{{ $role->id }}" class="btn-danger btn btn-sm btn-delete"><i
+                <button data-id="{{ $role->id }}" class="btn-primary btn-sm btn btn_edit mr-2"
+                    data-bs-toggle="modal" data-bs-target="#edit_role_model"><i class="fas fa-edit"></i></button>
+                <button data-id="{{ $role->id }}" class="btn-danger btn btn-sm btn_delete"><i
                         class="fas fa-ban"></i></button>
             </td>
         </tr>

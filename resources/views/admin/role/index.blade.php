@@ -27,7 +27,7 @@
             $('#area_search').addClass('col-md-2')
         })
 
-        $(document).on('submit', '#form_add', function(e) {
+        $(document).on('submit', '#form_add', function(e) { // add role
             e.preventDefault()
             var form = this
             $.ajax({
@@ -50,11 +50,32 @@
                             $(form).find('small.error_' + index).text(val);
                         })
                     } else {
+                        $('#main_data').html(response.view)
                         alertify.success(response.msg)
+                        $("#add_role_model").slideUp(300, function() {
+                            $("#add_role_model").modal('hide');
+                        });
+                        $(form)[0].reset();
+                        $(form).find('small').text('')
                     }
                 }
             })
         })
+
+        $(document).on('click', '.btn_edit', function(){
+            var id = $(this).data('id');
+            $.ajax({
+                url: "{{ route('admin-role-edit') }}",
+                type: 'get',
+                dataType: 'json',
+                data: {id:id},
+                success: function(response) {
+                    $('#name_edit').val(response.role.name);
+                    $('#title_edit').val(response.role.title);
+                    $('#permission_data').html(response.viewPermission_data)
+                }
+            })
+        }) 
 
     </script>
 @endsection
@@ -107,10 +128,10 @@
                                         <td class="">{{ $role->title }}</td>
                                         <td class="d-flex justify-content-center">
                                             <button data-id="{{ $role->id }}"
-                                                class="btn-primary btn-sm btn btn-edit mr-2" data-bs-toggle="modal"
-                                                data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
+                                                class="btn-primary btn-sm btn btn_edit mr-2" data-bs-toggle="modal"
+                                                data-bs-target="#edit_role_model"><i class="fas fa-edit"></i></button>
                                             <button data-id="{{ $role->id }}"
-                                                class="btn-danger btn btn-sm btn-delete"><i class="fas fa-ban"></i></button>
+                                                class="btn-danger btn btn-sm btn_delete"><i class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -196,5 +217,65 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="edit_role_model" tabindex="-1" role="dialog" aria-labelledby="modelTitleId"
+        aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header bg-cyan-200 text-light">
+                    <h5 class="modal-title">Chỉnh sửa vai trò</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form id="form_edit">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <label for="" class="form-label">Tên: </label>
+                                <input type="text" name="name" id="name_edit" class="form-control" placeholder="Nhập tên vai trò">
+                                <small id="" class="text-danger text-error error_name"></small>
+                            </div>
+                            <div class="mb-3">
+                                <label for="" class="form-label">Mô tả: </label>
+                                <input type="text" name="title" id="title_edit" class="form-control"
+                                    placeholder="Nhập mô tả của vai trò">
+                            </div>
+                        </div>
 
+                        <div class="col-md-12" id="permission_data">
+                            @foreach ($permissionParents as $permissionParent)
+                                <div class="card border-primary">
+                                    <div class="card-header bg-cyan-200 text-light">
+                                        <div class="form-check form-check-inline">
+                                            <input type="checkbox" class="form-check-input" name=""
+                                                id="{{ $permissionParent->name }}">
+                                            <label class="form-check-label" for="{{ $permissionParent->name }}">
+                                                Module {{ $permissionParent->name }}
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="card-body d-flex justify-content-between">
+                                        @foreach ($permissionParent->permissionChilds as $permissionChild)
+                                            <div class="form-check form-check-inline">
+                                                <input type="checkbox" class="form-check-input role_category_check_item"
+                                                    name="permissions[]" id="{{ $permissionChild->name }}"
+                                                    value="{{ $permissionChild->id }}">
+                                                <label class="form-check-label" for="{{ $permissionChild->name }}">
+                                                    {{ $permissionChild->name }}
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="btn_update" type="submit" class="btn btn-primary"><i
+                                class="fas fa-spinner fa-spin d-none mr-2 pl-0"></i>Cập nhật</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endsection
