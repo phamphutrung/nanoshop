@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class permission extends Model
 {
     use HasFactory;
+    function permissionChilds() {
+        return $this->hasMany('App\Models\permission', 'parent_id');
+    }
 }

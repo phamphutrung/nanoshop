@@ -116,7 +116,7 @@
                         $.each(response.error, function(index, val) {
                             $(form).find('span.slider_' + index + '_error').text(val);
                         })
-                    } else if (response.code == 1){
+                    } else if (response.code == 1) {
                         $("#exampleModal").slideUp(300, function() {
                             $("#exampleModal").modal('hide');
                         });
@@ -311,7 +311,7 @@
                     tinyMCE.get("tiny_description_edit").setContent(response.slider.description);
                     $('.image_edit').attr('src', "{{ asset('storage') }}/" + response.slider
                         .image_path)
-                
+
                 },
             })
         })
@@ -410,11 +410,11 @@
                                             </div>
                                         </td>
                                         <td class="text-center">
-                                            <button data-id="{{ $slider->id }}" class="btn-primary btn btn-edit"
+                                            <button data-id="{{ $slider->id }}" class="btn-primary btn-sm btn btn-edit"
                                                 data-bs-toggle="modal" data-bs-target="#modal_edit"><i
                                                     class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $slider->id }}" class="btn-danger btn btn-delete"><i
-                                                    class="fas fa-ban"></i></button>
+                                            <button data-id="{{ $slider->id }}"
+                                                class="btn-danger btn btn-sm btn-delete"><i class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach

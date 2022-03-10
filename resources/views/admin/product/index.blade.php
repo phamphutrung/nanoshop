@@ -346,13 +346,13 @@
                                         </td>
                                         <td class="text-center">
                                             <a data-toggle="tooltip" data-placement="top" title="Chỉnh sửa"
-                                                class="btn btn-primary"
+                                                class="btn btn-primary btn-sm"
                                                 href="{{ route('admin-product-edit', [$product->id]) }}">
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <button data-id="{{ $product->id }} " data-toggle="tooltip"
                                                 data-placement="top" title="Xóa"
-                                                class="btn btn-danger btn_delete">
+                                                class="btn btn-danger btn-sm btn_delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>
@@ -369,9 +369,9 @@
                                     </td>
                                 </tr>
                             @endif
-                            <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                         </tbody>
                     </table>
+                    <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                 </div>
             </div>
         </div>

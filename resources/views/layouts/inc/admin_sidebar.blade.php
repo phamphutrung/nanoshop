@@ -54,6 +54,14 @@
           </a>
         </li>
         <li class="nav-item">
+          <a href="{{ route('admin-role') }}" class="nav-link {{ session('module_active')=='role'?'active':'' }}">
+            <i class="nav-icon fa-solid fa-hand-back-fist"></i>
+            <p>
+                 Vai trò thanh viên
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="{{ route('admin-slider') }}" class="nav-link {{ session('module_active')=='slider'?'active':'' }}">
             <i class="nav-icon fa-solid fa-sliders"></i>
             <p>

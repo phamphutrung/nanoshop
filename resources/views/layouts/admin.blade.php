@@ -30,8 +30,8 @@
    @yield('css')
 </head>
 <style>
-   .bg-cyan-200 {background-color: #049cbb7e;}
-   .bg-cyan-100 {background-color: #4687946b;}
+   .bg-cyan-200 {background-color: #042961;}
+   .bg-cyan-100 {background-color: #a9aaac;}
 </style>
 <body>
     <div class="wrapper">

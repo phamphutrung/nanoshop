@@ -8,7 +8,9 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         .select2-selection__choice {
-            background-color: #048eaaa9 !important;
+            background-color: #ffc107 !important;
+            color: black !important;
+            font-weight: 500 !important;
         }
 
         span.select2-container.select2-container--default {
@@ -171,7 +173,7 @@
                     $('#name_edit').val(response.user.name);
                     $('#email_edit').val(response.user.email);
                     $('#password_edit').val(response.user.password);
-                    $('#role_edit').html(response.htmlSelectOptionRoles)
+                    $('#role_edit').html(response.htmlSelectOptionRoles);
                 }
             })
         })
@@ -242,6 +244,15 @@
 
         })
 
+        $(document).on('focus', '#search_input', function() {
+            $('#area_search').addClass('col-md-4')
+        })
+
+        $(document).on('blur', '#search_input', function() {
+            $('#area_search').removeClass('col-md-4')
+            $('#area_search').addClass('col-md-2')
+        })
+
     </script>
 @endsection
 @section('content')
@@ -266,7 +277,7 @@
                             </ul>
                         </div>
                         <div id="area_search" class="col-md-2" style="position: relative">
-                            <input type="text" class="form-control ml-3" name="search" id="search_input"
+                            <input type="search" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
                             <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>
@@ -299,14 +310,14 @@
                                         <td>{{ $user->email }}</td>
                                         <td>
                                             @foreach ($user->roles as $role)
-                                                <span class="badge rounded-pill bg-info">{{ $role->name }}</span>
+                                                <span class="badge rounded-pill bg-warning">{{ $role->name }}</span>
                                             @endforeach
                                         </td>
                                         <td class="d-flex justify-content-center">
-                                            <button data-id="{{ $user->id }}" class="btn-primary btn btn-edit mr-2"
+                                            <button data-id="{{ $user->id }}" class="btn-primary btn-sm btn btn-edit mr-2"
                                                 data-bs-toggle="modal" data-bs-target="#edit_user_modal"><i
                                                     class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $user->id }}" class="btn-danger btn btn-delete"><i
+                                            <button data-id="{{ $user->id }}" class="btn-danger btn btn-sm btn-delete"><i
                                                     class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
@@ -322,9 +333,9 @@
                                     </td>
                                 </tr>
                             @endif
-                            <div class="mt-2 d-flex justify-content-end">{{ $users->links() }}</div>
                         </tbody>
                     </table>
+                    <div class="mt-2 d-flex justify-content-end">{{ $users->links() }}</div>
                 </div>
             </div>
         </div>
@@ -416,8 +427,7 @@
                             <label for="" class="col-form-label">Vài trò: <span
                                     style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
                             <select class="d-block" name="roles[]" id="role_edit" multiple>
-
-
+                              
                             </select>
                             <span class="text-danger error-text error_roles"></span>
                         </div>

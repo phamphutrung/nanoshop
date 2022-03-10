@@ -60,17 +60,14 @@ class UserController extends Controller
 
     function edit(request $request) {
         $user = User::find($request->id);
-        $htmlSelectOptionRoles = '';
-        $role_selects = [];
-        foreach($user->roles as $role_select) {
-            $role_selects[] = $role_select->id;
-        }
         $roles = role::all();
+        $roleOfusers = $user->roles;
+        $htmlSelectOptionRoles = '';
         foreach ($roles as $role) {
-            if(in_array($role->id, $role_selects)) {
-                $htmlSelectOptionRoles .= "<option value=". $role->id ." selected>$role->name</option>";
+            if( $roleOfusers->contains('id', $role->id)) {
+                $htmlSelectOptionRoles .= '<option selected value="' .$role->id .'">'. $role->name .'</option>';
             } else {
-                $htmlSelectOptionRoles .= "<option value=". $role->id .">$role->name</option>";
+                $htmlSelectOptionRoles .= '<option value="' .$role->id .'">'. $role->name .'</option>';
             }
         }
         return response()->json(['user' => $user, 'htmlSelectOptionRoles' => $htmlSelectOptionRoles]);

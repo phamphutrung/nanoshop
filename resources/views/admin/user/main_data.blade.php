@@ -8,7 +8,7 @@
             <td>{{ $user->email }}</td>
             <td>
                 @foreach ($user->roles as $role)
-                    <span class="badge rounded-pill bg-info">{{ $role->name }}</span>
+                    <span class="badge rounded-pill bg-warning">{{ $role->name }}</span>
                 @endforeach
             </td>
             <td class="d-flex justify-content-center">

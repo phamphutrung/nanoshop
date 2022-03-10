@@ -31,7 +31,6 @@ class SliderController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|max:255|min:2',
                 'image' => 'image|required'
             ],
             [
@@ -72,7 +71,6 @@ class SliderController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                'title' => 'required|max:255|min:2',
                 'image' => 'image'
             ],
             [
