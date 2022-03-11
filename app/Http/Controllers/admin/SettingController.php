@@ -18,31 +18,39 @@ class SettingController extends Controller
         });
     }
 
-    public function index()
+    public function index(request $request)
     {
-        $settings = setting::latest()->paginate(15);
-        return view('admin.setting.index', compact('settings'));
+        if ($request->user()->cannot('view', setting::class)) {
+            return redirect()->back()->with('notification', "Bạn không được phép truy cập");
+        } else {
+            $settings = setting::latest()->paginate(15);
+            return view('admin.setting.index', compact('settings'));
+        }
     }
 
     public function add(request $request)
     {
-        $validator =  validator::make($request->all(), [
-            'config_key' => 'required|max:225|unique:settings',
-            'config_value' => 'required|max:1025',
-        ], [
-            'required' => 'Không được để trống',
-            'unique' => 'Đã tồn tại',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'code' => 0,
-                'error' => $validator->errors()->toArray(),
-            ]);
+        if ($request->user()->cannot('create', setting::class)) {
+            return response()->json(['code' => -1, 'msg' => 'Bạn không được phép thêm cài đặt']);
         } else {
-            setting::create($request->all());
-            $settings = setting::latest()->paginate(15);
-            $view = view('admin.setting.main_data', compact('settings'))->render();
-            return response()->json(['view' => $view, 'msg' => 'Đã thêm cài đặt']);
+            $validator =  validator::make($request->all(), [
+                'config_key' => 'required|max:225|unique:settings',
+                'config_value' => 'required|max:1025',
+            ], [
+                'required' => 'Không được để trống',
+                'unique' => 'Đã tồn tại',
+            ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'code' => 0,
+                    'error' => $validator->errors()->toArray(),
+                ]);
+            } else {
+                setting::create($request->all());
+                $settings = setting::latest()->paginate(15);
+                $view = view('admin.setting.main_data', compact('settings'))->render();
+                return response()->json(['view' => $view, 'msg' => 'Đã thêm cài đặt']);
+            }
         }
     }
 
@@ -56,48 +64,63 @@ class SettingController extends Controller
 
     public function update(request $request)
     {
-        $id = $request->id;
-        $validator =  validator::make($request->all(), [
-            'config_key' => "required|unique:settings,config_key,$id,id",
-            'config_value' => 'required|max:1025',
-        ], [
-            'required' => 'Không được để trống',
-            'unique' => 'Đã tồn tại',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'code' => 0,
-                'error' => $validator->errors()->toArray(),
-            ]);
+        if ($request->user()->cannot('update', setting::class)) {
+            return response()->json(['code' => -1, 'msg' => "Bạn không có quyền sửa đổi"]);
         } else {
-            setting::find($id)->update([
-                'config_key' => $request->config_key,
-                'config_value' => $request->config_value,
+            $id = $request->id;
+            $validator =  validator::make($request->all(), [
+                'config_key' => "required|unique:settings,config_key,$id,id",
+                'config_value' => 'required|max:1025',
+            ], [
+                'required' => 'Không được để trống',
+                'unique' => 'Đã tồn tại',
             ]);
+            if ($validator->fails()) {
+                return response()->json([
+                    'code' => 0,
+                    'error' => $validator->errors()->toArray(),
+                ]);
+            } else {
+                setting::find($id)->update([
+                    'config_key' => $request->config_key,
+                    'config_value' => $request->config_value,
+                ]);
+                $settings = setting::latest()->paginate(15);
+                $view = view('admin.setting.main_data', compact('settings'))->render();
+                return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
+            }
+        }
+    }
+
+    public function delete(request $request)
+    {
+        if ($request->user()->cannot('delete', setting::class)) {
+            return response()->json(['code' => 0, 'msg' => "Bạn không có quyền xóa mục này"]);
+        } else {
+            setting::destroy($request->id);
             $settings = setting::latest()->paginate(15);
             $view = view('admin.setting.main_data', compact('settings'))->render();
             return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
         }
     }
 
-    public function delete(request $request) {
-        setting::destroy($request->id);
-        $settings = setting::latest()->paginate(15);
-        $view = view('admin.setting.main_data', compact('settings'))->render();
-        return response()->json(['view' => $view, 'msg' => "Đã cập nhật thay đổi"]);
+    public function deleteMultiple(request $request)
+    {
+        if ($request->user()->cannot('delete', setting::class)) {
+            return response()->json(['code' => -1, 'msg' => "Bạn không có quyền xóa"]);
+        } else {
+            setting::destroy($request->listId);
+            $settings = setting::latest()->paginate(15);
+            $view = view('admin.setting.main_data', compact('settings'))->render();
+            return response()->json(['view' => $view, 'msg' => 'Đã xóa thành công']);
+         }
     }
 
-    public function deleteMultiple(request $request) {
-        setting::destroy($request->listId);
-        $settings = setting::latest()->paginate(15);
-        $view = view('admin.setting.main_data', compact('settings'))->render();
-        return response()->json(['view' => $view, 'msg' => 'Đã xóa thành công']);
-    }
-
-    public function search(request $request) {
+    public function search(request $request)
+    {
         $key = $request->get('key');
-        $settings = setting::where('config_key', 'like', '%'.$key.'%')->orWhere('config_value', 'like', '%'.$key.'%')->latest()->paginate(15);
+        $settings = setting::where('config_key', 'like', '%' . $key . '%')->orWhere('config_value', 'like', '%' . $key . '%')->latest()->paginate(15);
         $view = view('admin.setting.main_data', compact('settings'))->render();
-        return response()->json(['view' => $view, 'msg'=> $key]);
+        return response()->json(['view' => $view, 'msg' => $key]);
     }
 }

@@ -84,20 +84,24 @@
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
                     $('#btn_add').prop('disabled', false);
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('small.error_' + index).text(val);
-                        })
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
                     } else {
-                        $('#main_data').html(response.view);
-                        $("#add_config").slideUp(300, function() {
-                            $("#add_config").modal('hide');
-                        });
-                        alertify.success(response.msg)
-                        $(form)[0].reset();
-                        $(form).find('small').text('')
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('small.error_' + index).text(val);
+                            })
+                        } else {
+                            $('#main_data').html(response.view);
+                            $("#add_config").slideUp(300, function() {
+                                $("#add_config").modal('hide');
+                            });
+                            alertify.success(response.msg)
+                            $(form)[0].reset();
+                            $(form).find('small').text('')
+                        }
                     }
-                }
+                },
             })
 
         })
@@ -140,17 +144,21 @@
                 success: function(response) {
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('small.error_' + index).text(val);
-                        })
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
                     } else {
-                        $('#main_data').html(response.view);
-                        $("#edit_config").slideUp(300, function() {
-                            $("#edit_config").modal('hide');
-                        });
-                        alertify.success(response.msg)
-                        $(form)[0].reset();
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('small.error_' + index).text(val);
+                            })
+                        } else {
+                            $('#main_data').html(response.view);
+                            $("#edit_config").slideUp(300, function() {
+                                $("#edit_config").modal('hide');
+                            });
+                            alertify.success(response.msg)
+                            $(form)[0].reset();
+                        }
                     }
                 }
             })
@@ -176,10 +184,14 @@
                         },
                         dataType: 'json',
                         success: function(response) {
-                            $('#setting_' + id).fadeOut('slow', function() {
-                                $('#main_data').html(response.view);
-                            });
-                            alertify.success(response.msg)
+                            if (response.code == 0) {
+                                alertify.error(response.msg)
+                            } else {
+                                $('#setting_' + id).fadeOut('slow', function() {
+                                    $('#main_data').html(response.view);
+                                });
+                                alertify.success(response.msg)
+                            }
                         }
                     })
                 }
@@ -234,13 +246,17 @@
                         },
                         dataType: 'json',
                         success: function(response) {
-                            $.each(listId, function(index, val) {
-                                $('#setting_' + val).fadeOut(800, function() {
-                                    $('#main_data').html(response.view)
+                            if (response.code == -1) {
+                                alertify.error(response.msg)
+                            } else {
+                                $.each(listId, function(index, val) {
+                                    $('#setting_' + val).fadeOut(800, function() {
+                                        $('#main_data').html(response.view)
+                                    })
                                 })
-                            })
-                            $('.btn_del_all').addClass('d-none')
-                            alertify.success(response.msg)
+                                $('.btn_del_all').addClass('d-none')
+                                alertify.success(response.msg)
+                            }
                         }
                     })
                 }
@@ -311,7 +327,7 @@
 
                 </div>
                 <div class="card-body">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover table-bordered text-center">
                         <thead class="thead-inverse thead-default bg-cyan-200 text-light">
                             <tr>
                                 <th class="text-center"><input name="main_check" type="checkbox"></th>
@@ -329,12 +345,12 @@
                                         </td>
                                         <td>{!! $setting->config_key !!}</td>
                                         <td>{!! $setting->config_value !!}</td>
-                                        <td class=" text-center">
-                                            <button data-id="{{ $setting->id }}" class="btn-primary btn btn_edit btn-sm mr-2"
-                                                data-bs-toggle="modal" data-bs-target="#edit_config"><i
-                                                    class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $setting->id }}" class="btn-danger btn btn-sm btn-delete"><i
-                                                    class="fas fa-ban"></i></button>
+                                        <td class=" ">
+                                            <button data-id="{{ $setting->id }}"
+                                                class="btn-primary btn btn_edit btn-sm mr-2" data-bs-toggle="modal"
+                                                data-bs-target="#edit_config"><i class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $setting->id }}"
+                                                class="btn-danger btn btn-sm btn-delete"><i class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach

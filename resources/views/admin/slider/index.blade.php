@@ -1,10 +1,7 @@
 @extends('layouts.admin')
 @section('title', 'Slider')
 @section('css')
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/semantic.min.css" />
-    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
+
     <style>
         img#image_show {
             max-width: 200px;
@@ -64,7 +61,7 @@
         tinymce.init(editor_config);
 
     </script>
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script> // cdn alert tify
+
 
     <script>
         // preview image
@@ -112,18 +109,22 @@
                 success: function(response) {
                     $(form).find('#submit-btn').prop('disabled', false);
                     $(form).find('#submit-btn i').addClass('d-none')
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('span.slider_' + index + '_error').text(val);
-                        })
-                    } else if (response.code == 1) {
-                        $("#exampleModal").slideUp(300, function() {
-                            $("#exampleModal").modal('hide');
-                        });
-                        $('#output').prop('src', '')
-                        $(form)[0].reset();
-                        alertify.success(response.message);
-                        $('#main_data').html(response.view);
+                    if (response.code == -1) {
+                        alertify.error(response.message);
+                    } else {
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('span.slider_' + index + '_error').text(val);
+                            })
+                        } else if (response.code == 1) {
+                            $("#exampleModal").slideUp(300, function() {
+                                $("#exampleModal").modal('hide');
+                            });
+                            $('#output').prop('src', '')
+                            $(form)[0].reset();
+                            alertify.success(response.message);
+                            $('#main_data').html(response.view);
+                        }
                     }
                 }
             })
@@ -149,17 +150,21 @@
                 success: function(response) {
                     $(form).find('.submit_edit-btn').prop('disabled', false);
                     $(form).find('.submit_edit-btn i').addClass('d-none')
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('span.slider_' + index + '_error').text(val);
-                        })
+                    if (response.code == -1) {
+                        alertify.error(response.message);
                     } else {
-                        $("#modal_edit").slideUp(300, function() {
-                            $("#modal_edit").modal('hide');
-                        });
-                        $(form)[0].reset();
-                        alertify.success(response.message);
-                        $('#main_data').html(response.view);
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('span.slider_' + index + '_error').text(val);
+                            })
+                        } else {
+                            $("#modal_edit").slideUp(300, function() {
+                                $("#modal_edit").modal('hide');
+                            });
+                            $(form)[0].reset();
+                            alertify.success(response.message);
+                            $('#main_data').html(response.view);
+                        }
                     }
                 }
             })
@@ -167,6 +172,7 @@
 
         $(document).on('click', '.active_check', function() { // ON/OFF active button
             var id = $(this).data('id');
+            var boolean = this.checked;
             if (this.checked) {
                 var status = 'on';
             } else {
@@ -182,7 +188,10 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    if (response.code == 1) {
+                    if (response.code == -1) {
+                        $('.active_check').prop('checked', !boolean);
+                        alertify.error(response.message)
+                    } else {
                         alertify.success(response.message)
                     }
                 }
@@ -210,10 +219,14 @@
                         },
                         dataType: 'json',
                         success: function(response) {
-                            $('#slider-' + id).fadeOut(800, function() {
-                                $('#main_data').html(response.view);
-                            })
-                            alertify.success(response.message);
+                            if (response.code == -1) {
+                                alertify.error(response.message);
+                            } else {
+                                $('#slider-' + id).fadeOut(800, function() {
+                                    $('#main_data').html(response.view);
+                                })
+                                alertify.success(response.message);
+                            }
 
                         }
                     })
@@ -276,14 +289,18 @@
                         },
                         dataType: "json",
                         success: function(response) {
-                            if (response.code == 1) {
-                                $.each(listCheck, function(index, val) {
-                                    $('#slider-' + val).fadeOut(800, function() {
-                                        $('#main_data').html(response.view);
+                            if (response.code == -1) {
+                                alertify.error(response.message);
+                            } else {
+                                if (response.code == 1) {
+                                    $.each(listCheck, function(index, val) {
+                                        $('#slider-' + val).fadeOut(800, function() {
+                                            $('#main_data').html(response.view);
+                                        })
                                     })
-                                })
-                                alertify.success(response.message);
-                                $('#deleteAllBtn').addClass('d-none');
+                                    alertify.success(response.message);
+                                    $('#deleteAllBtn').addClass('d-none');
+                                }
                             }
                         }
                     })
@@ -297,7 +314,6 @@
         $(document).on('click', '.btn-edit', function(e) { //show form edit record
             var id = $(this).data('id');
             $('.form_edit').find('input[name="id"]').val(id)
-            // alert(id)
             $.ajax({
                 url: "{{ route('admin-slider-action') }}",
                 type: "POST",
@@ -306,11 +322,15 @@
                     id: id,
                     action: 'show form edit'
                 },
+                beforeSend: function() {
+                    tinyMCE.get("tiny_title_edit").setContent('');
+                    tinyMCE.get("tiny_description_edit").setContent('');
+                },
                 success: function(response) {
+                    $('#output_edit').attr('src', "{{ asset('storage') }}/" + response.slider
+                        .image_path)
                     tinyMCE.get("tiny_title_edit").setContent(response.slider.title);
                     tinyMCE.get("tiny_description_edit").setContent(response.slider.description);
-                    $('.image_edit').attr('src', "{{ asset('storage') }}/" + response.slider
-                        .image_path)
 
                 },
             })

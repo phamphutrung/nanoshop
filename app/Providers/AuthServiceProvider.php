@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\SettingPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -13,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        // 'App\Models\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Models\setting' => 'App\Policies\SettingPolicy',
     ];
 
     /**
@@ -24,6 +25,14 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-    
+
+        Gate::define('setting-view', [SettingPolicy::class, 'view']);
+        Gate::define('setting-add', [SettingPolicy::class, 'create']);
+        Gate::define('setting-update', [SettingPolicy::class, 'update']);
+        Gate::define('setting-delete', [SettingPolicy::class, 'delete']);
+        
+        Gate::define('slider-view', [SettingPolicy::class, 'view']);
+        Gate::define('slider-add', [SettingPolicy::class, 'create']);
+
     }
 }

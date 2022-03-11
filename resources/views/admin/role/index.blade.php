@@ -186,8 +186,8 @@
                     </nav>
                 </div>
                 <div class="card-body">
-                    <table class="table table-hover table-bordered">
-                        <thead class="bg-cyan-200 text-light text-center">
+                    <table class="table table-hover text-center">
+                        <thead class="bg-cyan-200 text-light ">
                             <tr>
                                 <th>Tên vai trò</th>
                                 <th>Mô tả</th>

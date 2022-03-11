@@ -287,19 +287,19 @@
                     </nav>
                 </div>
                 <div class="card-body">
-                    <table class="table table-hover table-bordered">
+                    <table class="table table-hover text-center">
                         <thead class="bg-cyan-200 text-light">
                             <tr>
-                                <th class="text-center">
+                                <th>
                                     <input type="checkbox" name="main_checkbox">
                                 </th>
-                                <th class="text-center">Tên</th>
-                                <th class="text-center">Email</th>
-                                <th class="text-center">Vai trò</th>
-                                <th class="text-center">Thao tác</th>
+                                <th>Tên</th>
+                                <th>Email</th>
+                                <th>Vai trò</th>
+                                <th>Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody id="main_data">
+                        <tbody id="main_data" >
                             @if ($users->count() > 0)
                                 @foreach ($users as $user)
                                     <tr id="user_{{ $user->id }}">
