@@ -3,11 +3,12 @@
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
-use App\Http\Controllers\admin\RoleController;
+use App\Http\Controllers\admin\RoleController as AdminRoleController;
 use App\Http\Controllers\admin\SliderController as AdminSliderController;
 use App\Http\Controllers\admin\SettingController as AdminSettingController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
-use App\Http\Controllers\testCart;
+use App\Http\Controllers\client\HomeController;
+use App\Http\Controllers\client\ProductController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -26,11 +27,12 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes(["verify"=>true]);
+Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 
-route::get('test-cart', [testCart::class, 'add']);
+Route::get('/product/{slug}.{id}.html', [ProductController::class, 'index'])->name('product');
+
 
 Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -86,11 +88,11 @@ Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/user-action', [AdminUserController::class, 'action'])->name('admin-user-action');
 
     // admin role 
-    Route::get('/role', [RoleController::class, 'index'])->name('admin-role');
-    Route::post('/role-add', [RoleController::class, 'add'])->name('admin-role-add');
-    Route::get('/role-edit', [RoleController::class, 'edit'])->name('admin-role-edit');
-    Route::post('/role-update', [RoleController::class, 'update'])->name('admin-role-update');
-    Route::get('/role-delete', [RoleController::class, 'delete'])->name('admin-role-delete');
+    Route::get('/role', [AdminRoleController::class, 'index'])->name('admin-role');
+    Route::post('/role-add', [AdminRoleController::class, 'add'])->name('admin-role-add');
+    Route::get('/role-edit', [AdminRoleController::class, 'edit'])->name('admin-role-edit');
+    Route::post('/role-update', [AdminRoleController::class, 'update'])->name('admin-role-update');
+    Route::get('/role-delete', [AdminRoleController::class, 'delete'])->name('admin-role-delete');
 
 
 });
