@@ -62,4 +62,15 @@ class User extends Authenticatable implements MustVerifyEmail
         }
         return false;
     }
+
+    public function checkAccessAdminPage()
+    {
+        $count = 0;
+        foreach (Auth::user()->roles as $role) {
+            $count++;
+        }
+        if ($count > 0) 
+            return true;
+        return false;
+    }
 }

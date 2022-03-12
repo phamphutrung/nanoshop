@@ -107,12 +107,17 @@
                             action: 'delete multiple'
                         },
                         success: function(response) {
-                            $('#deleteAllBtn').addClass('d-none');
-                            $.each(listId, function(index, val) {
-                                $('#user_' + val).fadeOut('slow', function() {
-                                    $('#main_data').html(response.view);
+                            if (response.code == -1) {
+                                alertify.error(response.msg)
+                            } else {
+                                $('#deleteAllBtn').addClass('d-none');
+                                $.each(listId, function(index, val) {
+                                    $('#user_' + val).fadeOut('slow', function() {
+                                        $('#main_data').html(response.view);
+                                    })
                                 })
-                            })
+                                alertify.success(response.msg)
+                            }
                         }
                     })
                 }
@@ -138,16 +143,20 @@
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
                     $('#btn_add').prop('disabled', false);
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('span.error_' + index).text(val);
-                        })
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
                     } else {
-                        $('#main_data').html(response.view);
-                        $("#add_user_modal").slideUp(300, function() {
-                            $("#add_user_modal").modal('hide');
-                        });
-                        alertify.success(response.msg)
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('span.error_' + index).text(val);
+                            })
+                        } else {
+                            $('#main_data').html(response.view);
+                            $("#add_user_modal").slideUp(300, function() {
+                                $("#add_user_modal").modal('hide');
+                            });
+                            alertify.success(response.msg)
+                        }
                     }
                 }
             })
@@ -197,16 +206,20 @@
                 success: function(response) {
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
-                    if (response.code == 0) {
-                        $.each(response.error, function(index, val) {
-                            $(form).find('span.error_' + index).text(val);
-                        })
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
                     } else {
-                        $('#main_data').html(response.view);
-                        $("#edit_user_modal").slideUp(300, function() {
-                            $("#edit_user_modal").modal('hide');
-                        });
-                        alertify.success(response.msg)
+                        if (response.code == 0) {
+                            $.each(response.error, function(index, val) {
+                                $(form).find('span.error_' + index).text(val);
+                            })
+                        } else {
+                            $('#main_data').html(response.view);
+                            $("#edit_user_modal").slideUp(300, function() {
+                                $("#edit_user_modal").modal('hide');
+                            });
+                            alertify.success(response.msg)
+                        }
                     }
                 }
             })
@@ -233,10 +246,18 @@
                             action: 'delete single'
                         },
                         success: function(response) {
-                            $('#user_' + id).fadeOut('slow', function() {
-                                $('#main_data').html(response.view);
-                            });
-                            alertify.success(response.msg)
+                            if (response.code == -1) {
+                                alertify.error(response.msg)
+                            } else {
+                                if (response.code == 0) {
+                                    alertify.error(response.msg)
+                                } else {
+                                    $('#user_' + id).fadeOut('slow', function() {
+                                        $('#main_data').html(response.view);
+                                    });
+                                    alertify.success(response.msg)
+                                }
+                            }
                         }
                     })
                 }
@@ -299,7 +320,7 @@
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
-                        <tbody id="main_data" >
+                        <tbody id="main_data">
                             @if ($users->count() > 0)
                                 @foreach ($users as $user)
                                     <tr id="user_{{ $user->id }}">
@@ -314,11 +335,11 @@
                                             @endforeach
                                         </td>
                                         <td class="d-flex justify-content-center">
-                                            <button data-id="{{ $user->id }}" class="btn-primary btn-sm btn btn-edit mr-2"
-                                                data-bs-toggle="modal" data-bs-target="#edit_user_modal"><i
-                                                    class="fas fa-edit"></i></button>
-                                            <button data-id="{{ $user->id }}" class="btn-danger btn btn-sm btn-delete"><i
-                                                    class="fas fa-ban"></i></button>
+                                            <button data-id="{{ $user->id }}"
+                                                class="btn-primary btn-sm btn btn-edit mr-2" data-bs-toggle="modal"
+                                                data-bs-target="#edit_user_modal"><i class="fas fa-edit"></i></button>
+                                            <button data-id="{{ $user->id }}"
+                                                class="btn-danger btn btn-sm btn-delete"><i class="fas fa-ban"></i></button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -427,7 +448,7 @@
                             <label for="" class="col-form-label">Vài trò: <span
                                     style="font-size:10px; position:relative; bottom: 5px;left: -4px; color:red;">(*)</span></label>
                             <select class="d-block" name="roles[]" id="role_edit" multiple>
-                              
+
                             </select>
                             <span class="text-danger error-text error_roles"></span>
                         </div>

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Policies\SettingPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -25,6 +26,9 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
+        Gate::define('checkAccessAdminPage', function($user) {
+            return $user->checkAccessAdminPage();
+        });
 
         Gate::define('setting-view', [SettingPolicy::class, 'view']);
         Gate::define('setting-add', [SettingPolicy::class, 'create']);
@@ -33,6 +37,12 @@ class AuthServiceProvider extends ServiceProvider
         
         Gate::define('slider-view', [SettingPolicy::class, 'view']);
         Gate::define('slider-add', [SettingPolicy::class, 'create']);
-
+        Gate::define('slider-update', [SettingPolicy::class, 'update']);
+        Gate::define('slider-delete', [SettingPolicy::class, 'delete']);
+        
+        Gate::define('user-view', [UserPolicy::class, 'view']);
+        Gate::define('user-add', [UserPolicy::class, 'create']);
+        Gate::define('user-update', [UserPolicy::class, 'update']);
+        Gate::define('user-delete', [UserPolicy::class, 'delete']);
     }
 }

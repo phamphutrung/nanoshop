@@ -32,7 +32,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 route::get('test-cart', [testCart::class, 'add']);
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('dashboard');
 
@@ -91,7 +91,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/role-edit', [RoleController::class, 'edit'])->name('admin-role-edit');
     Route::post('/role-update', [RoleController::class, 'update'])->name('admin-role-update');
     Route::get('/role-delete', [RoleController::class, 'delete'])->name('admin-role-delete');
-
 
 
 });
