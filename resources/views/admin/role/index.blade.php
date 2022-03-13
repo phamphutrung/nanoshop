@@ -50,13 +50,17 @@
                             $(form).find('small.error_' + index).text(val);
                         })
                     } else {
-                        $('#main_data').html(response.view)
-                        alertify.success(response.msg)
-                        $("#add_role_model").slideUp(300, function() {
-                            $("#add_role_model").modal('hide');
-                        });
-                        $(form)[0].reset();
-                        $(form).find('small').text('')
+                        if (response.code == -1) {
+                            alertify.error(response.msg)
+                        } else {
+                            $('#main_data').html(response.view)
+                            alertify.success(response.msg)
+                            $("#add_role_model").slideUp(300, function() {
+                                $("#add_role_model").modal('hide');
+                            });
+                            $(form)[0].reset();
+                            $(form).find('small').text('')
+                        }
                     }
                 }
             })
@@ -80,7 +84,7 @@
             })
         })
 
-        $(document).on('submit', '#form_edit', function(e) { // update user
+        $(document).on('submit', '#form_edit', function(e) { // update role
             e.preventDefault();
             var form = this;
             var id = $(this).find('input[name="id"]').val();
@@ -104,19 +108,23 @@
                             $(form).find('small.error_' + index).text(val);
                         })
                     } else {
-                        $('#main_data').html(response.view);
-                        $("#edit_role_model").slideUp(300, function() {
-                            $("#edit_role_model").modal('hide');
-                        });
-                        alertify.success(response.msg)
-                        $(form)[0].reset();
-                        $(form).find('small').text('')
+                        if (response.code == -1) {
+                            alertify.error(response.msg)
+                        } else {
+                            $('#main_data').html(response.view);
+                            $("#edit_role_model").slideUp(300, function() {
+                                $("#edit_role_model").modal('hide');
+                            });
+                            alertify.success(response.msg)
+                            $(form)[0].reset();
+                            $(form).find('small').text('')
+                        }
                     }
                 }
             })
         })
 
-        $(document).on('click', '.btn_delete', function() {
+        $(document).on('click', '.btn_delete', function() { // delete role
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
@@ -136,11 +144,14 @@
                             id: id,
                         },
                         success: function(response) {
-                            $('#role_' + id).fadeOut('slow', function() {
-                                $('#main_data').html(response.view);
-                            });
-                            // window.location.reload()
-                            alertify.success(response.msg)
+                            if (response.code == -1) {
+                                alertify.error(response.msg)
+                            } else {
+                                $('#role_' + id).fadeOut('slow', function() {
+                                    $('#main_data').html(response.view);
+                                });
+                                alertify.success(response.msg)
+                            }
                         }
                     })
                 }
@@ -318,7 +329,7 @@
                         </div>
 
                         <div class="col-md-12" id="permission_data">
-                          
+
                         </div>
                     </div>
                     <div class="modal-footer">

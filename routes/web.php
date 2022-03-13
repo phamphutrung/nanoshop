@@ -7,6 +7,7 @@ use App\Http\Controllers\admin\RoleController as AdminRoleController;
 use App\Http\Controllers\admin\SliderController as AdminSliderController;
 use App\Http\Controllers\admin\SettingController as AdminSettingController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
+use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController;
 use Illuminate\Support\Facades\Auth;
@@ -23,15 +24,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
-Auth::routes();
 
+Auth::routes(['verify'=>true]);
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
-
 Route::get('/product/{slug}.{id}.html', [ProductController::class, 'index'])->name('product');
+Route::get('cart', [CartController::class, 'index'])->name('cart');
+Route::get('cart-remove', [CartController::class, 'deleteItem'])->name('cart-delete-item');
+Route::post('cart-update', [CartController::class, 'updateItem'])->name('cart-update-item');
+Route::get('cart-add', [ProductController::class, 'addCart'])->name('cart-add');
+
+
 
 
 Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {

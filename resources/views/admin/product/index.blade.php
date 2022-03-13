@@ -232,13 +232,19 @@
                     idCat: idCat,
                     search_string: search_string
                 },
+                beforeSend: function() {
+                    $('#ani_search').removeClass('d-none')
+                    $('#ico_search').addClass('d-none')
+                },
                 success: function(response) {
                     $('#main_data').html(response.view)
+                    $('#ani_search').addClass('d-none')
+                    $('#ico_search').removeClass('d-none')
                 }
             })
         }
 
-        $(document).on('keyup', '#search_input', function(event) {
+        $(document).on('change', '#search_input', function(event) {
             getRecords()
         })
         $('#select_category_filter').on('change', function() {

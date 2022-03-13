@@ -35,9 +35,9 @@
                             <a class="link-socail" href="#"><img src="assets/images/social-list.png" alt=""></a>
                         </div>
                         <div class="wrap-price">
-                            <span class="product-price">{{ $product->selling_price }}</span>
+                            <span class="product-price">{{ $product->selling_price }}đ</span>
                             <del>
-                                <p class="product-price">{{ $product->original_price }}</p>
+                                <p class="product-price">{{ $product->original_price }}đ</p>
                             </del>
                         </div>
                         <div class="stock-info in-stock">
@@ -52,7 +52,7 @@
                             </div>
                         </div>
                         <div class="wrap-butons">
-                            <a href="#" class="btn add-to-cart">Add to Cart</a>
+                            <a data-id="{{ $product->id }}" class="btn add-to-cart">Add to Cart</a>
                             <div class="wrap-btn">
                                 <a href="#" class="btn btn-compare">Add Compare</a>
                                 <a href="#" class="btn btn-wishlist">Add Wishlist</a>
@@ -74,126 +74,36 @@
             <!--end main products area-->
 
             <div class="col-lg-3 col-md-4 col-sm-4 col-xs-12 sitebar">
-                <div class="widget widget-our-services ">
-                    <div class="widget-content">
-                        <ul class="our-services">
-
-                            <li class="service">
-                                <a class="link-to-service" href="#">
-                                    <i class="fa fa-truck" aria-hidden="true"></i>
-                                    <div class="right-content">
-                                        <b class="title">Miễn phí vận chuyển</b>
-                                        <span class="subtitle">Cho đơn hàng từ 100k</span>
-                                        <p class="desc">Tích lũy mã giảm giá qua từng đơn hàng</p>
-                                    </div>
-                                </a>
-                            </li>
-
-                            <li class="service">
-                                <a class="link-to-service" href="#">
-                                    <i class="fa fa-gift" aria-hidden="true"></i>
-                                    <div class="right-content">
-                                        <b class="title">Nhiều phần quà đặc biệt</b>
-                                        <span class="subtitle">Cập nhật hằng tuần</span>
-                                        <p class="desc">Các phần quà thường xuyên được tặng kèm theo các sản phẩm bán chạy.
-                                        </p>
-                                    </div>
-                                </a>
-                            </li>
-
-                            <li class="service">
-                                <a class="link-to-service" href="#">
-                                    <i class="fa fa-reply" aria-hidden="true"></i>
-                                    <div class="right-content">
-                                        <b class="title">Giao hàng cực nhanh</b>
-                                        <span class="subtitle">Từ 1 đến 3 ngày</span>
-                                        <p class="desc">Lợi thế khi có nhiều kho, xưởng giúp các mặt hàng đến nhanh với
-                                            người tiêu dùng</p>
-                                    </div>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-                </div><!-- Categories widget-->
-
-                <div class="widget mercado-widget widget-product">
-                    <h2 class="widget-title">Popular Products</h2>
-                    <div class="widget-content">
-                        <ul class="products">
-                            @foreach ($popularProducts as $product)
-                                <li class="product-item">
-                                    <div class="product product-widget-style">
-                                        <div class="thumbnnail">
-                                            <a href="detail.html"
-                                                title="Radiant-360 R6 Wireless Omnidirectional Speaker [White]">
-                                                <figure><img src="{{ asset('storage/' . $product->feature_image_path) }}"
-                                                        alt="{{ $product->name }}"></figure>
-                                            </a>
-                                        </div>
-                                        <div class="product-info">
-                                            <a href="#" class="product-name"><span>{{ $product->name }}</span></a>
-                                            <div class="wrap-price"><span
-                                                    class="product-price">{{ $product->selling_price }}</span></div>
-                                        </div>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                </div>
-
+                @include('client.product.special_service')
+                @include('client.product.popular_products')
             </div>
-            <!--end sitebar-->
-            @if ($relatedProducts != null)
-                <div class="single-advance-box col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                    <div class="wrap-show-advance-info-box style-1 box-in-site">
-                        <h3 class="title-box">Related Products</h3>
-                        <div class="wrap-products">
-                            <div class="products slide-carousel owl-carousel style-nav-1 equal-container" data-items="5"
-                                data-loop="false" data-nav="true" data-dots="false"
-                                data-responsive='{"0":{"items":"1"},"480":{"items":"2"},"768":{"items":"3"},"992":{"items":"3"},"1200":{"items":"5"}}'>
-                                @foreach ($relatedProducts as $product)
-
-                                    <div class="product product-style-2 equal-elem ">
-                                        <div class="product-thumnail">
-                                            <a href="{{ route('product', [$product->slug, $product->id]) }}"
-                                                title="T-Shirt Raw Hem Organic Boro Constrast Denim">
-                                                <figure><img src="{{ asset('storage/' . $product->feature_image_path) }}"
-                                                        width="800" height="800"
-                                                        alt="T-Shirt Raw Hem Organic Boro Constrast Denim">
-                                                </figure>
-                                            </a>
-                                            <div class="group-flash">
-                                                <span class="flash-item new-label">new</span>
-                                                @if ($product->original_price != null)
-                                                    <span class="flash-item sale-label">sale</span>
-                                                @endif
-                                            </div>
-                                            <div class="wrap-btn">
-                                                <a href="#" class="function-link">quick view</a>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <a href="#" class="product-name"><span>{{ $product->name }}</span></a>
-                                            <div class="wrap-price"><ins>
-                                                    <p class="product-price">{{ $product->selling_price }}</p>
-                                                </ins> <del>
-                                                    <p class="product-price">{{ $product->original_price }}</p>
-                                                </del></div>
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-                        <!--End wrap-products-->
-                    </div>
-                </div>
-            @endif
-
-
+            @include('client.product.related_products')
         </div>
-        <!--end row-->
-
     </div>
-    <!--end container-->
+@endsection
+
+@section('scripts')
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        $(function() {
+            $(document).on('click', '.add-to-cart', function() {
+                var qty = $('input[name="product-quatity"]').val();
+                var idProduct = $(this).data('id');
+                $.ajax({
+                    url: "{{ route('cart-add') }}",
+                    dataType: 'json',
+                    data: {qty: qty, idProduct: idProduct},
+                    success: function(response) {
+                        $('#cartCount').text(response.cartCount + " " + "SP")
+                        alertify.success(response.msg)
+                    }
+                })
+            })
+        })
+
+    </script>
 @endsection

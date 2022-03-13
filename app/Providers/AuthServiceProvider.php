@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\RolePolicy;
 use App\Policies\SettingPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -44,5 +45,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('user-add', [UserPolicy::class, 'create']);
         Gate::define('user-update', [UserPolicy::class, 'update']);
         Gate::define('user-delete', [UserPolicy::class, 'delete']);
+
+        Gate::define('role-view', [RolePolicy::class, 'view']);
+        Gate::define('role-add', [RolePolicy::class, 'create']);
+        Gate::define('role-update', [RolePolicy::class, 'update']);
+        Gate::define('role-delete', [RolePolicy::class, 'delete']);
     }
 }

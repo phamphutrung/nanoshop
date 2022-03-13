@@ -43,7 +43,11 @@
 {
 	color: #ff2832 !important;
 }
-
+.home-icon a {
+	color: rgb(255, 255, 255) !important;
+	font-weight: 900;
+	font-size: 1.2em;
+}
 .product-style-1 .product-info .wrap-btn a::after,
 .primary .menu-item.home-icon,
 .center-section .wrap-search-form button,
