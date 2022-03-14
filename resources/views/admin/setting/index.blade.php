@@ -78,8 +78,8 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('small.text-danger').text('');
-                    $('#btn_add').find('i').removeClass('d-none');
                     $('#btn_add').prop('disabled', true)
+                    $('#btn_add').find('i').removeClass('d-none');
                 },
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
@@ -304,7 +304,8 @@
                         <div class="col-md-6">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config">Thêm
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config"><i
+                                        class="fa-regular mr-2 fa-square-plus"></i>Thêm
                                         cài
                                         đặt</button>
                                 </li>

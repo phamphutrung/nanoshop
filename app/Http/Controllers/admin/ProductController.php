@@ -14,6 +14,7 @@ use App\Components\getHtml;
 use App\Models\product_tag;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
 {
@@ -25,14 +26,31 @@ class ProductController extends Controller
         });
     }
     public function index(request $request)
-    { 
+    {
         $data = category::all();
         $Recursive = new Recursive($data);
         $htmlSelectOptionCategory = $Recursive->categoryRecursive($id = '0', $tr = '', '');
 
-        $products = product::latest()->paginate(500);
-        return view('admin.product.index', compact('products', 'htmlSelectOptionCategory'));
+        $tags = tag::all();
+        $getHtml = new GetHtml;
+        $htmlSelectOptionTag = $getHtml->getHtmlTags($tags, []);
+
+        $products = product::latest()->paginate(100);
+        return view('admin.product.index', compact('products', 'htmlSelectOptionCategory', 'htmlSelectOptionTag'));
     }
+
+    // public function add()
+    // {
+    //     $data = category::all();
+    //     $Recursive = new Recursive($data);
+    //     $htmlSelectOptionCategory = $Recursive->categoryRecursive($id = '0', $tr = '', '');
+
+    //     $tags = tag::all();
+    //     $getHtml = new GetHtml;
+    //     $htmlSelectOptionTag = $getHtml->getHtmlTags($tags, []);
+
+    //     return view('admin.product.add', compact('htmlSelectOptionCategory', 'htmlSelectOptionTag'));
+    // }
 
     public function viewProductDetail(request $request)
     {
@@ -52,72 +70,66 @@ class ProductController extends Controller
         ]);
     }
 
-    public function add()
-    {
-        $data = category::all();
-        $Recursive = new Recursive($data);
-        $htmlSelectOptionCategory = $Recursive->categoryRecursive($id = '0', $tr = '', '');
 
-        $tags = tag::all();
-        $getHtml = new GetHtml;
-        $htmlSelectOptionTag = $getHtml->getHtmlTags($tags, []);
-
-        return view('admin.product.add', compact('htmlSelectOptionCategory', 'htmlSelectOptionTag'));
-    }
 
     public function insert(request $request)
     {
-        $this->validate(
-            $request,
-            [
-                'name' => 'required',
-            ],
-            [
-                'required' => 'Không được để trống'
-            ]
-        );
-        $dataProductCreate = [
-            'name' => $request->name,
-            'slug' => $request->slug,
-            'description' => $request->description,
-            'original_price' => $request->original_price,
-            'selling_price' => $request->selling_price,
-            'trending' => $request->trending ? "1" : "0",
-            'status' => $request->status ? "1" : "0",
-            'content' => $request->content,
-            'category_id' => $request->category_id,
-            'user_id' => Auth::id(),
-        ];
-        if ($request->hasFile('feature_image_path')) {
-            $fileName = rand(100, 100000) . $request->feature_image_path->getClientOriginalName();
-            $avt_path = $request->feature_image_path->storeAs('product', $fileName);
-            $dataProductCreate['feature_image_path'] = $avt_path;
-        }
-        $product = product::create($dataProductCreate);
-
-        if ($request->hasFile('image_path')) {
-            foreach ($request->image_path as $item) {
-                $image_name = rand(100, 100000) . $item->getClientOriginalName();
-                $image_path = $item->storeAs('product', $image_name);
-                product_image::create([
-                    'product_id' => $product->id,
-                    'image_path' => $image_path,
-                ]);
+        $validator = Validator::make($request->all(), [
+            'category_id' => 'required',
+            'name' => 'required',
+            'slug' => 'required',
+        ], ['required' => 'Không được để trống']);
+        if ($validator->fails()) {
+            return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
+        } else {
+            $dataProductCreate = [
+                'name' => $request->name,
+                'slug' => $request->slug,
+                'description' => $request->description,
+                'original_price' => $request->original_price,
+                'selling_price' => $request->selling_price,
+                'trending' => $request->trending ? "1" : "0",
+                'status' => $request->status ? "1" : "0",
+                'content' => $request->content,
+                'category_id' => $request->category_id,
+                'user_id' => Auth::id(),
+            ];
+            if ($request->hasFile('feature_image_path')) {
+                $fileName = rand(100, 100000) . $request->feature_image_path->getClientOriginalName();
+                $avt_path = $request->feature_image_path->storeAs('product', $fileName);
+                $dataProductCreate['feature_image_path'] = $avt_path;
             }
-        }
-        if ($request->tags) {
-            foreach ($request->tags as $tagItem) {
-                $tag = tag::firstOrCreate(['name' => $tagItem]);
-                $tagId[] = $tag->id;
-                //    product_tag::create([
-                //        'product_id' => $product->id,
-                //        'tag_id' => $tag->id,
-                //    ]);
-            }
-            $product->tags()->attach($tagId);
-        }
+            $product = product::create($dataProductCreate);
 
-        return redirect()->route('admin-product')->with('status', 'Thêm sản phẩm thành công');
+            if ($request->hasFile('image_path')) {
+                foreach ($request->image_path as $item) {
+                    $image_name = rand(100, 100000) . $item->getClientOriginalName();
+                    $image_path = $item->storeAs('product', $image_name);
+                    product_image::create([
+                        'product_id' => $product->id,
+                        'image_path' => $image_path,
+                    ]);
+                }
+            }
+            if ($request->tags) {
+                foreach ($request->tags as $tagItem) {
+                    $tag = tag::firstOrCreate(['name' => $tagItem]);
+                    $tagId[] = $tag->id;
+                    //    product_tag::create([
+                        //        'product_id' => $product->id,
+                        //        'tag_id' => $tag->id,
+                        //    ]);
+                }
+                $product->tags()->attach($tagId);
+            }
+                
+            $products = product::latest()->paginate(500);
+            $view = view('admin.product.main_data', compact('products'))->render();
+            return response()->json([
+                'msg' => 'Đã thêm sản phẩm',
+                'view' => $view,
+            ]);
+        }
     }
 
     public function edit($id)
@@ -267,9 +279,9 @@ class ProductController extends Controller
     {
         $str = $request->search_string;
         $cat = $request->idCat;
-        if($cat){
+        if ($cat) {
             $products = product::where("name", "like", "%{$str}%")->where('category_id', $cat)->paginate(500);
-        }else {
+        } else {
             $products = product::where("name", "like", "%{$str}%")->latest()->paginate(500);
         }
         $view = view('admin.product.main_data', compact('products'))->render();

@@ -47,9 +47,9 @@ Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/category', [AdminCategoryController::class, 'index'])->name('admin-category');
     Route::get('/category-add', [AdminCategoryController::class, 'add'])->name('admin-category-add');
     Route::post('/category-insert', [AdminCategoryController::class, 'insert'])->name('admin-category-insert');
-    Route::get('/category-edit-{id}', [AdminCategoryController::class, 'edit'])->name('admin-category-edit');
-    Route::post('/category-update-{id}', [AdminCategoryController::class, 'update'])->name('admin-category-update');
-    Route::get('/category-delete-{id}', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
+    Route::get('/category-edit', [AdminCategoryController::class, 'edit'])->name('admin-category-edit');
+    Route::post('/category-update', [AdminCategoryController::class, 'update'])->name('admin-category-update');
+    Route::get('/category-delete', [AdminCategoryController::class, 'delete'])->name('admin-category-delete');
     Route::get('/category-restore-{id}', [AdminCategoryController::class, 'restore'])->name('admin-category-restore');
     Route::get('/category-force-{id}', [AdminCategoryController::class, 'force'])->name('admin-category-force');
 

@@ -1,7 +1,6 @@
 @extends('layouts.admin')
 @section('title', 'Danh Sách Sản Phẩm')
 @section('css')
-    {{-- <link rel="stylesheet" href="{{ asset('css/app.css') }}"> --}}
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
     <!-- Default theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
@@ -29,27 +28,182 @@
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
         }
 
+        #preview {
+            display: flex;
+            margin-top: 10px;
+            flex-wrap: wrap;
+            min-height: 85px
+        }
+
+        #preview img {
+            margin-right: 8px;
+            margin-bottom: 8px;
+            width: 85px;
+            height: 85px;
+            border-radius: 10px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+        }
+
         .select2-selection__choice {
-            background-color: #4b4645 !important;
+            background-color: #048eaaa9 !important;
         }
 
         .select2-selection.select2-selection--single {
-            padding-bottom: 27px;
+            padding-bottom: 28px;
+        }
+
+        .col-md-12 span.select2-container.select2-container--default {
+            width: 100% !important;
+            font-size: 1rem !important;
         }
 
     </style>
 @endsection
 
 @section('scripts')
-    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    {{-- tinimce --}}
+    <script src="https://cdn.tiny.cloud/1/gvcgn9fcz3rvjlxqcknuy9kstzoabcuya4olq1idbnh25pg6/tinymce/5/tinymce.min.js"
+        referrerpolicy="origin"></script>
     <script>
-        $(document).ready(function() {
-            $('#select_category_filter').select2();
+        document.addEventListener('focusin', (e) => {
+            if (e.target.closest(".tox-tinymce-aux, .moxman-window, .tam-assetmanager-root") !== null) {
+                e.stopImmediatePropagation();
+            }
         });
+        var editor_config = {
+            path_absolute: "/",
+            selector: 'textarea.editor',
+            relative_urls: false,
+            plugins: [
+                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime media nonbreaking save table directionality",
+                "emoticons template paste textpattern"
+            ],
+
+            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
+            file_picker_callback: function(callback, value, meta) {
+                var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
+                    'body')[0].clientWidth;
+                var y = window.innerHeight || document.documentElement.clientHeight || document
+                    .getElementsByTagName('body')[0].clientHeight;
+
+                var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
+                if (meta.filetype == 'image') {
+                    cmsURL = cmsURL + "&type=Images";
+                } else {
+                    cmsURL = cmsURL + "&type=Files";
+                }
+
+                tinyMCE.activeEditor.windowManager.openUrl({
+                    url: cmsURL,
+                    title: 'Filemanager',
+                    width: x * 0.8,
+                    height: y * 0.8,
+                    resizable: "yes",
+                    close_previous: "no",
+                    onMessage: (api, message) => {
+                        callback(message.content);
+                    }
+                });
+            }
+        };
+        tinymce.init(editor_config);
 
     </script>
+    {{-- end tinimce --}}
+
+    <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+
+    {{-- select2 --}}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $('#select_category_filter').select2();
+        $('#select_category_chosse').select2({
+            dropdownParent: $("#modal_add_product"),
+        });
+        $("#tags_select2_choose").select2({
+            dropdownParent: $("#modal_add_product"),
+            tags: true,
+            tokenSeparators: [',', ''],
+            placeholder: "Thêm tags",
+            allowClear: true
+        })
+
+    </script>
+    {{-- end select2 --}}
+
+    {{-- preview avt and image detail --}}
+    <script>
+        function loadFile(event) {
+            var reader = new FileReader();
+            reader.onload = function() {
+                var output = document.getElementById('output');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        };
+
+    </script>
+    <script>
+        $(document).ready(function() {
+            function previewImages() {
+
+                var $preview = $('#preview').empty();
+                if (this.files) $.each(this.files, readAndPreview);
+
+                function readAndPreview(i, file) {
+
+                    if (!/\.(jpe?g|png|gif)$/i.test(file.name)) {
+                        return alert(file.name + " is not an image");
+                    } // else...
+
+                    var reader = new FileReader();
+
+                    $(reader).on("load", function() {
+                        $preview.append($("<img/>", {
+                            src: this.result
+                        }));
+                    });
+
+                    reader.readAsDataURL(file);
+
+                }
+
+            }
+            $('#image_path').on("change", previewImages);
+        })
+
+    </script>
+    {{-- end preview avt and image detail --}}
+
+    {{-- auto enter slug --}}
+    <script>
+        function insertSlug(event) {
+            var title = document.getElementById('name').value;
+            var slug = title.toLowerCase();
+            slug = slug.replace(/á|à|ả|ạ|ã|ă|ắ|ằ|ẳ|ẵ|ặ|â|ấ|ầ|ẩ|ẫ|ậ/gi, 'a');
+
+            slug = slug.replace(/é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ/gi, 'e');
+            slug = slug.replace(/i|í|ì|ỉ|ĩ|ị/gi, 'i');
+            slug = slug.replace(/ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ/gi, 'o');
+            slug = slug.replace(/ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự/gi, 'u');
+            slug = slug.replace(/ý|ỳ|ỷ|ỹ|ỵ/gi, 'y');
+            slug = slug.replace(/đ/gi, 'd');
+            slug = slug.replace(/ /gi, "-")
+            slug = slug.replace(/\-\-\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-\-/gi, '-');
+            slug = slug.replace(/\-\-/gi, '-');
+            slug = '@' + slug + '@';
+            slug = slug.replace(/\@\-|\-\@|\@/gi, '');
+            var el = document.getElementById('slug');
+            el.value = slug;
+        }
+
+    </script>
+    {{-- end auto enter slug --}}
+
     <script>
         var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
         var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
@@ -60,6 +214,7 @@
         })
 
     </script>
+
     <script>
         // ajax
         $.ajaxSetup({
@@ -102,33 +257,7 @@
             })
         })
 
-        $(document).on('change', '.action_status', function(e) {
-            let url = $(this).attr('data-url');
-            let selector = $(this).attr('data-id');
-
-            $.ajax({
-                type: "get",
-                url: url,
-                data: {
-                    'status': $(this).val()
-                },
-                dataType: 'json',
-                success: function(response) {
-                    alertify.success('Đã cập nhật trạng thái kích hoạt.');
-                    if (response.value == 0) {
-                        $('#' + selector).html(
-                            "<i class='fa-solid fa-xmark text-danger' style='font-size: 1.7rem'></i>"
-                        );
-                    } else {
-                        $('#' + selector).html(
-                            "<i class='fa-solid fa-check text-success' style='font-size: 1.9rem'></i>"
-                        );
-                    }
-                }
-            })
-        })
-
-        $(document).on('click', '.btn_delete', function(e) {
+        $(document).on('click', '.btn_delete', function(e) { // delete 
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
@@ -184,7 +313,7 @@
                 }
             })
         })
-        $(document).on('click', '.productItem', function(e) {
+        $(document).on('click', '.productItem', function(e) { // view detail 
             let id = $(this).attr('data-id');
             $.ajax({
                 url: "{{ route('admin-product-detail') }}",
@@ -213,10 +342,11 @@
                 }
             })
         })
-        $(document).on('focus', '#search_input', function() {
+
+        $(document).on('focus', '#search_input', function() { // focus search input
             $('#area_search').addClass('col-md-4')
         })
-        $(document).on('blur', '#search_input', function() {
+        $(document).on('blur', '#search_input', function() { // blur search input
             $('#area_search').removeClass('col-md-4')
             $('#area_search').addClass('col-md-2')
         })
@@ -251,6 +381,43 @@
             getRecords()
         })
 
+        $(document).on('submit', '#form_add', function(event) {
+            event.preventDefault();
+            var form = this;
+            $.ajax({
+                url: "{{ route('admin-product-insert') }}",
+                type: 'POST',
+                data: new FormData(form),
+                processData: false,
+                dataType: 'json',
+                contentType: false,
+                beforeSend: function() {
+                    $(form).find('small.text-danger').text('');
+                    $('#btn_add').find('i').removeClass('d-none');
+                    $('#btn_add').prop('disabled', true)
+                },
+                success: function(response) {
+                    $('#btn_add').find('i').addClass('d-none');
+                    $('#btn_add').prop('disabled', false)
+                    if (response.code == 0) {
+                        $.each(response.error, function(index, val) {
+                                $(form).find('small.text_error_' + index).text(val);
+                            })
+                    } else {
+                        $('#main_data').html(response.view);
+                        $("#modal_add_product").slideUp(300, function() {
+                            $("#modal_add_product").modal('hide');
+                        });
+                        alertify.success(response.msg)
+                        $(form)[0].reset();
+                        $(form).find('small').text('')
+                        $('#preview').html('');
+                        $('#output').attr('src', '');
+                    }
+                }
+            })
+        })
+
     </script>
 @endsection
 
@@ -268,8 +435,7 @@
                         <div class="col-md-2 me-auto">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
-                                    <a class="btn btn-success" href="{{ route('admin-product-add') }}"><i
-                                            class="fa-regular mr-2 fa-square-plus"></i>Thêm danh mục</a>
+                                    <a data-bs-toggle="modal" data-bs-target="#modal_add_product" class="btn btn-success btn_add"><i class="fa-regular mr-2 fa-square-plus"></i>Thêm sản phẩm</a>
                                 </li>
                                 <li class="nav-item">
 
@@ -300,7 +466,6 @@
                     <table class="table table-hover">
                         <thead class="bg-cyan-200 text-light">
                             <tr>
-                                <th scope="col" class="text-center">STT</th>
                                 <th scope="col" class="text-center">Ảnh</th>
                                 <th scope="col" class="text-center">Tên</th>
                                 <th scope="col" class="text-center">Giá</th>
@@ -314,7 +479,6 @@
                             @if ($products->count() > 0)
                                 @foreach ($products as $key => $product)
                                     <tr id="product-{{ $product->id }}">
-                                        <th class="text-center"></th>
 
                                         <td class="text-center">
                                             <img style="width: 5rem; height: 5rem; border-radius: 10px; box-shadow: 0 0 8px rgba(0,0,0,0.2);"
@@ -323,16 +487,18 @@
                                         </td class="text-center">
 
                                         <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
-                                            class="text-center text-bold text-capitalize productItem text-primary" data-id="{{ $product->id }}"
-                                            style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            class="text-center text-bold text-capitalize productItem text-primary"
+                                            data-id="{{ $product->id }}" style="cursor: pointer;" data-bs-toggle="modal"
+                                            data-bs-target="#exampleModal">
                                             {{ $product->name }}</td>
 
-                                        <td class="text-center"> {{ $product->selling_price }} </td>
+                                        <td class="text-center"> {{ number_format($product->selling_price) }}đ </td>
 
                                         <td class="text-center">
                                             {{-- {{ $product->category ? $product->category->name : '' }} --}}
-                                            <span class="badge bg-warning text-dark">{{ optional($product->category)->name }}</span>
-                                            
+                                            <span
+                                                class="badge bg-warning text-dark">{{ optional($product->category)->name }}</span>
+
                                         </td>
 
                                         <td class="text-center">
@@ -357,8 +523,7 @@
                                                 <i class="fa-solid fa-pen-to-square"></i>
                                             </a>
                                             <button data-id="{{ $product->id }} " data-toggle="tooltip"
-                                                data-placement="top" title="Xóa"
-                                                class="btn btn-danger btn-sm btn_delete">
+                                                data-placement="top" title="Xóa" class="btn btn-danger btn-sm btn_delete">
                                                 <i class="fa-solid fa-trash"></i>
                                             </button>
                                         </td>
@@ -375,9 +540,10 @@
                                     </td>
                                 </tr>
                             @endif
+                             <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                         </tbody>
                     </table>
-                    <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
+
                 </div>
             </div>
         </div>
@@ -385,62 +551,8 @@
 
 
     <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Chi Tiết Sản Phẩm</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Tên sản phẩm: <span
-                                class="name_detail fw-normal fs-4 ml-3 text-capitalize"></span></p>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Danh mục: <span
-                                class="category_detail fw-normal fs-4 ml-3 text-capitalize"></span></p>
-                    </div>
-                    <div class="col-md-12">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="text-bold fs-4">Giá gốc: <span
-                                        class="original_price_detail fw-normal fs-4 ml-3 original_price_detail"></span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="text-bold fs-4">Giá bán: <span
-                                        class="fw-normal fs-4 ml-3 selling_price_detail"></span></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Ảnh đại diện: </p>
-                        <img class="feature_image_detail" src="" alt="">
-                    </div>
-
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Ảnh chi tiết: </p>
-                        <div class="detail_image">
-
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Mô tả:</p>
-                        <div class="description_detail">
-                        </div>
-                    </div>
-                    <div class="col-md-12">
-                        <p class="text-bold fs-4">Nội dung:</p>
-                        <div class="content_detail">
-                        </div>
-                    </div>
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    @include('admin.product.inc.add_product')
+    <!-- Modal -->
+    @include('admin.product.inc.product_detail')
 @endsection

@@ -178,7 +178,8 @@
                             <ul class="nav navbar-nav">
                                 <li class="nav-item active">
                                     <button class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#add_role_model">Thêm
+                                        data-bs-target="#add_role_model"><i
+                                        class="fa-regular mr-2 fa-square-plus"></i>Thêm
                                         vai trò</button>
                                 </li>
                                 <li class="nav-item">

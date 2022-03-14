@@ -1,8 +1,6 @@
 @if ($products->count() > 0)
 @foreach ($products as $key => $product)
     <tr id="product-{{ $product->id }}">
-        <th class="text-center"></th>
-
         <td class="text-center">
             <img style="width: 5rem;
                                               height: 5rem;
