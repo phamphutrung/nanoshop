@@ -52,6 +52,11 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('role-update', [RolePolicy::class, 'update']);
         Gate::define('role-delete', [RolePolicy::class, 'delete']);
 
+        Gate::define('category-add', [RolePolicy::class, 'create']);
+        Gate::define('category-view', [RolePolicy::class, 'view']);
+        Gate::define('category-update', [RolePolicy::class, 'update']);
+        Gate::define('category-delete', [RolePolicy::class, 'delete']);
+
         Gate::define('product-view', [ProductPolicy::class, 'view']);
         Gate::define('product-add', [ProductPolicy::class, 'create']);
         Gate::define('product-update', [ProductPolicy::class, 'update']);

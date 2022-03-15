@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
-	<title>Home</title>	
+	<title>@yield('title')</title>	
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('clients/assets/images/favicon.ico') }}">
 	<link href="https://fonts.googleapis.com/css?family=Lato:300,400,400italic,700,700italic,900,900italic&amp;subset=latin,latin-ext" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open%20Sans:300,400,400italic,600,600italic,700,700italic&amp;subset=latin,latin-ext" rel="stylesheet">
@@ -43,9 +43,8 @@
 	@include('layouts.inc_client.client_header')
 
 
-	<main id="main">
-        @yield('content')
-	</main>
+	@yield('content')
+
 
 
 	@include('layouts.inc_client.client_footer')

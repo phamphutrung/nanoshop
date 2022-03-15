@@ -10,6 +10,7 @@ use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\client\CartController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController;
+use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,11 +31,12 @@ Auth::routes(['verify'=>true]);
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop');
 Route::get('/product/{slug}.{id}.html', [ProductController::class, 'index'])->name('product');
+Route::get('product-add-cart', [ProductController::class, 'addCart'])->name('product-add-cart');
 Route::get('cart', [CartController::class, 'index'])->name('cart');
 Route::get('cart-remove', [CartController::class, 'deleteItem'])->name('cart-delete-item');
 Route::post('cart-update', [CartController::class, 'updateItem'])->name('cart-update-item');
-Route::get('cart-add', [ProductController::class, 'addCart'])->name('cart-add');
 
 
 
