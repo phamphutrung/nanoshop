@@ -1,5 +1,5 @@
 <div class="wrap-show-advance-info-box style-1 box-in-site">
-    <h3 class="title-box">Most Viewed Products</h3>
+    <h3 class="title-box">Sản phẩm phổ biến</h3>
     <div class="wrap-products">
         <div class="products slide-carousel owl-carousel style-nav-1 equal-container" data-items="5"
             data-loop="false" data-nav="true" data-dots="false"

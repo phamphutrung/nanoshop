@@ -8,9 +8,11 @@ use App\Http\Controllers\admin\SliderController as AdminSliderController;
 use App\Http\Controllers\admin\SettingController as AdminSettingController;
 use App\Http\Controllers\admin\UserController as AdminUserController;
 use App\Http\Controllers\client\CartController;
+use App\Http\Controllers\client\CheckoutController;
+use App\Http\Controllers\client\ContactController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController;
-use App\Http\Controllers\ShopController;
+use App\Http\Controllers\client\ShopController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -30,13 +32,22 @@ use Illuminate\Support\Facades\Route;
 Auth::routes(['verify'=>true]);
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
-Route::get('/shop', [ShopController::class, 'index'])->name('shop');
-Route::get('/product/{slug}.{id}.html', [ProductController::class, 'index'])->name('product');
+Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
+
+Route::get('/shop/{slug?}/{id?}', [ShopController::class, 'index'])->name('shop');
+Route::get('shop-add-cart', [ShopController::class, 'addToCart'])->name('shop-add-cart');
+
+Route::get('/san-pham/{slug}/{id}.html', [ProductController::class, 'index'])->name('product');
 Route::get('product-add-cart', [ProductController::class, 'addCart'])->name('product-add-cart');
-Route::get('cart', [CartController::class, 'index'])->name('cart');
+
+Route::get('gio-hang', [CartController::class, 'index'])->name('cart');
 Route::get('cart-remove', [CartController::class, 'deleteItem'])->name('cart-delete-item');
 Route::post('cart-update', [CartController::class, 'updateItem'])->name('cart-update-item');
+
+Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
+Route::post('/checkout-order', [CheckoutController::class, 'order'])->name('order');
+
+Route::get('lien-he', [ContactController::class, 'index'])->name('contact');
 
 
 

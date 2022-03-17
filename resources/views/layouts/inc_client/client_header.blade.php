@@ -86,21 +86,21 @@
                             <li class="menu-item {{ session('module_active') == 'home' ? 'home-icon' : '' }}">
                                 <a href="{{ route('home') }}" class="link-term mercado-item-title"><i style="font-size:1.2em" class="fa fa-home" aria-hidden="true"></i></a>
                             </li>
-                            <li class="menu-item">
-                                <a href="about-us.html" class="link-term mercado-item-title">About Us</a>
-                            </li>
                             <li class="menu-item {{ session('module_active') == 'shop' ? 'home-icon' : '' }}">
-                                <a href="shop.html" class="link-term mercado-item-title">Shop</a>
+                                <a href="{{ route('shop') }}" class="link-term mercado-item-title">Shop</a>
                             </li>
                             <li class="menu-item {{ session('module_active') == 'cart' ? 'home-icon' : '' }}">
-                                <a href="{{ route('cart') }}" class="link-term mercado-item-title">Cart</a>
+                                <a href="{{ route('cart') }}" class="link-term mercado-item-title">Giỏ hàng</a>
                             </li>
                             <li class="menu-item">
-                                <a href="checkout.html" class="link-term mercado-item-title">Checkout</a>
+                                <a href="checkout.html" class="link-term mercado-item-title">Đặt hàng</a>
                             </li>
                             <li class="menu-item">
-                                <a href="contact-us.html" class="link-term mercado-item-title">Contact Us</a>
-                            </li>																	
+                                <a href="{{ route('contact') }}" class="link-term mercado-item-title">Liên hệ</a>
+                            </li>						
+                            <li class="menu-item">
+                                <a href="about-us.html" class="link-term mercado-item-title">Giới thiệu</a>
+                            </li>											
                         </ul>
                     </div>
                 </div>

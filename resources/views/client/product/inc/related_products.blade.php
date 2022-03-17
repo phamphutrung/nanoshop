@@ -30,7 +30,7 @@
                         <div class="product-info">
                             <a href="{{ route('product', [$product->slug, $product->id]) }}" class="product-name"><span>{{ $product->name }}</span></a>
                             <div class="wrap-price"><ins>
-                                    <p class="product-price">{{ $product->selling_price }}đ</p>
+                                    <p class="product-price">{{ number_format($product->selling_price) }}đ</p>
                                 </ins> <del>
                                     <p class="product-price">{{ $product->original_price }}đ</p>
                                 </del></div>

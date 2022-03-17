@@ -12,13 +12,13 @@
 
             <div class="wrap-breadcrumb">
                 <ul>
-                    <li class="item-link"><a href="#" class="link">Trang chủ</a></li>
+                    <li class="item-link"><a href="{{ route('home') }}" class="link">Trang chủ</a></li>
                     <li class="item-link"><span>Giỏ hàng</span></li>
                 </ul>
             </div>
             <div class=" main-content-area">
                 <div id="main_data">
-    
+
                     @if (Cart::count() > 0)
                         <div class="wrap-iten-in-cart">
                             <h3 class="box-title">Products Name</h3>
@@ -30,16 +30,16 @@
                                             </figure>
                                         </div>
                                         <div class="product-name">
-                                            <a class="link-to-product" href="#">{{ $product->name }}</a>
+                                            <a class="link-to-product" href="{{ route('product', [$product->options->slug, $product->id]) }}">{{ $product->name }}</a>
                                         </div>
                                         <div class="price-field produtc-price">
                                             <p class="price">{{ number_format($product->price) }}đ</p>
                                         </div>
                                         <div class="quantity">
                                             <div class="quantity-input">
-                                                <input readonly class="qty_item" data-id="{{ $product->rowId }}" type="text"
-                                                    name="product-quatity" value="{{ $product->qty }}" data-max="120"
-                                                    pattern="[0-9]*">
+                                                <input readonly class="qty_item" data-id="{{ $product->rowId }}"
+                                                    type="text" name="product-quatity" value="{{ $product->qty }}"
+                                                    data-max="120" pattern="[0-9]*">
                                                 <a class="btn btn-increase change_qty_item"></a>
                                                 <a class="btn btn-reduce change_qty_item"></a>
                                             </div>
@@ -58,21 +58,22 @@
                                 @endforeach
                             </ul>
                         </div>
-    
+
                         <div style="display: flex; align-items: center" class="summary">
                             <div class="order-summary">
                                 <h4 class="title-box">Order Summary</h4>
                                 <p class="summary-info"><span class="title">Subtotal</span><b
                                         class="index cartTotal">{{ Cart::total() }}đ</b></p>
-                                <p class="summary-info"><span class="title">Shipping</span><b class="index">Free Shipping</b>
+                                <p class="summary-info"><span class="title">Shipping</span><b class="index">Free
+                                        Shipping</b>
                                 </p>
                                 <p class="summary-info total-info "><span class="title">Total</span><b
                                         class="index cartTotal">{{ Cart::total() }}đ</b></p>
                             </div>
                             <div class="checkout-info" style="margin-left: 20em; width:40em">
-                                <a class="btn btn-checkout" href="checkout.html">Check out</a>
-                                <a class="link-to-shop" href="shop.html">Continue Shopping<i class="fa fa-arrow-circle-right"
-                                        aria-hidden="true"></i></a>
+                                <a class="btn btn-checkout" href="{{ route('checkout') }}">Đặt hàng</a>
+                                <a class="link-to-shop" href="shop.html">Tiếp tục mua sắm<i
+                                        class="fa fa-arrow-circle-right" aria-hidden="true"></i></a>
                             </div>
                         </div>
                     @else
@@ -80,8 +81,9 @@
                             <h4 class="alert-heading">Giỏ hàng rỗng</h4>
                             <p>Bạn chưa thêm bất kì sản phẩm nào vào giỏ hàng</p>
                             <hr>
-                            <p class="mb-0"> <a class="link-to-shop" href="">Tiếp tục mua sắm<i style="margin-left: 0.5rem"
-                                        class="fa fa-arrow-circle-right" aria-hidden="true"></i></a></p>
+                            <p class="mb-0"> <a class="link-to-shop" href="{{ route('shop') }}">Tiếp tục mua sắm<i
+                                        style="margin-left: 0.5rem" class="fa fa-arrow-circle-right"
+                                        aria-hidden="true"></i></a></p>
                         </div>
                     @endif
                 </div>
@@ -89,7 +91,7 @@
             </div>
         </div>
     </main>
-   
+
 @endsection
 @section('scripts')
     <script>
@@ -109,12 +111,22 @@
                     rowId: rowId
                 },
                 success: function(response) {
-                    $('#cartItem' + rowId).remove();
-                    var length = $('.products-cart').find('li').length;
-                    if (length < 1) {
-                        $('#main_data').html(response.noti)
+                    $('#cartItem' + rowId).fadeOut(500, function() {
+                        $(this).remove()
+                    });
+
+                    function noti() {
+                        var length = $('.products-cart').find('li').length;
+                        if (length < 1) {
+                            $('#main_data').html(response.noti)
+                        }
                     }
                     $('#cartCount').text(response.cartCount + " " + "SP")
+
+                    setTimeout(() => {
+                        noti()
+                    }, 550);
+
                 }
             })
         })
@@ -160,5 +172,6 @@
             }
             return s.join(dec);
         }
+
     </script>
 @endsection

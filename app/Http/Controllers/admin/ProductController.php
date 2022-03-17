@@ -39,18 +39,9 @@ class ProductController extends Controller
         return view('admin.product.index', compact('products', 'htmlSelectOptionCategory', 'htmlSelectOptionTag'));
     }
 
-    // public function add()
-    // {
-    //     $data = category::all();
-    //     $Recursive = new Recursive($data);
-    //     $htmlSelectOptionCategory = $Recursive->categoryRecursive($id = '0', $tr = '', '');
-
-    //     $tags = tag::all();
-    //     $getHtml = new GetHtml;
-    //     $htmlSelectOptionTag = $getHtml->getHtmlTags($tags, []);
-
-    //     return view('admin.product.add', compact('htmlSelectOptionCategory', 'htmlSelectOptionTag'));
-    // }
+    function gerRecord() {
+        
+    }
 
     public function viewProductDetail(request $request)
     {
@@ -78,7 +69,8 @@ class ProductController extends Controller
             'category_id' => 'required',
             'name' => 'required',
             'slug' => 'required',
-        ], ['required' => 'Không được để trống']);
+            'selling_price' => 'integer' 
+        ], ['required' => 'Không được để trống', 'integer' => 'Định dạng giá không hợp lệ']);
         if ($validator->fails()) {
             return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
@@ -156,7 +148,10 @@ class ProductController extends Controller
     public function update(request $request, $id)
     {
         $this->validate($request, [
-            'name' => 'required'
+            'category_id' => 'required',
+            'name' => 'required',
+            'slug' => 'required',
+            'selling_price' => 'integer' 
         ], [
             'required' => 'Không được để trống'
         ]);

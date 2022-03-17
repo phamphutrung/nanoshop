@@ -25,7 +25,7 @@
                     </div>
                     <div class="form-group">
                         <label>Danh mục cha</label>
-                        <select class="form-select" name="parent_id">
+                        <select class="form-select" name="parent_id" id="category_parent">
                             <option value="0">Chọn danh mục cha</option>
                             {!! $htmlSelectOptionCategory !!}
                         </select>

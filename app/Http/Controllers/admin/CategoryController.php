@@ -72,11 +72,16 @@ class CategoryController extends Controller
                 $category->avt = $avt_path;
             }
             $category->save();
+
             $categories = category::all();
             $Recursive = new Recursive($categories);
             $htmlCategoryView = $Recursive->categoryRecursiveView(0, '');
 
-            return response()->json(['msg' => 'Đã thêm danh mục', 'view' => $htmlCategoryView]);
+            $data = category::all();
+            $Recursive = new Recursive($data);
+            $htmlSelectOptionCategory = $Recursive->categoryRecursive($id = '0', $tr = '', '');
+
+            return response()->json(['msg' => 'Đã thêm danh mục', 'view' => $htmlCategoryView, 'htmlSelectOptionCategory' => $htmlSelectOptionCategory]);
         }
     }
 
@@ -84,10 +89,12 @@ class CategoryController extends Controller
     {
 
         $category = Category::find($request->id);
+
         $parent_id = $category->parent_id;
         $data = category::all();
         $Recursive = new Recursive($data);
         $htmlSelectOptionCategoryEdit = $Recursive->categoryRecursive($id = '0', $tr = '', $parent_id);
+
         return response()->json(['category' => $category, 'htmlSelectOptionCategoryEdit' => $htmlSelectOptionCategoryEdit]);
     }
 
@@ -133,6 +140,10 @@ class CategoryController extends Controller
 
     public function delete(request $request)
     {
+        $category = category::find($request->id);
+        if($category->products->count()>0) {
+            return response()->json(['code' => 0, 'msg' => 'Xóa sản phẩm của danh mục này trước khi xóa nó']);
+        }
         category::destroy($request->id);
         $categories = category::all();
         $Recursive = new Recursive($categories);

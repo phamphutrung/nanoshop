@@ -21,17 +21,9 @@ class ProductController extends Controller
     {
         $product = product::where('status', true)->find($id); //main product.
 
-        // related product:
-        $idCategory = optional($product->category)->id;
-        $products = product::where('trending', true)->get();
-        $relatedProducts = [];
-        foreach ($products as $productItem) {
-            if ($productItem->category->id == $idCategory) {
-                $relatedProducts[] = $productItem;
-            }
-        }
+        $relatedProducts = $product->category->products()->where('trending', true)->get(); // lấy danh mục của sản phẩm chính sau đó lấy những sản phẩm trong danh mục vừa lấy ra
 
-        $popularProducts = product::inRandomOrder()->where('trending', true)->limit(4)->get(); // popular (trending) product
+        $popularProducts = product::inRandomOrder()->where(['trending' => true, 'status' => true])->limit(5)->get(); // popular (trending) product
         return view('client.product.index', compact('product', 'relatedProducts', 'popularProducts'));
     }
     function addCart(request $request)
@@ -44,10 +36,11 @@ class ProductController extends Controller
             'price' => $product->selling_price,
             'weight' => 0,
             'options' => [
-                'avt' => $product->feature_image_path
+                'avt' => $product->feature_image_path,
+                'slug' => $product->slug,
             ]
         ]);
 
-        return response()->json([Cart::content(), 'cartCount' => Cart::count(), 'msg' => 'Đã thêm sản phẩm vào giỏ hàng']);
+        return response()->json(['cartCount' => Cart::count(), 'msg' => 'Đã thêm sản phẩm vào giỏ hàng']);
     }
 }

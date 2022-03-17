@@ -1,5 +1,5 @@
 <div class="wrap-show-advance-info-box style-1">
-    <h3 class="title-box">Latest Products</h3>
+    <h3 class="title-box">Sản Phẩm Mới</h3>
     <div class="wrap-top-banner">
         <a href="#" class="link-banner banner-effect-2">
             <figure><img src="{{ asset('clients/assets/images/digital-electronic-banner.jpg') }}" width="1170"
@@ -20,7 +20,8 @@
                                 <div class="product-thumnail">
                                     <a href="{{ route('product', [$product->slug, $product->id]) }}"
                                         title="T-Shirt Raw Hem Organic Boro Constrast Denim">
-                                        <figure><img src="{{ asset('storage/' . $product->feature_image_path) }}"
+                                        <figure><img
+                                                src="{{ asset('storage/' . $product->feature_image_path) }}"
                                                 width="800" height="800"
                                                 alt="T-Shirt Raw Hem Organic Boro Constrast Denim">
                                         </figure>

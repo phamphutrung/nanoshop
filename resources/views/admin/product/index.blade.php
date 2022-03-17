@@ -437,12 +437,6 @@
                                 <li class="nav-item">
                                     <a data-bs-toggle="modal" data-bs-target="#modal_add_product" class="btn btn-success btn_add"><i class="fa-regular mr-2 fa-square-plus"></i>Thêm sản phẩm</a>
                                 </li>
-                                <li class="nav-item">
-
-                                </li>
-                                <li class="nav-item">
-
-                                </li>
                             </ul>
                         </div>
                         <div class="col-md-2">
@@ -540,7 +534,7 @@
                                     </td>
                                 </tr>
                             @endif
-                             <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
+                             {{-- <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div> --}}
                         </tbody>
                     </table>
 

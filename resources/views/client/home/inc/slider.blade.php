@@ -8,7 +8,7 @@
                     <h2 class="f-title">{!! $slider->title !!}</h2>
                     <span class="subtitle">{!! $slider->description !!}</span>
                     <p class="sale-info"></p>
-                    <a href="#" class="btn-link">Mua Sắm Ngay</a>
+                    <a href="{{ route('shop') }}" class="btn-link">Mua Sắm Ngay</a>
                 </div>
             </div>
         @endforeach

@@ -21,6 +21,7 @@
             };
             reader.readAsDataURL(event.target.files[0]);
         };
+
         function loadFileEdit(event) {
             var reader = new FileReader();
             reader.onload = function() {
@@ -51,6 +52,7 @@
             var el = document.getElementById('slug_edit');
             el.value = slug;
         }
+
         function insertSlug(event) {
             var title = document.getElementById('name').value;
             var slug = title.toLowerCase();
@@ -105,6 +107,8 @@
                         })
                     } else {
                         $('#main_data').html(response.view)
+                        $('#category_parent').html("<option value='0'>Chọn danh mục cha</option>" +
+                            response.htmlSelectOptionCategory)
                         alertify.success(response.msg)
                         $('#add_category_modal').slideUp('fast', function() {
                             $(this).modal('hide');
@@ -137,15 +141,20 @@
                             id: id,
                         },
                         success: function(response) {
-                            $('#category_' + id).fadeOut('slow', function() {
-                                $('#main_data').html(response.view);
-                            });
-                            alertify.warning(response.msg)
+                            if (response.code == 0) {
+                                alertify.error(response.msg)
+                            } else {
+                                $('#category_' + id).fadeOut('slow', function() {
+                                    $('#main_data').html(response.view);
+                                });
+                                alertify.warning(response.msg)
+                            }
                         }
                     })
                 }
             })
         })
+
 
         $(document).on('click', '.btn_edit', function(e) { // show form edit
             e.preventDefault();

@@ -23,7 +23,8 @@
         .select2-selection__choice {
             background-color: #4b4645 !important;
         }
-        .select2-selection.select2-selection--single {    
+
+        .select2-selection.select2-selection--single {
             padding-bottom: 28px;
         }
 
@@ -197,16 +198,25 @@
                         <div class="col-md-12 mb-4">
                             <label for="slug">Slug</label>
                             <input id="slug" class="form-control" type="text" name="slug" value="{{ $product->slug }}">
+                            @error('slug')
+                                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="col-md-12 mb-4">
                             <label for="original_price">Giá gốc</label>
                             <input id="original_price" class="form-control" type="text" name="original_price"
                                 placeholder="Nhập giá gốc" value="{{ $product->original_price }}">
+                            @error('original_price')
+                                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
                         <div class="col-md-12 mb-4">
                             <label for="selling_price">Giá bán</label>
                             <input id="selling_price" class="form-control" type="text" name="selling_price"
                                 placeholder="Nhập giá bán hiện tại" value="{{ $product->selling_price }}">
+                            @error('selling_price')
+                                <small id="emailHelp" class="form-text text-danger">{{ $message }}</small>
+                            @enderror
                         </div>
 
                         <div class="col-md-12 mb-4">
@@ -258,16 +268,16 @@
                             <label for="description">Mô tả ngắn</label>
                             <textarea class="form-control editor" name="description" id="description" rows="5"
                                 placeholder="Nhập mô tả ngắn">
-                                    {{ $product->description }}
-                                </textarea>
+                                        {{ $product->description }}
+                                    </textarea>
                         </div>
 
                         <div class="col-md-12 mb-4">
                             <label for="description">Nội dung</label>
                             <textarea class="form-control editor" name="content" id="description" rows="28"
                                 placeholder="Nhập nội dung sản phẩm">
-                                    {{ $product->content }}
-                                </textarea>
+                                        {{ $product->content }}
+                                    </textarea>
                         </div>
 
 

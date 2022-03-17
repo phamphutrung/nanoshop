@@ -36,14 +36,14 @@
                                 <div class="col-md-12 mb-4">
                                     <label for="original_price">Giá gốc</label>
                                     <input value="{{ old('original_price') }}" id="original_price" class="form-control"
-                                        type="text" name="original_price" placeholder="Nhập giá gốc">
+                                        type="text" name="original_price" placeholder="Vd: 199000">
                                     <small class="text-danger text_error_original_price"></small>
 
                                 </div>
                                 <div class="col-md-12 mb-4">
                                     <label for="selling_price">Giá bán</label>
                                     <input value="{{ old('selling_price') }}" id="selling_price" class="form-control"
-                                        type="text" name="selling_price" placeholder="Nhập giá bán hiện tại">
+                                        type="text" name="selling_price" placeholder="Vd: 185000">
                                     <small class="text-danger text_error_selling_price"></small>
 
                                 </div>
