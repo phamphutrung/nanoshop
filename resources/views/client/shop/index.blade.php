@@ -130,15 +130,16 @@
             $(window).on('scroll', function(){
                  if($(window).scrollTop() + $(window).height()>= $(document).height()) {
                     page ++;
-                    console.log(page)
                     loadMore(page)
                  }
             })
 
             function loadMore(page) {
+                var idCat = $('input[name="categoryId"]').val()
                 $.ajax({
                     url: "{{ route('load-more')}}" + "?page=" + page,
                     type: 'get',
+                    data: {idCat: idCat},
                     dataType: 'json',
                     beforeSend: function() {
                         $('#noti').css('display', 'block');

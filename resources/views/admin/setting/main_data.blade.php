@@ -14,8 +14,6 @@
             </td>
         </tr>
     @endforeach
-    {{ $settings->links() }}
-
 @else
     <tr>
         <td colspan="6">

@@ -11,9 +11,7 @@ use App\Components\Recursive;
 use App\Models\tag;
 use Illuminate\Support\Facades\Storage;
 use App\Components\getHtml;
-use App\Models\product_tag;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class ProductController extends Controller
@@ -194,13 +192,14 @@ class ProductController extends Controller
                 ]);
             }
         }
+        $tagId = [];
         if ($request->tags) {
             foreach ($request->tags as $tagItem) {
                 $tag = tag::firstOrCreate(['name' => $tagItem]);
                 $tagId[] = $tag->id;
             }
-            $product->tags()->sync($tagId);
         }
+        $product->tags()->sync($tagId);
         return redirect()->route('admin-product')->with('status', 'Cập nhật sản phẩm thành công');
     }
 

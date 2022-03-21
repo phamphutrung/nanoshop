@@ -49,21 +49,21 @@
 
                     <div class="col-lg-4 col-sm-4 col-md-4 col-xs-12">
                         <div class="wrap-footer-item">
-                            <h3 class="item-header">Contact Details</h3>
+                            <h3 class="item-header">Chi Tiết Liên Hệ</h3>
                             <div class="item-content">
                                 <div class="wrap-contact-detail">
                                     <ul>
                                         <li>
                                             <i class="fa fa-map-marker" aria-hidden="true"></i>
-                                            <p class="contact-txt">45 Grand Central Terminal New York,NY 1017 United State USA</p>
+                                            <p class="contact-txt">{{ getConfigValue('address') }}</p>
                                         </li>
                                         <li>
                                             <i class="fa fa-phone" aria-hidden="true"></i>
-                                            <p class="contact-txt">(+123) 456 789 - (+123) 666 888</p>
+                                            <p class="contact-txt">{{ getConfigValue('phone') }}</p>
                                         </li>
                                         <li>
                                             <i class="fa fa-envelope" aria-hidden="true"></i>
-                                            <p class="contact-txt">Contact@yourcompany.com</p>
+                                            <p class="contact-txt">{{ getConfigValue('email') }}</p>
                                         </li>											
                                     </ul>
                                 </div>
@@ -77,14 +77,14 @@
                             <h3 class="item-header">Hot Line</h3>
                             <div class="item-content">
                                 <div class="wrap-hotline-footer">
-                                    <span class="desc">Call Us toll Free</span>
-                                    <b class="phone-number">(+123) 456 789 - (+123) 666 888</b>
+                                    <span class="desc">Hãy Gọi Cho Chúng Tôi</span>
+                                    <b class="phone-number">{{ getConfigValue('phone') }}</b>
                                 </div>
                             </div>
                         </div>
 
                         <div class="wrap-footer-item footer-item-second">
-                            <h3 class="item-header">Sign up for newsletter</h3>
+                            <h3 class="item-header">Nhập email để nhận thông tin mới nhất</h3>
                             <div class="item-content">
                                 <div class="wrap-newletter-footer">
                                     <form action="#" class="frm-newletter" id="frm-newletter">

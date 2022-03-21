@@ -7,13 +7,13 @@
                         <ul>
                             <li class="menu-item">
                                 <a title="Hotline: (+123) 456 789" href="#"><span
-                                        class="icon label-before fa fa-mobile"></span>Hotline: (+123) 456 789</a>
+                                        class="icon label-before fa fa-mobile"></span>Hotline: {{ getConfigValue('phone') }}</a>
                             </li>
                         </ul>
                     </div>
                     <div class="topbar-menu right-menu">
-                        <ul>
-                            {{-- <li class="menu-item" ><a title="Register or Login" href="login.html">Login</a></li>
+                        {{-- <ul>
+                            <li class="menu-item" ><a title="Register or Login" href="login.html">Login</a></li>
                             <li class="menu-item" ><a title="Register or Login" href="register.html">Register</a></li> --}}
                             {{-- <li class="menu-item lang-menu menu-item-has-children parent">
                                 <a title="English" href="#"><span class="img label-before"><img src="{{ asset('clients/assets/images/lang-en.png') }}" alt="lang-en"></span>English<i class="fa fa-angle-down" aria-hidden="true"></i></a>
@@ -37,8 +37,8 @@
                                         <a title="Dollar (USD)" href="#">Dollar (USD)</a>
                                     </li>
                                 </ul>
-                            </li> --}}
-                        </ul>
+                            </li> 
+                        </ul> --}}
                     </div>
                 </div>
             </div>

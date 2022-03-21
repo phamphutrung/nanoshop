@@ -22,9 +22,9 @@
     <link rel="stylesheet" type="text/css" href="{{ asset('clients/assets/css/chosen.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('clients/assets/css/style.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('clients/assets/css/color-01.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
     integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
-    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
     <!-- Default theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/default.min.css" />
@@ -52,8 +52,8 @@
     @include('layouts.inc_client.client_footer')
 
     <div id="ontop"
-        style="display:none; cursor: pointer;color: white; position: fixed; right: 50px; bottom: 100px; width: 5rem; height: 5rem; text-align: center; line-height: 5rem; background-color: red; border-radius: 100%; transition-property: all 3s;">
-        <i class="fa-solid fa-chevron-up"></i>
+        style="display:none; cursor: pointer;color: white; position: fixed; z-index: 3000; right: 50px; bottom: 100px; width: 5rem; height: 5rem; text-align: center; line-height: 5rem; background-color: red; border-radius: 100%; transition-property: all 3s; font-size: 1.5rem">
+        <i class="fa fa-angle-up" aria-hidden="true"></i>
     </div>
 
     <script src="{{ asset('clients/assets/js/jquery-1.12.4.minb8ff.js?ver=1.12.4') }}"></script>

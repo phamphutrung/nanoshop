@@ -455,7 +455,7 @@
                             </select>
                         </div>
                         <div id="area_search" class="col-md-2" style="position: relative">
-                            <input type="text" class="form-control ml-3" name="search" id="search_input"
+                            <input type="search" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
                             <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>

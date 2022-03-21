@@ -28,20 +28,26 @@ class ShopController extends Controller
             $category = category::find($id);
             $categoryId = $id;
             $category_name = $category->name;
-            $totalProduct = $category->products()->count();
-            $products = $category->products()->latest()->paginate(6);
-            return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'totalProduct', 'products', 'popularProducts'));
+            $products = $category->products()->orderBy('selling_price')->paginate(12);
+            return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
         }
 
         $category_name = "Tất cả sản phẩm";
         $categoryId = 0;
-        $totalProduct = product::all()->count();
-        $products = product::latest()->paginate(6);
-        return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'totalProduct', 'products', 'popularProducts'));
+        $products = product::orderBy('selling_price')->paginate(12);
+        return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
     }
 
     function loadMore(Request $request) {
-        $products = product::where('status', true)-> latest()->paginate(6);
+        if($request->idCat == 0) {
+            $products = product::where('status', true)
+            ->when(true, function($q) {
+                $q->orderBy('selling_price');
+            })
+            ->paginate(12);
+        } else {
+            $products = category::find($request->idCat)->products()->where('status', true)->latest()->paginate(12);
+        }
         $view = view('client.shop.inc.main_data',compact('products'))->render();
         return response()->json(['view' => $view]);
     }
