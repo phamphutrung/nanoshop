@@ -17,23 +17,35 @@ class ShopController extends Controller
             return $next($request);
         });
     }
+
     function index($slug = 0, $id = 0)
     {
         $categoryParents = category::where('parent_id', 0)->latest()->get();
         $popularProducts = product::inRandomOrder()
-                            ->where(['trending' => true, 'status' => true])
-                            ->limit(6)->get(); // popular (trending) product
+            ->where(['trending' => true, 'status' => true])
+            ->limit(10)->get(); // popular (trending) product
         if ($id != 0) {
             $category = category::find($id);
+            $categoryId = $id;
             $category_name = $category->name;
-            $products = $category->products()->latest()->paginate(40);
-            return view('client.shop.index', compact('categoryParents', 'category_name', 'products', 'popularProducts'));
+            $totalProduct = $category->products()->count();
+            $products = $category->products()->latest()->paginate(6);
+            return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'totalProduct', 'products', 'popularProducts'));
         }
 
         $category_name = "Tất cả sản phẩm";
-        $products = product::latest()->paginate(40);
-        return view('client.shop.index', compact('categoryParents', 'category_name', 'products', 'popularProducts'));
+        $categoryId = 0;
+        $totalProduct = product::all()->count();
+        $products = product::latest()->paginate(6);
+        return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'totalProduct', 'products', 'popularProducts'));
     }
+
+    function loadMore(Request $request) {
+        $products = product::where('status', true)-> latest()->paginate(6);
+        $view = view('client.shop.inc.main_data',compact('products'))->render();
+        return response()->json(['view' => $view]);
+    }
+
 
     function addToCart(request $request)
     {

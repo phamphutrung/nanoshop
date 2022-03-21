@@ -39,8 +39,8 @@ class ProductController extends Controller
         return view('admin.product.index', compact('products', 'htmlSelectOptionCategory', 'htmlSelectOptionTag'));
     }
 
-    function gerRecord() {
-        
+    function gerRecord()
+    {
     }
 
     public function viewProductDetail(request $request)
@@ -69,7 +69,7 @@ class ProductController extends Controller
             'category_id' => 'required',
             'name' => 'required',
             'slug' => 'required',
-            'selling_price' => 'integer' 
+            'selling_price' => 'integer'
         ], ['required' => 'Không được để trống', 'integer' => 'Định dạng giá không hợp lệ']);
         if ($validator->fails()) {
             return response()->json(['code' => 0, 'error' => $validator->errors()->toArray()]);
@@ -108,13 +108,13 @@ class ProductController extends Controller
                     $tag = tag::firstOrCreate(['name' => $tagItem]);
                     $tagId[] = $tag->id;
                     //    product_tag::create([
-                        //        'product_id' => $product->id,
-                        //        'tag_id' => $tag->id,
-                        //    ]);
+                    //        'product_id' => $product->id,
+                    //        'tag_id' => $tag->id,
+                    //    ]);
                 }
                 $product->tags()->attach($tagId);
             }
-                
+
             $products = product::latest()->paginate(500);
             $view = view('admin.product.main_data', compact('products'))->render();
             return response()->json([
@@ -151,7 +151,7 @@ class ProductController extends Controller
             'category_id' => 'required',
             'name' => 'required',
             'slug' => 'required',
-            'selling_price' => 'integer' 
+            'selling_price' => 'integer'
         ], [
             'required' => 'Không được để trống'
         ]);
@@ -274,11 +274,17 @@ class ProductController extends Controller
     {
         $str = $request->search_string;
         $cat = $request->idCat;
-        if ($cat) {
-            $products = product::where("name", "like", "%{$str}%")->where('category_id', $cat)->paginate(500);
-        } else {
-            $products = product::where("name", "like", "%{$str}%")->latest()->paginate(500);
-        }
+        // if ($cat) {
+        //     $products = product::where("name", "like", "%{$str}%")->where('category_id', $cat)->paginate(500);
+        // } else {
+        //     $products = product::where("name", "like", "%{$str}%")->latest()->paginate(500);
+        // }
+        $products = product::where(function ($q) use ($str) {
+            $q->where('name', 'like', "%$str%")->orWhere('selling_price', 'like', "%$str%");
+        })->when($cat, function($q) use ($cat) {
+            $q->where('category_id', $cat);
+        })
+            ->latest()->paginate(400);
         $view = view('admin.product.main_data', compact('products'))->render();
         return response()->json(['view' => $view]);
     }

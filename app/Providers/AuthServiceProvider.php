@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Policies\OrderPolicy;
 use App\Policies\ProductPolicy;
 use App\Policies\RolePolicy;
 use App\Policies\SettingPolicy;
@@ -61,5 +62,10 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('product-add', [ProductPolicy::class, 'create']);
         Gate::define('product-update', [ProductPolicy::class, 'update']);
         Gate::define('product-delete', [ProductPolicy::class, 'delete']);
+
+        Gate::define('order-view', [OrderPolicy::class, 'view']);
+        Gate::define('order-add', [OrderPolicy::class, 'create']);
+        Gate::define('order-update', [OrderPolicy::class, 'update']);
+        Gate::define('order-delete', [OrderPolicy::class, 'delete']);
     }
 }

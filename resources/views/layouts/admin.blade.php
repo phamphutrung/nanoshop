@@ -47,7 +47,7 @@
 </head>
 <style>
     .bg-cyan-200 {
-        background-color: #042961;
+        background-color: #045e61;
     }
 
     .bg-cyan-100 {

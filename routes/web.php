@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\admin\RoleController as AdminRoleController;
 use App\Http\Controllers\admin\SliderController as AdminSliderController;
@@ -13,6 +14,8 @@ use App\Http\Controllers\client\ContactController;
 use App\Http\Controllers\client\HomeController;
 use App\Http\Controllers\client\ProductController;
 use App\Http\Controllers\client\ShopController;
+use App\Http\Controllers\client\AboutController;
+
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,9 +36,12 @@ Auth::routes(['verify'=>true]);
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/trang-chu', [HomeController::class, 'index'])->name('home');
+Route::get('/search', [HomeController::class, 'searchDropdown'])->name('search-dropdown');
+Route::get('/tim-kiem', [HomeController::class, 'search'])->name('search');
 
 Route::get('/shop/{slug?}/{id?}', [ShopController::class, 'index'])->name('shop');
 Route::get('shop-add-cart', [ShopController::class, 'addToCart'])->name('shop-add-cart');
+Route::get('load-more', [ShopController::class, 'loadMore'])->name('load-more');
 
 Route::get('/san-pham/{slug}/{id}.html', [ProductController::class, 'index'])->name('product');
 Route::get('product-add-cart', [ProductController::class, 'addCart'])->name('product-add-cart');
@@ -48,13 +54,22 @@ Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout-order', [CheckoutController::class, 'order'])->name('order');
 
 Route::get('lien-he', [ContactController::class, 'index'])->name('contact');
+Route::get('ve-chung-toi', [AboutController::class, 'index'])->name('about');
+
 
 
 
 
 Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/home', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::get('/admin', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // order admin
+    Route::get('/order', [OrderController::class, 'index'])->name('admin-order');
+    Route::get('/order-detail', [OrderController::class, 'getDetail'])->name('admin-order-detail');
+    Route::post('/order-update-status', [OrderController::class, 'updateStatus'])->name('admin-order-update-status');
+    Route::get('order-delete', [OrderController::class, 'delete'])->name('admin-order-delete');
+    Route::get('/order-filter', [OrderController::class, 'filter'])->name('admin-order-filter');
 
     // category admin
     Route::get('/category', [AdminCategoryController::class, 'index'])->name('admin-category');

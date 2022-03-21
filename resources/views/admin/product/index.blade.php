@@ -365,9 +365,13 @@
                 beforeSend: function() {
                     $('#ani_search').removeClass('d-none')
                     $('#ico_search').addClass('d-none')
+                    $('body').css('opacity', '0.6')
+                    $('#kun').css('display', 'block')
                 },
                 success: function(response) {
                     $('#main_data').html(response.view)
+                    $('#kun').css('display', 'none')
+                    $('body').css('opacity', '1')
                     $('#ani_search').addClass('d-none')
                     $('#ico_search').removeClass('d-none')
                 }
@@ -423,7 +427,12 @@
 
 
 @section('content')
-
+<style>
+    #kun {
+        position: fixed; z-index: 200; top: 50%;right: 50%;font-size: 50px;display: none;
+    }
+</style>
+    <i id="kun" class="fas fa-spinner fa-pulse"></i>
     <div class="card">
         <div class="card-header bg-cyan-200 text-light">
             <h2>Danh Sách Sản Phẩm</h2>
@@ -431,7 +440,7 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-header">
-                    <nav class="navbar navbar-expand navbar-light bg-light d-flex ">
+                    <nav class="navbar navbar-expand navbar-light bg-light ">
                         <div class="col-md-2 me-auto">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">

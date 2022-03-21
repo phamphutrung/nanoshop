@@ -33,6 +33,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="{{ route('admin-order') }}"
+                        class="nav-link {{ session('module_active') == 'order' ? 'active' : '' }}">
+                        <i class="nav-icon fa-regular fa-hard-drive"></i>
+                        <p>
+                            Đơn Hàng
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="{{ route('admin-category') }}"
                         class="nav-link {{ session('module_active') == 'category' ? 'active' : '' }}">
                         <i class="nav-icon fas  fa-list-alt"></i>
