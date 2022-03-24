@@ -101,6 +101,9 @@
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
                     $('#btn_add').prop('disabled', false);
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
+                    } else
                     if (response.code == 0) {
                         $.each(response.error, function(index, val) {
                             $('small.error_' + index).html(val);
@@ -141,6 +144,9 @@
                             id: id,
                         },
                         success: function(response) {
+                            if(response.code == -1) {
+                                alertify.error(response.msg)
+                            } else
                             if (response.code == 0) {
                                 alertify.error(response.msg)
                             } else {
@@ -195,6 +201,9 @@
                 success: function(response) {
                     $('#btn_update').find('i').addClass('d-none');
                     $('#btn_update').prop('disabled', false)
+                    if(response.code == -1) {
+                        alertify.error(response.msg)
+                    } else
                     if (response.code == 0) {
                         $.each(response.error, function(index, val) {
                             $(form).find('small.error_edit_' + index).text(val);

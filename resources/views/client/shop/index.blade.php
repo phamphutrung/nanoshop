@@ -24,16 +24,16 @@
                         <h1 class="shop-title" style="text-transform: uppercase">{{ $category_name }}</h1>
                         <div class="wrap-right">
 
-                            {{-- <div class="sort-item orderby ">
+                            <div class="sort-item orderby ">
                                 <select id="sortby" name="orderby" class="use-chosen">
-                                    <option value="desctime" selected="selected">Mới nhất</option>
-                                    <option value="desctime">Cũ nhất</option>
-                                    <option value="asc">Giá: thấp đến cao</option>
-                                    <option value="desc">Giá: cao đên thấp</option>
+                                    <option value="1" selected="selected">Mới nhất</option>
+                                    <option value="2">Cũ nhất</option>
+                                    <option value="3">Giá: thấp đến cao</option>
+                                    <option value="4">Giá: cao đên thấp</option>
                                 </select>
                             </div>
 
-                            <div class="sort-item product-per-page">
+                            {{-- <div class="sort-item product-per-page">
                                 <select id="show_per_page" name="post-per-page" class="use-chosen">
                                     <option value="4">Hiển thị 4 sản phẩm</option>
                                     <option value="8">Hiển thị 8 sản phẩm</option>
@@ -49,8 +49,15 @@
                         </div>
                     </div>
                     <input type="hidden" name="categoryId" value="{{ $categoryId }}">
-                    <div class="row">
-                        <ul id="main_data" class="product-list grid-products equal-container">
+                    <input type="hidden" name="page" value="1">
+                    <style>
+                        #kun {
+                            position: absolute; z-index: 200; top: 100px;right: 50%;font-size: 50px;display: none;
+                        }
+                    </style>
+                    <div style="position: relative" id="wrapper_content" class="row">
+                        <i id="kun" class="fas fa-spinner fa-pulse"></i>
+                        <ul id="main_data" class="product-list grid-products equal-container" style="margin-bottom: 100px">
                             @foreach ($products as $key => $product)
                                 <li class="col-lg-4 col-md-6 col-sm-6 col-xs-6">
                                     <div class="product product-style-3 equal-elem ">
@@ -126,20 +133,47 @@
                 filter()
             })
 
-            var page = 1;
-            $(window).on('scroll', function(){
-                 if($(window).scrollTop() + $(window).height()>= $(document).height()) {
-                    page ++;
-                    loadMore(page)
-                 }
+            $(document).on('change', '#sortby', function() {
+                var sortby = $(this).val()
+                var idCat = $('input[name="categoryId"]').val();
+                $('#noti').css('display', 'none');
+                $.ajax({
+                    url: "{{ route('sort') }}",
+                    type: 'get',
+                    data: {idCat:idCat,sortby:sortby},
+                    beforeSend: function() { 
+                        $('#main_data').css('opacity', '0.6')
+                        $('#kun').css('display', 'block')
+                    },
+                    dataType: 'json',
+                    success: function(res) {
+                        $('#main_data').css('opacity', '1')
+                        $('#kun').css('display', 'none')
+                        $('#main_data').html(res.view)
+                        $('input[name="page"]').val(2)
+                        $('#noti').css('display', 'none');
+                    }
+                })
             })
 
+            var page = $('input[name="page"]').val();
+            $(window).on('scroll', function(){
+                 if($(window).scrollTop() + $(window).height() >= $(document).height()) {
+                    page ++;
+                    if ($('input[name="page"]').val() == 2) {
+                        page = 2;
+                    }
+                    loadMore(page)
+                    $('input[name="page"]').val(1)
+                 }
+            })
             function loadMore(page) {
-                var idCat = $('input[name="categoryId"]').val()
+                var idCat = $('input[name="categoryId"]').val();
+                var sortby = $('#sortby').val();
                 $.ajax({
                     url: "{{ route('load-more')}}" + "?page=" + page,
                     type: 'get',
-                    data: {idCat: idCat},
+                    data: {idCat:idCat, sortby:sortby},
                     dataType: 'json',
                     beforeSend: function() {
                         $('#noti').css('display', 'block');

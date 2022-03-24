@@ -274,6 +274,25 @@
             $('#area_search').addClass('col-md-2')
         })
 
+        $(document).on('change', '#search_input', function() {
+            var str = $(this).val()
+            $.ajax({
+                url: "{{ route('user-search') }}",
+                type: 'get',
+                data:{str: str},
+                dataType: 'json',
+                beforeSend: function() {
+                    $('#ani_search').removeClass('d-none')
+                    $('#ico_search').addClass('d-none')
+                },
+                success: function(res) {
+                    $('#ani_search').addClass('d-none')
+                    $('#ico_search').removeClass('d-none')
+                    $('#main_data').html(res.view)
+                }
+            })
+        })
+
     </script>
 @endsection
 @section('content')
@@ -284,8 +303,8 @@
         <div class="card-body">
             <div class="card">
                 <div class="card-header">
-                    <nav class="navbar navbar-expand navbar-light bg-light d-flex justify-content-between">
-                        <div class="col-md-6">
+                    <nav class="navbar navbar-expand navbar-light bg-light">
+                        <div class="col-md-6 mr-auto">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
                                     <button id="add-btn" class="btn btn-success" data-bs-toggle="modal"
@@ -316,6 +335,7 @@
                                 </th>
                                 <th>Tên</th>
                                 <th>Email</th>
+                                <th>Số điện thoại</th>
                                 <th>Vai trò</th>
                                 <th>Thao tác</th>
                             </tr>
@@ -329,6 +349,7 @@
                                         </td>
                                         <td class="text-primary text-capitalize text-bold">{{ $user->name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td>{{ $user->phone }}</td>
                                         <td>
                                             @foreach ($user->roles as $role)
                                                 <span class="badge rounded-pill bg-warning">{{ $role->name }}</span>
@@ -345,7 +366,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <div class="alert alert-warning alert-dismissible fade show" role="alert">
                                             <button type="button" class="btn-close" data-bs-dismiss="alert"
                                                 aria-label="Close"></button>
@@ -356,7 +377,6 @@
                             @endif
                         </tbody>
                     </table>
-                    <div class="mt-2 d-flex justify-content-end">{{ $users->links() }}</div>
                 </div>
             </div>
         </div>

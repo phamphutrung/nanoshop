@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\admin\DashboardController as AdminDashboardController;
+use App\Http\Controllers\admin\AccountController;
+use App\Http\Controllers\admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\admin\OrderController;
 use App\Http\Controllers\admin\ProductController as AdminProductController;
 use App\Http\Controllers\admin\RoleController as AdminRoleController;
@@ -29,8 +29,10 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
+Route::get('generate', function (){
+    Illuminate\Support\Facades\Artisan::call('make:controller Test1Controller');
+    echo 'đãok';
+});
 
 Auth::routes(['verify'=>true]);
 
@@ -42,6 +44,7 @@ Route::get('/tim-kiem', [HomeController::class, 'search'])->name('search');
 Route::get('/shop/{slug?}/{id?}', [ShopController::class, 'index'])->name('shop');
 Route::get('shop-add-cart', [ShopController::class, 'addToCart'])->name('shop-add-cart');
 Route::get('load-more', [ShopController::class, 'loadMore'])->name('load-more');
+Route::get('sort', [ShopController::class, 'sortBy'])->name('sort');
 
 Route::get('/san-pham/{slug}/{id}.html', [ProductController::class, 'index'])->name('product');
 Route::get('product-add-cart', [ProductController::class, 'addCart'])->name('product-add-cart');
@@ -54,6 +57,7 @@ Route::get('/dat-hang', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout-order', [CheckoutController::class, 'order'])->name('order');
 
 Route::get('lien-he', [ContactController::class, 'index'])->name('contact');
+Route::post('contact-send', [ContactController::class, 'send'])->name('contact-send');
 Route::get('ve-chung-toi', [AboutController::class, 'index'])->name('about');
 
 
@@ -61,8 +65,10 @@ Route::get('ve-chung-toi', [AboutController::class, 'index'])->name('about');
 
 
 Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
-    Route::get('/home', [AdminDashboardController::class, 'index'])->name('dashboard');
-    Route::get('/admin', [AdminDashboardController::class, 'index'])->name('dashboard');
+    // account admin
+    Route::get('/account', [AccountController::class, 'index'])->name('account');
+    Route::get('/admin', [AccountController::class, 'index'])->name('account');
+    Route::post('/account-update', [AccountController::class, 'update'])->name('account-update');
 
     // order admin
     Route::get('/order', [OrderController::class, 'index'])->name('admin-order');
@@ -119,6 +125,7 @@ Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/user-edit', [AdminUserController::class, 'edit'])->name('admin-user-edit');
     Route::post('/user-update', [AdminUserController::class, 'update'])->name('admin-user-update');
     Route::get('/user-action', [AdminUserController::class, 'action'])->name('admin-user-action');
+    Route::get('user-search', [AdminUserController::class, 'search'])->name('user-search');
 
     // admin role 
     Route::get('/role', [AdminRoleController::class, 'index'])->name('admin-role');

@@ -28,30 +28,67 @@ class ShopController extends Controller
             $category = category::find($id);
             $categoryId = $id;
             $category_name = $category->name;
-            $products = $category->products()->orderBy('selling_price')->paginate(12);
+            $products = $category->products()->where('status', true)->orderBy('created_at', 'desc')->paginate(12);
             return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
         }
 
         $category_name = "Tất cả sản phẩm";
         $categoryId = 0;
-        $products = product::orderBy('selling_price')->paginate(12);
+        $products = product::where('status', true)->orderBy('created_at', 'desc')->paginate(12);
         return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
     }
 
-    function loadMore(Request $request) {
+    function sortBy(request $request) {
+        $sort = $this->getTypeSort($request->sortby);
         if($request->idCat == 0) {
-            $products = product::where('status', true)
-            ->when(true, function($q) {
-                $q->orderBy('selling_price');
+            $products = product::where('status', true)->when($sort, function($q) use ($sort) {
+                $q->orderBy($sort['key'], $sort['value']);
             })
             ->paginate(12);
         } else {
-            $products = category::find($request->idCat)->products()->where('status', true)->latest()->paginate(12);
+            $products = category::find($request->idCat)->products()->where('status', true)->when($sort, function($q) use ($sort) {
+                $q->orderBy($sort['key'], $sort['value']);
+            })
+            ->paginate(12);
+        }
+        $view = view('client.shop.inc.main_data', compact('products'))->render();
+        return response()->json(['view' => $view]);
+    }
+
+    function loadMore(Request $request) {
+       $sort = $this->getTypeSort($request->sortby);
+        if($request->idCat == 0) {
+            $products = product::where('status', true)
+            ->when($sort, function($q) use ($sort) {
+                $q->orderBy($sort['key'], $sort['value']);
+            })
+            ->paginate(12);
+        } else {
+            $products = category::find($request->idCat)->products()->where('status', true)->when($sort, function($q) use ($sort) {
+                $q->orderBy($sort['key'], $sort['value']);
+            })->paginate(12);
         }
         $view = view('client.shop.inc.main_data',compact('products'))->render();
         return response()->json(['view' => $view]);
     }
 
+    function getTypeSort($val) {
+        $sort = [];
+        if($val == 1) {
+            $sort['key'] = 'created_at';
+            $sort['value'] = 'desc';
+        } else if ($val == 2){
+            $sort['key'] = 'created_at';
+            $sort['value'] = 'asc';
+        } else if ($val == 3) {
+            $sort['key'] = 'selling_price';
+            $sort['value'] = 'asc';
+        } else {
+            $sort['key'] = 'selling_price';
+            $sort['value'] = 'desc';
+        }
+        return $sort;
+    }
 
     function addToCart(request $request)
     {

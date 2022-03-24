@@ -88,8 +88,15 @@
                 var y = window.innerHeight || document.documentElement.clientHeight || document
                     .getElementsByTagName('body')[0].clientHeight;
 
-                var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
-                if (meta.filetype == 'image') {
+                // var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
+                // if (meta.filetype == 'image') {
+                //     cmsURL = cmsURL + "&type=Images";
+                // } else {
+                //     cmsURL = cmsURL + "&type=Files";
+                // }
+
+                var cmsURL = editor_config.path_absolute + 'laravel-filemanager?field_name=' + field_name;
+                if (type == 'image') {
                     cmsURL = cmsURL + "&type=Images";
                 } else {
                     cmsURL = cmsURL + "&type=Files";
@@ -225,6 +232,7 @@
 
         $(document).on('change', '.trending_check', function(e) { // ON/OFF trending
             var id = $(this).data('id');
+            var boolean = this.checked;
             var isTrending = this.checked ? 1 : 0;
             $.ajax({
                 url: "{{ route('admin-product-updatetrending') }}",
@@ -235,13 +243,19 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    alertify.success(response.msg)
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
+                        $('.trending_check').prop('checked', !boolean);
+                    } else {
+                        alertify.success(response.msg)
+                    }
                 }
             })
         })
 
         $(document).on('change', '.status_check', function(e) { // ON/OFF status
             var id = $(this).data('id');
+            var boolean = this.checked;
             var isStatus = this.checked ? 1 : 0;
             $.ajax({
                 url: "{{ route('admin-product-updatestatus') }}",
@@ -252,7 +266,12 @@
                 },
                 dataType: 'json',
                 success: function(response) {
-                    alertify.success(response.msg)
+                    if (response.code == -1) {
+                        alertify.error(response.msg)
+                        $('.status_check').prop('checked', !boolean);
+                    } else {
+                        alertify.success(response.msg)
+                    }
                 }
             })
         })
@@ -277,10 +296,14 @@
                         },
                         dataType: 'json',
                         success: function(response) {
-                            $('#product-' + id).fadeOut('slow', function() {
-                                $('#main_data').html(response.view)
-                            })
-                            alertify.success(response.msg);
+                            if (response.code == -1) {
+                                alertify.error(response.msg);
+                            } else {
+                                $('#product-' + id).fadeOut('slow', function() {
+                                    $('#main_data').html(response.view)
+                                })
+                                alertify.success(response.msg);
+                            }
                         }
                     })
                 }
@@ -325,7 +348,7 @@
                 success: function(response) {
                     let html = "";
                     response.image_detail_path.forEach(function(value, key) {
-                        html += "<img src='storage/" + value.image_path + "'>"
+                        html += "<img src='/public/storage/" + value.image_path + "'>"
                     })
                     $('.detail_image').html(html)
                     $('.feature_image_detail').attr({
@@ -363,8 +386,6 @@
                     search_string: search_string
                 },
                 beforeSend: function() {
-                    $('#ani_search').removeClass('d-none')
-                    $('#ico_search').addClass('d-none')
                     $('body').css('opacity', '0.6')
                     $('#kun').css('display', 'block')
                 },
@@ -372,8 +393,6 @@
                     $('#main_data').html(response.view)
                     $('#kun').css('display', 'none')
                     $('body').css('opacity', '1')
-                    $('#ani_search').addClass('d-none')
-                    $('#ico_search').removeClass('d-none')
                 }
             })
         }
@@ -405,8 +424,8 @@
                     $('#btn_add').prop('disabled', false)
                     if (response.code == 0) {
                         $.each(response.error, function(index, val) {
-                                $(form).find('small.text_error_' + index).text(val);
-                            })
+                            $(form).find('small.text_error_' + index).text(val);
+                        })
                     } else {
                         $('#main_data').html(response.view);
                         $("#modal_add_product").slideUp(300, function() {
@@ -427,11 +446,17 @@
 
 
 @section('content')
-<style>
-    #kun {
-        position: fixed; z-index: 200; top: 50%;right: 50%;font-size: 50px;display: none;
-    }
-</style>
+    <style>
+        #kun {
+            position: fixed;
+            z-index: 200;
+            top: 50%;
+            right: 50%;
+            font-size: 50px;
+            display: none;
+        }
+
+    </style>
     <i id="kun" class="fas fa-spinner fa-pulse"></i>
     <div class="card">
         <div class="card-header bg-cyan-200 text-light">
@@ -444,7 +469,9 @@
                         <div class="col-md-2 me-auto">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
-                                    <a data-bs-toggle="modal" data-bs-target="#modal_add_product" class="btn btn-success btn_add"><i class="fa-regular mr-2 fa-square-plus"></i>Thêm sản phẩm</a>
+                                    <a data-bs-toggle="modal" data-bs-target="#modal_add_product"
+                                        class="btn btn-success btn_add"><i class="fa-regular mr-2 fa-square-plus"></i>Thêm
+                                        sản phẩm</a>
                                 </li>
                             </ul>
                         </div>
@@ -543,7 +570,7 @@
                                     </td>
                                 </tr>
                             @endif
-                             {{-- <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div> --}}
+                            {{-- <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div> --}}
                         </tbody>
                     </table>
 
@@ -554,7 +581,7 @@
 
 
     <!-- Modal -->
-    
+
     @include('admin.product.inc.add_product')
     <!-- Modal -->
     @include('admin.product.inc.product_detail')

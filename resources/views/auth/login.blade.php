@@ -21,7 +21,7 @@
                                     <fieldset class="wrap-input">
                                         <label for="frm-login-uname">Email:</label>
                                         <input type="email" id="frm-login-uname" name="email" placeholder="Nhập email"
-                                            value="{{ old('email') }}" required autocomplete="email" autofocus>
+                                            value="admin@gmail.com" required autocomplete="email" autofocus>
                                         @error('email')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror
@@ -29,7 +29,7 @@
                                     <fieldset class="wrap-input">
                                         <label for="frm-login-pass">Mật khẩu:</label>
                                         <input type="password" id="frm-login-pass" placeholder="Nhập mật khẩu"
-                                            name="password" required autocomplete="current-password">
+                                            name="password" required autocomplete="current-password" value="123456">
                                         @error('pass')
                                             <span class="text-danger">{{ $message }}</span>
                                         @enderror

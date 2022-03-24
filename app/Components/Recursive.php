@@ -36,7 +36,7 @@ class Recursive
 
                 $this->htmlCategoryView .= "<tr id='category_{$value->id}'>";
                     $this->htmlCategoryView .= "<td class='text-bold'>";
-                        $this->htmlCategoryView .="$str" . "<img id='avt' class='mr-2' src='storage/$value->avt'>" . "$value->name";
+                        $this->htmlCategoryView .="$str" . "<img id='avt' class='mr-2' src='public/storage/$value->avt'>" . "$value->name";
                     $this->htmlCategoryView .= "</td>";
                     $this->htmlCategoryView .= "<td>";
                         $this->htmlCategoryView .= "<a data-bs-toggle='modal' data-bs-target='#edit_category_modal' data-id=\"$value->id\" class='btn btn-primary btn_edit' href=\"category-edit-$value->id\">";

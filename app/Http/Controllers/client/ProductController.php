@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use App\Models\category;
 
 class ProductController extends Controller
 {
@@ -21,7 +22,8 @@ class ProductController extends Controller
     {
         $product = product::where('status', true)->find($id); //main product.
 
-        $relatedProducts = $product->category->products()->where('trending', true)->get(); // lấy danh mục của sản phẩm chính sau đó lấy những sản phẩm trong danh mục vừa lấy ra
+        $category = $product->category;
+        $relatedProducts = $category->products()->where('trending', true)->get();
 
         $popularProducts = product::inRandomOrder()->where(['trending' => true, 'status' => true])->limit(5)->get(); // popular (trending) product
         return view('client.product.index', compact('product', 'relatedProducts', 'popularProducts'));

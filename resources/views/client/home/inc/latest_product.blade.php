@@ -42,7 +42,7 @@
                                             <p class="product-price">
                                                 {{ number_format($product->selling_price) }}đ</p>
                                         </ins> <del>
-                                            <p class="product-price">{{ $product->original_price }}đ</p>
+                                            <p class="product-price">{{ $product->original_price }}</p>
                                         </del></div>
                                 </div>
                             </div>

@@ -41,7 +41,6 @@
     <!-- Bootstrap theme -->
     <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/themes/bootstrap.min.css" />
     {{-- end css alertifyjs --}}
-
     @yield('css')
 
 </head>
@@ -49,30 +48,16 @@
     .bg-cyan-200 {
         background-color: #045e61;
     }
-
     .bg-cyan-100 {
         background-color: #a9aaac;
     }
-
 </style>
 
 <body>
     <div class="wrapper">
-
-        @include('layouts.inc.admin_navbar')
-
         @include('layouts.inc.admin_sidebar')
 
         <div class="content-wrapper bg-white">
-            {{-- <div class="content-header" >
-            <div class="container-fluid">
-              <div class="row mb-2">
-                <div class="col-sm-6" style="margin-top: 45px">
-                  <h1 class="m-0">@yield('title')</h1>
-                </div>
-              </div>
-            </div>
-          </div> --}}
             <div class="content">
                 <div class="container-fluid">
                     <div class="row">
@@ -83,8 +68,6 @@
                 </div>
             </div>
         </div>
-
-        @include('layouts.inc.admin_footer')
     </div>
     <script src="{{ asset('admins/plugin/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('admins/js/adminlte.min.js') }}"></script>
@@ -104,5 +87,4 @@
         </script>
     @endif
 </body>
-
 </html>

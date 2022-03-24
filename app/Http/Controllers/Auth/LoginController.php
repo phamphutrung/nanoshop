@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 
 class LoginController extends Controller
 {
@@ -35,7 +36,11 @@ class LoginController extends Controller
         //     return redirect('/')->with('status', 'Đăng nhập thành công');
         // }
     }
-
+    public function logout()
+    {
+        Auth::logout();
+        return redirect()->route('login');
+    }
     /**
      * Create a new controller instance.
      *
