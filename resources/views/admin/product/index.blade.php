@@ -88,19 +88,19 @@
                 var y = window.innerHeight || document.documentElement.clientHeight || document
                     .getElementsByTagName('body')[0].clientHeight;
 
-                // var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
-                // if (meta.filetype == 'image') {
-                //     cmsURL = cmsURL + "&type=Images";
-                // } else {
-                //     cmsURL = cmsURL + "&type=Files";
-                // }
-
-                var cmsURL = editor_config.path_absolute + 'laravel-filemanager?field_name=' + field_name;
-                if (type == 'image') {
+                var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
+                if (meta.filetype == 'image') {
                     cmsURL = cmsURL + "&type=Images";
                 } else {
                     cmsURL = cmsURL + "&type=Files";
                 }
+
+                // var cmsURL = editor_config.path_absolute + 'laravel-filemanager?field_name=' + field_name;
+                // if (type == 'image') {
+                //     cmsURL = cmsURL + "&type=Images";
+                // } else {
+                //     cmsURL = cmsURL + "&type=Files";
+                // }
 
                 tinyMCE.activeEditor.windowManager.openUrl({
                     url: cmsURL,

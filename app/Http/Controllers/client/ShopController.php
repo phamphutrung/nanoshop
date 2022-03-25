@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 
 class ShopController extends Controller
 {
+    private $list_id_parents = [];
     public function __construct()
     {
         $this->middleware(function ($request, $next) {
@@ -25,10 +26,19 @@ class ShopController extends Controller
             ->where(['trending' => true, 'status' => true])
             ->limit(10)->get(); // popular (trending) product
         if ($id != 0) {
-            $category = category::find($id);
             $categoryId = $id;
+            $category = category::find($id);
             $category_name = $category->name;
-            $products = $category->products()->where('status', true)->orderBy('created_at', 'desc')->paginate(12);
+
+            if ($category->categoryChild->count() > 0) {
+                foreach ($category->categoryChild as $categoryItem) {
+                    $this->getParentId($categoryItem);
+                }
+                $products = product::whereIn('category_id', $this->list_id_parents)->where('status', true)->orderBy('created_at', 'desc')->paginate(12);
+            } else {
+                $products = $category->products()->where('status', true)->orderBy('created_at', 'desc')->paginate(12);
+            }
+
             return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
         }
 
@@ -37,47 +47,84 @@ class ShopController extends Controller
         $products = product::where('status', true)->orderBy('created_at', 'desc')->paginate(12);
         return view('client.shop.index', compact('categoryParents', 'category_name', 'categoryId', 'products', 'popularProducts'));
     }
+    function getParentId($categoryItem)
+    {
+        if ($categoryItem->count() > 0) {
+            $this->list_id_parents[] = $categoryItem->id;
+            foreach ($categoryItem->categoryChild as $categoryChildItem) {
+                $this->getParentId($categoryChildItem);
+            }
+        }
+    }
 
-    function sortBy(request $request) {
+    function sortBy(request $request)
+    {
         $sort = $this->getTypeSort($request->sortby);
-        if($request->idCat == 0) {
-            $products = product::where('status', true)->when($sort, function($q) use ($sort) {
+        if ($request->idCat == 0) {
+            $products = product::where('status', true)->when($sort, function ($q) use ($sort) {
                 $q->orderBy($sort['key'], $sort['value']);
             })
-            ->paginate(12);
+                ->paginate(12);
         } else {
-            $products = category::find($request->idCat)->products()->where('status', true)->when($sort, function($q) use ($sort) {
-                $q->orderBy($sort['key'], $sort['value']);
-            })
-            ->paginate(12);
+            $categoryId = $request->idCat;
+            $category = category::find($categoryId);
+
+            if ($category->categoryChild->count() > 0) {
+                foreach ($category->categoryChild as $categoryItem) {
+                    $this->getParentId($categoryItem);
+                }
+                $products = product::whereIn('category_id', $this->list_id_parents)->where('status', true)->when($sort, function ($q) use ($sort) {
+                    $q->orderBy($sort['key'], $sort['value']);
+                })
+                    ->paginate(12);
+            } else {
+                $products = category::find($categoryId)->products()->where('status', true)->when($sort, function ($q) use ($sort) {
+                    $q->orderBy($sort['key'], $sort['value']);
+                })
+                    ->paginate(12);
+            }
         }
         $view = view('client.shop.inc.main_data', compact('products'))->render();
         return response()->json(['view' => $view]);
     }
 
-    function loadMore(Request $request) {
-       $sort = $this->getTypeSort($request->sortby);
-        if($request->idCat == 0) {
+    function loadMore(Request $request)
+    {
+        $sort = $this->getTypeSort($request->sortby);
+        if ($request->idCat == 0) {
             $products = product::where('status', true)
-            ->when($sort, function($q) use ($sort) {
-                $q->orderBy($sort['key'], $sort['value']);
-            })
-            ->paginate(12);
+                ->when($sort, function ($q) use ($sort) {
+                    $q->orderBy($sort['key'], $sort['value']);
+                })
+                ->paginate(12);
         } else {
-            $products = category::find($request->idCat)->products()->where('status', true)->when($sort, function($q) use ($sort) {
-                $q->orderBy($sort['key'], $sort['value']);
-            })->paginate(12);
+            $categoryId = $request->idCat;
+            $category = category::find($categoryId);
+
+            if ($category->categoryChild->count() > 0) {
+                foreach ($category->categoryChild as $categoryItem) {
+                    $this->getParentId($categoryItem);
+                }
+                $products = product::whereIn('category_id', $this->list_id_parents)->where('status', true)->when($sort, function ($q) use ($sort) {
+                    $q->orderBy($sort['key'], $sort['value']);
+                })->paginate(12);
+            } else {
+                $products = category::find($categoryId)->products()->where('status', true)->when($sort, function ($q) use ($sort) {
+                    $q->orderBy($sort['key'], $sort['value']);
+                })->paginate(12);
+            }
         }
-        $view = view('client.shop.inc.main_data',compact('products'))->render();
+        $view = view('client.shop.inc.main_data', compact('products'))->render();
         return response()->json(['view' => $view]);
     }
 
-    function getTypeSort($val) {
+    function getTypeSort($val)
+    {
         $sort = [];
-        if($val == 1) {
+        if ($val == 1) {
             $sort['key'] = 'created_at';
             $sort['value'] = 'desc';
-        } else if ($val == 2){
+        } else if ($val == 2) {
             $sort['key'] = 'created_at';
             $sort['value'] = 'asc';
         } else if ($val == 3) {
