@@ -32,6 +32,16 @@ class UserController extends Controller
         }
     }
 
+    function search(request $request)
+    {
+        $str = $request->str;
+        $users = User::where(function ($q) use ($str) {
+            $q->where('name', 'like', "%$str%")->orWhere('email', 'like', "%$str%")->orWhere('phone', 'like', "%$str%");
+        })->get();
+        $view = view('admin.user.main_data', compact('users'))->render();
+        return response()->json(['view' => $view]);
+    }
+
     function add(request $request)
     {
         if ($request->user()->cannot('create', User::class)) {
@@ -125,7 +135,7 @@ class UserController extends Controller
             if ($request->user()->cannot('delete', $user)) {
                 return response()->json(['code' => -1, 'msg' => 'Bạn không có quyền xóa thành viên']);
             } else {
-                if($request->id == Auth::user()->id) {
+                if ($request->id == Auth::user()->id) {
                     return response()->json(['code' => -0, 'msg' => "Không được phép tự xóa"]);
                 } else {
                     User::destroy($request->id);

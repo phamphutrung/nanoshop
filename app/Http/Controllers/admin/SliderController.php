@@ -179,7 +179,7 @@ class SliderController extends Controller
     public function search(request $request)
     {
         $key = $request->key;
-        $sliders = slider::where('title', 'like', '%' . $key . '%')->latest()->paginate(15);
+        $sliders = slider::where('title', 'like', '%' . $key . '%')->orWhere('description', 'like', "%$key%") ->latest()->get();
         $view = view('admin.slider.main_data', compact('sliders'))->render();
         return response()->json(['view' => $view, 'msg' => $key]);
     }

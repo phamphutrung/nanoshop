@@ -1,21 +1,25 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="position: fixed;">
     <!-- Brand Logo -->
 
-    <div class="text-center border-bottom border-secondary mt-3 pb-2" >
-        <img width="150px" src="{{ asset('admins/image/Daco_2768952.png') }}"
-            alt="Logo" class="">
+    <div class="text-center border-bottom border-secondary mt-3 pb-2">
+        <img width="150px" src="{{ asset('admins/image/Daco_2768952.png') }}" alt="Logo" class="">
     </div>
 
 
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar user panel (optional) -->
-        <div class="user-panel mt-3 pb-3 mb-3 d-flex text-white">
-            <div class="image mt-1">
-                {{-- <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image"> --}}
-                <i class="fa-solid fa-user "></i>
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex text-white align-item-center">
+            <div class="image">
+                @if (Auth::user()->avt == null)
+                    <img src="https://toigingiuvedep.vn/wp-content/uploads/2021/01/hinh-anh-cute-de-thuong-600x600.jpg"
+                        style="border-radius: 50%; width: 35px; height: 35px" alt="User Image">
+                @else
+                    <img src="{{ asset('storage/' . Auth::user()->avt) }}"
+                        style="border-radius: 50%; width: 35px; height: 35px" alt="User Image">
+                @endif
             </div>
-            <div class="info">
+            <div class="info" style="width: 100%">
                 <strong href="#" class="d-block">{{ Auth::user()->name }}</strong>
             </div>
         </div>
@@ -24,11 +28,20 @@
         <nav class="mt-2">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-item">
-                    <a href="{{ route('dashboard') }}"
-                        class="nav-link {{ session('module_active') == 'dashboard' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-chart-line"></i>
+                    <a href="{{ route('account') }}"
+                        class="nav-link {{ session('module_active') == 'account' ? 'active' : '' }}">
+                        <i class="nav-icon fa-solid fa-user "></i>
                         <p>
-                            Dashboard
+                            Tài khoản
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin-order') }}"
+                        class="nav-link {{ session('module_active') == 'order' ? 'active' : '' }}">
+                        <i class="nav-icon fa-regular fa-hard-drive"></i>
+                        <p>
+                            Đơn Hàng
                         </p>
                     </a>
                 </li>

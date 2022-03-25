@@ -12,52 +12,6 @@
 
 @section('scripts')
     <script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script> // cdn alert tify
-    <script src="https://cdn.tiny.cloud/1/gvcgn9fcz3rvjlxqcknuy9kstzoabcuya4olq1idbnh25pg6/tinymce/5/tinymce.min.js"
-        referrerpolicy="origin"></script>
-
-    <script>
-        var editor_config = {
-            path_absolute: "/",
-            selector: 'textarea.editor',
-            relative_urls: false,
-            plugins: [
-                "advlist autolink lists link image charmap print preview hr anchor pagebreak",
-                "searchreplace wordcount visualblocks visualchars code fullscreen",
-                "insertdatetime media nonbreaking save table directionality",
-                "emoticons template paste textpattern"
-            ],
-
-            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media",
-            file_picker_callback: function(callback, value, meta) {
-                var x = window.innerWidth || document.documentElement.clientWidth || document.getElementsByTagName(
-                    'body')[0].clientWidth;
-                var y = window.innerHeight || document.documentElement.clientHeight || document
-                    .getElementsByTagName('body')[0].clientHeight;
-
-                var cmsURL = editor_config.path_absolute + 'filemanager?editor=' + meta.fieldname;
-                if (meta.filetype == 'image') {
-                    cmsURL = cmsURL + "&type=Images";
-                } else {
-                    cmsURL = cmsURL + "&type=Files";
-                }
-
-                tinyMCE.activeEditor.windowManager.openUrl({
-                    url: cmsURL,
-                    title: 'Filemanager',
-                    width: x * 0.8,
-                    height: y * 0.8,
-                    resizable: "yes",
-                    close_previous: "no",
-                    onMessage: (api, message) => {
-                        callback(message.content);
-                    }
-                });
-            }
-        };
-
-        tinymce.init(editor_config);
-
-    </script>
 
     <script>
         $.ajaxSetup({
@@ -78,8 +32,8 @@
                 contentType: false,
                 beforeSend: function() {
                     $(form).find('small.text-danger').text('');
-                    $('#btn_add').find('i').removeClass('d-none');
                     $('#btn_add').prop('disabled', true)
+                    $('#btn_add').find('i').removeClass('d-none');
                 },
                 success: function(response) {
                     $('#btn_add').find('i').addClass('d-none');
@@ -118,7 +72,7 @@
                 },
                 success: function(response) {
                     $('.config_key_edit').val(response.setting.config_key);
-                    tinyMCE.get("tiny_config_value_edit").setContent(response.setting.config_value);
+                    $('.config_value_edit').val(response.setting.config_value);
                 }
             })
 
@@ -304,7 +258,8 @@
                         <div class="col-md-6">
                             <ul class="nav navbar-nav">
                                 <li class="nav-item">
-                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config">Thêm
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#add_config"><i
+                                        class="fa-regular mr-2 fa-square-plus"></i>Thêm
                                         cài
                                         đặt</button>
                                 </li>
@@ -367,7 +322,6 @@
                             @endif
                         </tbody>
                     </table>
-                    <div class="mt-2 d-flex justify-content-end">{{ $settings->links() }}</div>
                 </div>
             </div>
         </div>
@@ -423,7 +377,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="" class="form-label">Config value</label>
-                            <textarea class="editor" name="config_value" id="tiny_config_value_edit"></textarea>
+                            <textarea class="config_value_edit form-control" name="config_value"></textarea>
                             <small id="helpId" class="form-text text-danger error_config_value"></small>
 
                         </div>

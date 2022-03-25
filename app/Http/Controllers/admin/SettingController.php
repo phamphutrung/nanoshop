@@ -119,7 +119,7 @@ class SettingController extends Controller
     public function search(request $request)
     {
         $key = $request->get('key');
-        $settings = setting::where('config_key', 'like', '%' . $key . '%')->orWhere('config_value', 'like', '%' . $key . '%')->latest()->paginate(15);
+        $settings = setting::where('config_key', 'like', '%' . $key . '%')->orWhere('config_value', 'like', '%' . $key . '%')->latest()->get();
         $view = view('admin.setting.main_data', compact('settings'))->render();
         return response()->json(['view' => $view, 'msg' => $key]);
     }

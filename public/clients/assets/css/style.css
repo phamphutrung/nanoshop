@@ -4875,7 +4875,7 @@ table.shop_attributes tbody{
 .summary-checkout .summary-item{
     display: block;
     float: left;
-    width: 50%;
+    width: 100%;
 }
 .summary-checkout .summary-item.payment-method{
     padding-right: 15px;
@@ -4886,7 +4886,7 @@ table.shop_attributes tbody{
 .summary-checkout .summary-item>h4,
 .summary-checkout .summary-item>p,
 .summary-checkout .summary-item>div{
-    max-width: 470px;
+    max-width: 100%;
 }
 .summary-checkout .summary-item .summary-info{
     margin-bottom: 0;

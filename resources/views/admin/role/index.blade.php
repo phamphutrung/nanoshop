@@ -178,21 +178,22 @@
                             <ul class="nav navbar-nav">
                                 <li class="nav-item active">
                                     <button class="btn btn-success" data-bs-toggle="modal"
-                                        data-bs-target="#add_role_model">Thêm
+                                        data-bs-target="#add_role_model"><i
+                                        class="fa-regular mr-2 fa-square-plus"></i>Thêm
                                         vai trò</button>
                                 </li>
                                 <li class="nav-item">
                                 </li>
                             </ul>
                         </div>
-                        <div id="area_search" class="col-md-2" style="position: relative">
+                        {{-- <div id="area_search" class="col-md-2" style="position: relative">
                             <input type="text" class="form-control ml-3" name="search" id="search_input"
                                 placeholder="Nhập tìm kiếm" style="padding-right: 35px">
                             <i class="fa-solid fa-magnifying-glass text-muted" id="ico_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>
                             <i class="fas fa-spinner fa-spin d-none text-muted" id="ani_search"
                                 style="position: absolute; right: 0; top: 0.7rem;"></i>
-                        </div>
+                        </div> --}}
 
                     </nav>
                 </div>

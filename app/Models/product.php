@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\DB;
 class product extends Model
 {
     use HasFactory;
-    use SoftDeletes;
 
     protected $fillable = ['name', 'slug', 'feature_image_path', 'original_price', 'selling_price', 'description', 'content', 'status', 'trending', 'category_id', 'user_id'];
 
@@ -23,7 +22,7 @@ class product extends Model
     }
 
     function category() {
-        return $this->belongsTo('App\models\category');
+        return $this->belongsTo('App\Models\category');
     }
 
    

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\product;
 use Gloudemans\Shoppingcart\Facades\Cart;
 use Illuminate\Http\Request;
+use App\Models\category;
 
 class ProductController extends Controller
 {
@@ -17,36 +18,31 @@ class ProductController extends Controller
         });
     }
 
-    function index($slug, $id) {
+    function index($slug, $id)
+    {
         $product = product::where('status', true)->find($id); //main product.
 
-        // related product:
-        $idCategory = $product->category->id;
-        $products = product::where('trending', true)->get();
-        $relatedProducts = []; 
-        foreach ($products as $productItem) {
-            if($productItem->category->id == $idCategory) {
-                $relatedProducts[] = $productItem;
-            }
-        }
+        $category = $product->category;
+        $relatedProducts = $category->products()->where('trending', true)->get();
 
-        $popularProducts = product::inRandomOrder()->where('trending', true)->limit(4)->get(); // popular (trending) product
-        
+        $popularProducts = product::inRandomOrder()->where(['trending' => true, 'status' => true])->limit(5)->get(); // popular (trending) product
         return view('client.product.index', compact('product', 'relatedProducts', 'popularProducts'));
     }
-    function addCart(request $request) {
+    function addCart(request $request)
+    {
         $product = product::find($request->idProduct);
         Cart::add([
             'id' => $product->id,
-            'name' => $product->name, 
-            'qty' => $request->qty, 
-            'price' => $product->selling_price, 
+            'name' => $product->name,
+            'qty' => $request->qty,
+            'price' => $product->selling_price,
             'weight' => 0,
             'options' => [
-                'avt' => $product->feature_image_path
+                'avt' => $product->feature_image_path,
+                'slug' => $product->slug,
             ]
         ]);
-        
-       return response()->json([Cart::content() ,'cartCount' => Cart::count(), 'msg' => 'Đã thêm sản phẩm vào giỏ hàng']);
+
+        return response()->json(['cartCount' => Cart::count(), 'msg' => 'Đã thêm sản phẩm vào giỏ hàng']);
     }
 }

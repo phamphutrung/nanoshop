@@ -9,6 +9,5 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class product_image extends Model
 {
     use HasFactory;
-    use SoftDeletes;
     protected $fillable = ['image_path', 'product_id'];
 }
