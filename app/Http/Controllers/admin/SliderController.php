@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\setting;
 use App\Models\slider;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -146,7 +145,7 @@ class SliderController extends Controller
                 $view = view('admin.slider.main_data', compact('sliders'))->render();
                 return response()->json(['code' => 1, 'message' => 'Đã xóa tất cả lựa chọn', 'view' => $view]);
             }
-        } else 
+        } else
         if ($request->action == 'update active') {
             if ($request->user()->cannot('update', slider::class)) {
                 return response()->json(['code' => -1, 'message' => 'Bạn không có quyền chỉnh sửa']);
@@ -169,7 +168,7 @@ class SliderController extends Controller
                 }
                 return response()->json(['code' => $code, 'message' => $msg]);
             }
-        } else 
+        } else
         if ($request->action == "show form edit") {
             $slider = slider::find($request->id);
             return response()->json(['slider' => $slider]);

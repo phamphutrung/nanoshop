@@ -276,7 +276,7 @@
             })
         })
 
-        $(document).on('click', '.btn_delete', function(e) { // delete 
+        $(document).on('click', '.btn_delete', function(e) { // delete
             var id = $(this).data('id');
             Swal.fire({
                 title: 'Bạn muốn xóa?',
@@ -336,7 +336,7 @@
                 }
             })
         })
-        $(document).on('click', '.productItem', function(e) { // view detail 
+        $(document).on('click', '.productItem', function(e) { // view detail
             let id = $(this).attr('data-id');
             $.ajax({
                 url: "{{ route('admin-product-detail') }}",
@@ -396,6 +396,38 @@
                 }
             })
         }
+
+        $(document).on('click', '.sortBy', function() {
+            var type = $(this).data('sortby');
+            var value = $(this).data('value');
+            if (value == 'desc') {
+                $(this).data('value', 'asc')
+            } else {
+                $(this).data('value', 'desc')
+            }
+            var idCat = $('#select_category_filter').val()
+            var search_string = $('#search_input').val()
+            $.ajax({
+                url: "{{ route('admin-product-sort') }}",
+                type: 'get',
+                data: {
+                    type: type,
+                    value: value,
+                    idCat: idCat,
+                    search_string: search_string
+                },
+                beforeSend: function() {
+                    $('body').css('opacity', '0.6')
+                    $('#kun').css('display', 'block')
+                },
+                success: function(response) {
+                    $('#main_data').html(response.view)
+                    $('#kun').css('display', 'none')
+                    $('body').css('opacity', '1')
+                }
+
+            })
+        })
 
         $(document).on('change', '#search_input', function(event) {
             getRecords()
@@ -497,8 +529,11 @@
                         <thead class="bg-cyan-200 text-light">
                             <tr>
                                 <th scope="col" class="text-center">Ảnh</th>
+                                <th scope="col" class="text-center">Ngày tạo <i data-sortby="created_at" data-value="asc"
+                                        style="cursor: pointer" class="sortBy ml-1 fa-solid fa-sort"></i></th>
                                 <th scope="col" class="text-center">Tên</th>
-                                <th scope="col" class="text-center">Giá</th>
+                                <th scope="col" class="text-center">Giá <i data-sortby="selling_price" data-value="asc"
+                                        style="cursor: pointer" class="sortBy ml-1 fa-solid fa-sort"></i></th>
                                 <th scope="col" class="text-center">Danh mục</th>
                                 <th scope="col" class="text-center">Xu hướng</th>
                                 <th scope="col" class="text-center">Kích hoạt</th>
@@ -515,7 +550,7 @@
                                                 src="{{ asset('storage/' . $product->feature_image_path) }}"
                                                 alt="ảnh đại diện">
                                         </td class="text-center">
-
+                                        <td class="center">{{ $product->created_at }} </td>
                                         <td data-toggle="tooltip" data-placement="top" title="Xem chi tiết"
                                             class="text-center text-bold text-capitalize productItem text-primary"
                                             data-id="{{ $product->id }}" style="cursor: pointer;" data-bs-toggle="modal"
@@ -570,7 +605,7 @@
                                     </td>
                                 </tr>
                             @endif
-                            {{-- <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div> --}}
+                            <div class="mt-2 d-flex justify-content-end">{{ $products->links() }}</div>
                         </tbody>
                     </table>
 

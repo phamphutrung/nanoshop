@@ -25,7 +25,7 @@ class HomeController extends Controller
         $lastProducts = product::where('status', true)->latest()->get()->take(8);
         $productSellings = product::where(['trending' => true, 'status' => true])->get()->take(8);
         $categories =  category::all();
-       
+
         return view('client.home.index', compact('sliders', 'lastProducts', 'productSellings', 'categories'));
     }
 
