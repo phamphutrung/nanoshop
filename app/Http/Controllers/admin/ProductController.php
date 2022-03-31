@@ -11,6 +11,7 @@ use App\Components\Recursive;
 use App\Models\tag;
 use Illuminate\Support\Facades\Storage;
 use App\Components\GetHtml;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,6 +26,8 @@ class ProductController extends Controller
     }
     public function index(request $request)
     {
+
+
         if ($request->user()->cannot('view', product::class)) {
             return redirect()->back()->with('notification', 'Bạn không có quyền truy cập');
         } else {
@@ -36,7 +39,7 @@ class ProductController extends Controller
             $getHtml = new GetHtml;
             $htmlSelectOptionTag = $getHtml->getHtmlTags($tags, []);
 
-            $products = product::latest()->paginate(100);
+            $products = product::with('category')->latest()->paginate(40);
             return view('admin.product.index', compact('products', 'htmlSelectOptionCategory', 'htmlSelectOptionTag'));
         }
     }
@@ -115,7 +118,7 @@ class ProductController extends Controller
                     $product->tags()->attach($tagId);
                 }
 
-                $products = product::latest()->paginate(500);
+                $products = product::latest()->paginate(40);
                 $view = view('admin.product.main_data', compact('products'))->render();
                 return response()->json([
                     'msg' => 'Đã thêm sản phẩm',
@@ -228,7 +231,7 @@ class ProductController extends Controller
                 }
             }
             product::destroy($request->id);
-            $products = product::latest()->paginate(500);
+            $products = product::latest()->paginate(40);
             $view = view('admin.product.main_data', compact('products'))->render();
             return response()->json([
             'msg' => 'Đã xóa sản phẩm',
@@ -269,15 +272,16 @@ class ProductController extends Controller
     public function filter(request $request)
     {
         $str = $request->search_string;
-        $cat = $request->idCat;
+        $idCat = $request->idCat;
 
-        $products = product::where(function ($q) use ($str) {
-            $q->where('name', 'like', "%$str%")->orWhere('selling_price', 'like', "%$str%");
-        })->when($cat, function ($q) use ($cat) {
-            $q->where('category_id', $cat);
-        })
-            ->latest()->paginate(400);
+        $products = product::filter($str, $idCat)->latest()->paginate(40);
         $view = view('admin.product.main_data', compact('products'))->render();
-        return response()->json(['view' => $view]);
+        return response(['view' => $view]);
+    }
+    public function sortBy(Request $request) {
+        $str = $request->search_string; $idCat = $request->idCat; $type = $request->type; $value = $request->value;
+        $products = product::filter($str, $idCat)->orderBy($type, $value)->paginate(40);
+        $view = view('admin.product.main_data', compact('products'))->render();
+        return response(['view' => $view]);
     }
 }

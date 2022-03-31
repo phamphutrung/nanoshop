@@ -101,6 +101,7 @@ Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/product-updatestatus', [AdminproductController::class, 'updatestatus'])->name('admin-product-updatestatus');
     Route::get('/product-detail', [AdminproductController::class, 'viewProductDetail'])->name('admin-product-detail');
     Route::get('/product-filter', [AdminproductController::class, 'filter'])->name('admin-product-filter');
+    Route::get('/product-sortby', [AdminproductController::class, 'sortBy'])->name('admin-product-sort');
 
     // slider admin
     Route::get('/slider', [AdminSliderController::class, 'index'])->name('admin-slider');
@@ -127,7 +128,7 @@ Route::middleware(['auth', 'can:checkAccessAdminPage'])->group(function () {
     Route::get('/user-action', [AdminUserController::class, 'action'])->name('admin-user-action');
     Route::get('user-search', [AdminUserController::class, 'search'])->name('user-search');
 
-    // admin role 
+    // admin role
     Route::get('/role', [AdminRoleController::class, 'index'])->name('admin-role');
     Route::post('/role-add', [AdminRoleController::class, 'add'])->name('admin-role-add');
     Route::get('/role-edit', [AdminRoleController::class, 'edit'])->name('admin-role-edit');

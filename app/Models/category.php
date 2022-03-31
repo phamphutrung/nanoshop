@@ -18,4 +18,5 @@ class category extends Model
     function categoryChild() {
         return $this->hasMany('App\Models\category', 'parent_id');
     }
+
 }
